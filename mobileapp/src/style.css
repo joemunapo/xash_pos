@@ -1,0 +1,628 @@
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+ :root {
+     --sat: env(safe-area-inset-top);
+     --sar: env(safe-area-inset-right);
+     --sab: env(safe-area-inset-bottom);
+     --sal: env(safe-area-inset-left);
+ }
+ 
+ .pt-safe {
+     padding-top: var(--sat) !important;
+ }
+ 
+ .pb-safe {
+     padding-bottom: var(--sab) !important;
+ }
+ 
+ .pl-safe {
+     padding-left: var(--sal) !important;
+ }
+ 
+ .pr-safe {
+     padding-right: var(--sar) !important;
+ }
+ 
+ .mt-safe {
+     margin-top: var(--sat) !important;
+ }
+ 
+ .mb-safe {
+     margin-bottom: var(--sab) !important;
+ }
+ 
+ .top-safe {
+     top: var(--sat) !important;
+ }
+ 
+ .bottom-safe {
+     bottom: var(--sab) !important;
+ }
+
+/* ==========================================================================
+   XASH POS COLOR SYSTEM
+
+   Primary (Brand / Header / Main Buttons): #1669C5
+   Success (Payments / Balances / Completed): #00A86B
+   Accent (Pending / Alerts / Action): #FF9F1C
+   Error (Failed / Warnings): #D32F2F
+   Background – White: #FFFFFF
+   Background – Light Grey: #F4F6F8
+   Text – Primary: #1F2933
+   Text – Secondary: #4A4A4A
+   ========================================================================== */
+
+/* ========== Background Classes ========== */
+.bg-page {
+    background-color: #F4F6F8 !important;
+}
+
+.bg-primary {
+    background-color: #1669C5 !important;
+}
+
+.bg-primary-dark {
+    background-color: #1254A3 !important;
+}
+
+.bg-primary-light {
+    background-color: #E8F1FA !important;
+}
+
+.bg-header {
+    background: linear-gradient(to right, #1669C5, #1254A3) !important;
+    background-color: #1669C5 !important;
+}
+
+.bg-overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.bg-overlay-light {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Success */
+.bg-success {
+    background-color: #00A86B !important;
+}
+
+.bg-success-light {
+    background-color: #E6F7F0 !important;
+}
+
+/* Accent / Warning / Pending */
+.bg-accent {
+    background-color: #FF9F1C !important;
+}
+
+.bg-accent-light {
+    background-color: #FFF4E5 !important;
+}
+
+.bg-warning {
+    background-color: #FF9F1C !important;
+}
+
+.bg-warning-light {
+    background-color: #FFF4E5 !important;
+}
+
+.bg-pending {
+    background-color: #FF9F1C !important;
+}
+
+/* Error / Danger */
+.bg-danger {
+    background-color: #D32F2F !important;
+}
+
+.bg-danger-light {
+    background-color: #FDEAEA !important;
+}
+
+.bg-error {
+    background-color: #D32F2F !important;
+}
+
+/* Grays */
+.bg-gray-50 {
+    background-color: #F4F6F8 !important;
+}
+
+.bg-gray-100 {
+    background-color: #EBEEF2 !important;
+}
+
+.bg-gray-200 {
+    background-color: #E0E4E8 !important;
+}
+
+.bg-gray-600 {
+    background-color: #4A4A4A !important;
+}
+
+.bg-gray-700 {
+    background-color: #1F2933 !important;
+}
+
+/* ========== Text Colors ========== */
+.text-primary {
+    color: #1669C5 !important;
+}
+
+.text-primary-dark {
+    color: #1254A3 !important;
+}
+
+.text-primary-light {
+    color: #b6bdc4 !important;
+}
+
+/* Success */
+.text-success {
+    color: #00A86B !important;
+}
+
+/* Accent / Warning */
+.text-accent {
+    color: #FF9F1C !important;
+}
+
+.text-warning {
+    color: #FF9F1C !important;
+}
+
+.text-pending {
+    color: #FF9F1C !important;
+}
+
+/* Error / Danger */
+.text-danger {
+    color: #D32F2F !important;
+}
+
+.text-error {
+    color: #D32F2F !important;
+}
+
+/* Grays - using XASH text colors */
+.text-gray-300 {
+    color: #9CA3AF !important;
+}
+
+.text-gray-500 {
+    color: #4A4A4A !important;
+}
+
+.text-gray-700 {
+    color: #1F2933 !important;
+}
+
+.text-gray-800 {
+    color: #1F2933 !important;
+}
+
+.text-gray-900 {
+    color: #1F2933 !important;
+}
+
+/* ========== Button Classes ========== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #1669C5 !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: #1254A3 !important;
+}
+
+.btn-success {
+    background-color: #00A86B !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: #008F5B !important;
+}
+
+.btn-accent {
+    background-color: #FF9F1C !important;
+    color: white !important;
+}
+
+.btn-warning {
+    background-color: #FF9F1C !important;
+    color: white !important;
+}
+
+.btn-danger {
+    background-color: #D32F2F !important;
+    color: white !important;
+}
+
+.btn-danger:hover {
+    background-color: #B71C1C !important;
+}
+
+.btn-secondary {
+    background-color: #E0E4E8 !important;
+    color: #1F2933 !important;
+}
+
+/* ========== Card Classes ========== */
+.card {
+    background-color: #FFFFFF;
+    border-radius: 0.5rem;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.card-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: #FFFFFF;
+    border-radius: 0.5rem;
+    color: #1F2933;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.card-action-primary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: #1669C5;
+    border-radius: 0.5rem;
+    color: white;
+    -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ========== Modal Classes ========== */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 50;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #FFFFFF;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 384px;
+    padding: 1.5rem;
+    -webkit-box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal-content-lg {
+    max-width: 500px;
+}
+
+.modal-icon {
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.modal-icon-danger {
+    background-color: #FDEAEA;
+    color: #D32F2F;
+}
+
+.modal-icon-primary {
+    background-color: #E8F1FA;
+    color: #1669C5;
+}
+
+.modal-icon-success {
+    background-color: #E6F7F0;
+    color: #00A86B;
+}
+
+.modal-icon-warning {
+    background-color: #FFF4E5;
+    color: #FF9F1C;
+}
+
+.modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1F2933;
+    margin-bottom: 0.5rem;
+}
+
+.modal-text {
+    font-size: 0.875rem;
+    color: #4A4A4A;
+    margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+    display: flex;
+}
+
+.modal-actions>* {
+    flex: 1;
+}
+
+.modal-actions>*:first-child {
+    margin-right: 0.5rem;
+}
+
+.modal-actions>*:last-child {
+    margin-left: 0.5rem;
+}
+
+/* ========== Stats Card ========== */
+.stat-card {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #E8F1FA;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1669C5;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #4A4A4A;
+}
+
+/* ========== Sale Item ========== */
+.sale-item {
+    background-color: #FFFFFF;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* ========== Section Title ========== */
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1F2933;
+    margin-bottom: 0.75rem;
+}
+
+.section-subtitle {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4A4A4A;
+    margin-bottom: 0.75rem;
+}
+
+/* ========== Icon Colors ========== */
+.icon-primary {
+    color: #1669C5 !important;
+}
+
+.icon-primary-light {
+    color: #5A9BD5 !important;
+}
+
+.icon-success {
+    color: #00A86B !important;
+}
+
+.icon-accent {
+    color: #FF9F1C !important;
+}
+
+.icon-warning {
+    color: #FF9F1C !important;
+}
+
+.icon-gray {
+    color: #9CA3AF !important;
+}
+
+.icon-danger {
+    color: #D32F2F !important;
+}
+
+.icon-error {
+    color: #D32F2F !important;
+}
+
+/* ========== Status Badge Classes ========== */
+.status-success {
+    background-color: #E6F7F0 !important;
+    color: #00A86B !important;
+}
+
+.status-pending {
+    background-color: #FFF4E5 !important;
+    color: #FF9F1C !important;
+}
+
+.status-failed {
+    background-color: #FDEAEA !important;
+    color: #D32F2F !important;
+}
+
+.status-default {
+    background-color: #E8F1FA !important;
+    color: #1669C5 !important;
+}
+
+/* ========== Explicit shadow styles for Android 7 WebView compatibility ========== */
+.shadow {
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.shadow-sm {
+    -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow-md {
+    -webkit-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.shadow-lg {
+    -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow-xl {
+    -webkit-box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* ========== Utility Classes ========== */
+.mt-negative {
+    margin-top: -16px;
+}
+
+.bg-glass {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    -webkit-box-shadow: 6px 8px 25px rgba(22, 105, 197, 0.1);
+    box-shadow: 6px 8px 25px rgba(22, 105, 197, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.64);
+}
+
+/* ========== Input Classes ========== */
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #E0E4E8;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #1669C5;
+    -webkit-box-shadow: 0 0 0 2px rgba(22, 105, 197, 0.2);
+    box-shadow: 0 0 0 2px rgba(22, 105, 197, 0.2);
+}
+
+/* ========== Loading Spinner ========== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.loading-spinner {
+    background-color: #FFFFFF;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+/* ========== Cart Summary Bar ========== */
+.cart-summary-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #1669C5;
+    color: white;
+    padding: 0.75rem 1rem;
+    padding-bottom: calc(0.75rem + var(--sab));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    -webkit-box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 40;
+}
+
+.cart-summary-btn {
+    display: flex;
+    align-items: center;
+    background-color: #FFFFFF;
+    color: #1669C5;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+}
+
+/* ========== Border Colors ========== */
+.border-primary {
+    border-color: #1669C5 !important;
+}
+
+.border-success {
+    border-color: #00A86B !important;
+}
+
+.border-accent {
+    border-color: #FF9F1C !important;
+}
+
+.border-warning {
+    border-color: #FF9F1C !important;
+}
+
+.border-danger {
+    border-color: #D32F2F !important;
+}
+
+/* ========== Ring Colors (Focus) ========== */
+.ring-primary {
+    --tw-ring-color: rgba(22, 105, 197, 0.5) !important;
+}
+
+.ring-success {
+    --tw-ring-color: rgba(0, 168, 107, 0.5) !important;
+}
+
+.focus\:ring-primary:focus {
+    --tw-ring-color: rgba(22, 105, 197, 0.5) !important;
+}
+
+.focus\:ring-success:focus {
+    --tw-ring-color: rgba(0, 168, 107, 0.5) !important;
+}

@@ -1,0 +1,48 @@
+{
+  "name": "mobileapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host --port 3000",
+    "build": "vite build",
+    "preview": "vite preview",
+    "android": "npm run build && npx cap sync && npx cap open android",
+    "ios": "npm install && npm run build && npx cap copy && npx cap sync && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor-community/http": "^1.4.1",
+    "@capacitor-mlkit/barcode-scanning": "^7.5.0",
+    "@capacitor/android": "^7.0.1",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/cli": "^7.4.5",
+    "@capacitor/core": "^7.0.1",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/ios": "^7.0.1",
+    "@capacitor/network": "^7.0.3",
+    "@capacitor/share": "^7.0.0",
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@vitejs/plugin-legacy": "^7.2.1",
+    "capacitor-sunmi-printer-v7": "^0.5.7",
+    "chart.js": "^4.5.1",
+    "dexie": "^4.2.1",
+    "flatpickr": "^4.6.13",
+    "pinia": "^2.2.6",
+    "sweetalert2": "^11.26.3",
+    "vue": "^3.5.24",
+    "vue-chartjs": "^5.3.3",
+    "vue-flatpickr-component": "^12.0.0",
+    "vue-multiselect": "^3.4.0",
+    "vue-router": "^4.5.1",
+    "vue-select": "^4.0.0-beta.6",
+    "vue-sweetalert2": "^5.0.11"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "vite": "^7.2.4"
+  }
+}

@@ -1,0 +1,108 @@
+<template>
+  <GuestLayout>
+    <div class="max-w-md mx-auto">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <Link :href="route('welcome')" class="inline-flex items-center gap-2 group">
+          <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+        </Link>
+        <h1 class="text-3xl font-bold text-gray-900 mt-4">XASH<span class="text-emerald-500">POS</span></h1>
+        <p class="text-gray-600 mt-2">Sign in to your account</p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-xl">
+        <form @submit.prevent="submitLogin" class="space-y-5">
+          <!-- Email field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <div class="relative">
+              <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input
+                v-model="form.email"
+                type="email"
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <p v-if="form.errors.email" class="text-red-500 text-sm mt-1">{{ form.errors.email }}</p>
+          </div>
+
+          <!-- Password field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <div class="relative">
+              <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input
+                v-model="form.password"
+                type="password"
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <p v-if="form.errors.password" class="text-red-500 text-sm mt-1">{{ form.errors.password }}</p>
+          </div>
+
+          <!-- Remember me -->
+          <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input v-model="form.remember" type="checkbox" class="w-4 h-4 rounded border-gray-300 bg-white text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0" />
+              <span class="text-sm text-gray-600">Remember me</span>
+            </label>
+            <Link v-if="canResetPassword" :href="route('password.request')" class="text-sm text-emerald-600 hover:text-emerald-700 transition-colors">
+              Forgot password?
+            </Link>
+          </div>
+
+          <!-- Submit button -->
+          <button
+            type="submit"
+            :disabled="form.processing"
+            class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <i v-if="form.processing" class="fas fa-spinner fa-spin"></i>
+            <span>{{ form.processing ? 'Signing in...' : 'Sign In' }}</span>
+            <i v-if="!form.processing" class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Back to home -->
+      <div class="text-center mt-6">
+        <Link :href="route('welcome')" class="text-gray-600 hover:text-gray-900 transition-colors text-sm">
+          <i class="fas fa-arrow-left mr-2"></i>
+          Back to home
+        </Link>
+      </div>
+    </div>
+  </GuestLayout>
+</template>
+
+<script setup>
+import { useForm, Link } from '@inertiajs/vue3';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+
+const props = defineProps({
+  canResetPassword: Boolean,
+  status: String,
+});
+
+const form = useForm({
+  email: '',
+  password: '',
+  remember: false,
+});
+
+const submitLogin = () => {
+  form.post(route('login.store'), {
+    preserveScroll: true,
+    onFinish: () => form.reset('password'),
+  });
+};
+</script>
