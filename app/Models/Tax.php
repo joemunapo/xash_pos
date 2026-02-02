@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class Tax extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'company_id',
+        'tenant_id',
         'name',
         'rate',
         'start_date',
@@ -30,9 +30,9 @@ class Tax extends Model
         'is_active' => 'boolean',
     ];
 
-    public function company(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Tenant::class);
     }
 
     /**
@@ -40,7 +40,7 @@ class Tax extends Model
      */
     public function isCurrentlyApplicable(): bool
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
@@ -60,13 +60,13 @@ class Tax extends Model
     }
 
     /**
-     * Get all currently applicable taxes for a company
+     * Get all currently applicable taxes for a tenant
      */
-    public static function getApplicableTaxes(int $companyId)
+    public static function getApplicableTaxes(int $tenantId): \Illuminate\Database\Eloquent\Collection
     {
         $today = Carbon::today();
 
-        return static::where('company_id', $companyId)
+        return static::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->where(function ($query) use ($today) {
                 $query->whereNull('start_date')
@@ -80,11 +80,11 @@ class Tax extends Model
     }
 
     /**
-     * Get the default tax for a company
+     * Get the default tax for a tenant
      */
-    public static function getDefaultTax(int $companyId)
+    public static function getDefaultTax(int $tenantId): ?self
     {
-        return static::where('company_id', $companyId)
+        return static::where('tenant_id', $tenantId)
             ->where('is_default', true)
             ->where('is_active', true)
             ->first();

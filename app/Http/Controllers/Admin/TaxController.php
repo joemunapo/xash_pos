@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\Branch;
 use App\Models\Tax;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,9 +19,10 @@ class TaxController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
+        $tenant = Tenant::find($tenantId);
 
-        $taxes = Tax::where('company_id', $companyId)
+        $taxes = Tax::where('tenant_id', $tenantId)
             ->when($request->search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%");
             })
@@ -30,10 +33,55 @@ class TaxController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $branches = Branch::where('tenant_id', $tenantId)
+            ->where('is_active', true)
+            ->get(['id', 'name', 'settings']);
+
+        // Get tax settings
+        $taxEnabled = $tenant->settings['tax_enabled'] ?? false;
+        $branchTaxSettings = [];
+        foreach ($branches as $branch) {
+            $branchTaxSettings[$branch->id] = $branch->settings['tax_enabled'] ?? true;
+        }
+
         return Inertia::render('Admin/Settings/Tax', [
             'taxes' => $taxes,
+            'branches' => $branches,
+            'taxEnabled' => $taxEnabled,
+            'branchTaxSettings' => $branchTaxSettings,
             'filters' => $request->only(['search', 'status']),
         ]);
+    }
+
+    /**
+     * Toggle tax enabled for the tenant
+     */
+    public function toggleTax(Request $request)
+    {
+        $user = $request->user();
+        $tenant = Tenant::find($user->tenant_id);
+
+        $settings = $tenant->settings ?? [];
+        $settings['tax_enabled'] = $request->boolean('enabled');
+        $tenant->update(['settings' => $settings]);
+
+        return back()->with('success', $settings['tax_enabled'] ? 'Tax enabled successfully.' : 'Tax disabled successfully.');
+    }
+
+    /**
+     * Toggle tax enabled for a specific branch
+     */
+    public function toggleBranchTax(Request $request, Branch $branch)
+    {
+        if ($branch->tenant_id !== $request->user()->tenant_id) {
+            abort(403);
+        }
+
+        $settings = $branch->settings ?? [];
+        $settings['tax_enabled'] = $request->boolean('enabled');
+        $branch->update(['settings' => $settings]);
+
+        return back()->with('success', 'Branch tax setting updated.');
     }
 
     /**
@@ -53,11 +101,11 @@ class TaxController extends Controller
             'description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $validated['company_id'] = $user->company_id;
+        $validated['tenant_id'] = $user->tenant_id;
 
         // If setting as default, unset other defaults
         if ($validated['is_default'] ?? false) {
-            Tax::where('company_id', $user->company_id)
+            Tax::where('tenant_id', $user->tenant_id)
                 ->where('is_default', true)
                 ->update(['is_default' => false]);
         }
@@ -66,10 +114,13 @@ class TaxController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            'Tax',
+            $user->tenant_id,
+            $user->id,
+            null,
+            Tax::class,
             $tax->id,
-            "Created tax rate: {$tax->name} ({$tax->rate}%)",
-            $user->id
+            null,
+            $tax->only(['id', 'name', 'rate', 'is_default'])
         );
 
         return redirect()->back()->with('success', 'Tax rate created successfully.');
@@ -95,21 +146,25 @@ class TaxController extends Controller
         ]);
 
         // If setting as default, unset other defaults
-        if (($validated['is_default'] ?? false) && !$tax->is_default) {
-            Tax::where('company_id', $user->company_id)
+        if (($validated['is_default'] ?? false) && ! $tax->is_default) {
+            Tax::where('tenant_id', $user->tenant_id)
                 ->where('id', '!=', $tax->id)
                 ->where('is_default', true)
                 ->update(['is_default' => false]);
         }
 
+        $oldValues = $tax->only(['name', 'rate', 'is_default', 'is_active']);
         $tax->update($validated);
 
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            'Tax',
+            $user->tenant_id,
+            $user->id,
+            null,
+            Tax::class,
             $tax->id,
-            "Updated tax rate: {$tax->name} ({$tax->rate}%)",
-            $user->id
+            $oldValues,
+            $tax->only(['name', 'rate', 'is_default', 'is_active'])
         );
 
         return redirect()->back()->with('success', 'Tax rate updated successfully.');
@@ -129,15 +184,18 @@ class TaxController extends Controller
             return redirect()->back()->withErrors(['error' => 'Cannot delete the default tax rate.']);
         }
 
-        $taxName = $tax->name;
+        $oldValues = $tax->only(['id', 'name', 'rate']);
         $tax->delete();
 
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            'Tax',
+            $user->tenant_id,
+            $user->id,
+            null,
+            Tax::class,
             $tax->id,
-            "Deleted tax rate: {$taxName}",
-            $user->id
+            $oldValues,
+            null
         );
 
         return redirect()->back()->with('success', 'Tax rate deleted successfully.');
@@ -150,7 +208,7 @@ class TaxController extends Controller
     {
         $user = auth()->user();
 
-        if ($tax->company_id !== $user->company_id) {
+        if ($tax->tenant_id !== $user->tenant_id) {
             abort(403, 'Unauthorized access to tax.');
         }
     }

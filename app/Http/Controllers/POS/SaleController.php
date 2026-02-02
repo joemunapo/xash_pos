@@ -96,7 +96,7 @@ class SaleController extends Controller
 
             // Create sale
             $sale = Sale::create([
-                'company_id' => $user->company_id,
+                'tenant_id' => $user->tenant_id,
                 'branch_id' => $branch->id,
                 'user_id' => $user->id,
                 'customer_id' => $request->customer_id,
@@ -188,8 +188,8 @@ class SaleController extends Controller
             DB::commit();
 
             // Clear product cache to reflect updated stock levels
-            cache()->forget("pos_all_data_{$user->company_id}_{$branch->id}");
-            cache()->forget("pos_products_{$user->company_id}_{$branch->id}_all_none");
+            cache()->forget("pos_all_data_{$user->tenant_id}_{$branch->id}");
+            cache()->forget("pos_products_{$user->tenant_id}_{$branch->id}_all_none");
 
             // Load relationships for response
             $sale->load(['items.product:id,name,sku', 'customer:id,name,phone']);
@@ -298,8 +298,8 @@ class SaleController extends Controller
             DB::commit();
 
             // Clear product cache to reflect updated stock levels
-            cache()->forget("pos_all_data_{$user->company_id}_{$sale->branch_id}");
-            cache()->forget("pos_products_{$user->company_id}_{$sale->branch_id}_all_none");
+            cache()->forget("pos_all_data_{$user->tenant_id}_{$sale->branch_id}");
+            cache()->forget("pos_products_{$user->tenant_id}_{$sale->branch_id}_all_none");
 
             return response()->json([
                 'message' => 'Sale cancelled successfully',

@@ -5,13 +5,12 @@ namespace App\Models;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Branch extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected $fillable = [
         'tenant_id',
@@ -76,6 +75,11 @@ class Branch extends Model
         return $this->hasMany(ActivityLog::class);
     }
 
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
     public function schedules(): HasMany
     {
         return $this->hasMany(BranchSchedule::class)->orderBy('day_of_week');
@@ -95,6 +99,7 @@ class Branch extends Model
     public function isOpenOnDay(int $dayOfWeek): bool
     {
         $schedule = $this->getScheduleForDay($dayOfWeek);
-        return $schedule && !$schedule->is_closed;
+
+        return $schedule && ! $schedule->is_closed;
     }
 }

@@ -199,18 +199,18 @@
           </template>
         </NavGroup> 
         <NavGroup title="Reports" icon="fa-chart-bar" :active-patterns="['/admin/reports']">
-          <NavSubLink href="#" :active="false" icon="fa-chart-line">Sales Reports</NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-chart-pie">Branch Comparison</NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-user-chart">Employee Performance</NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-boxes">Inventory Reports</NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-file-invoice-dollar">Financial Reports</NavSubLink>
+          <NavSubLink :href="route('admin.reports.sales')" :active="route().current('admin.reports.sales')" icon="fa-chart-line">Sales Reports</NavSubLink>
+          <NavSubLink :href="route('admin.reports.branch-comparison')" :active="route().current('admin.reports.branch-comparison')" icon="fa-chart-pie">Branch Comparison</NavSubLink>
+          <NavSubLink :href="route('admin.reports.employee-performance')" :active="route().current('admin.reports.employee-performance')" icon="fa-user-chart">Employee Performance</NavSubLink>
+          <NavSubLink :href="route('admin.reports.inventory')" :active="route().current('admin.reports.inventory')" icon="fa-boxes">Inventory Reports</NavSubLink>
+          <NavSubLink :href="route('admin.reports.financial')" :active="route().current('admin.reports.financial')" icon="fa-file-invoice-dollar">Financial Reports</NavSubLink>
 
           <template #mini>
-            <NavSubLink href="#" :active="false" icon="fa-chart-line">Sales Reports</NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-chart-pie">Branch Comparison</NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-user-chart">Employee Performance</NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-boxes">Inventory Reports</NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-file-invoice-dollar">Financial Reports</NavSubLink>
+            <NavSubLink :href="route('admin.reports.sales')" :active="route().current('admin.reports.sales')" icon="fa-chart-line">Sales Reports</NavSubLink>
+            <NavSubLink :href="route('admin.reports.branch-comparison')" :active="route().current('admin.reports.branch-comparison')" icon="fa-chart-pie">Branch Comparison</NavSubLink>
+            <NavSubLink :href="route('admin.reports.employee-performance')" :active="route().current('admin.reports.employee-performance')" icon="fa-user-chart">Employee Performance</NavSubLink>
+            <NavSubLink :href="route('admin.reports.inventory')" :active="route().current('admin.reports.inventory')" icon="fa-boxes">Inventory Reports</NavSubLink>
+            <NavSubLink :href="route('admin.reports.financial')" :active="route().current('admin.reports.financial')" icon="fa-file-invoice-dollar">Financial Reports</NavSubLink>
           </template>
         </NavGroup> 
         <NavGroup
@@ -221,19 +221,13 @@
           <NavSubLink :href="route('admin.settings.index')" :active="route().current('admin.settings.index')" icon="fa-building">
             Company Profile
           </NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-credit-card">Payment Methods</NavSubLink>
           <NavSubLink :href="route('admin.settings.tax')" :active="route().current('admin.settings.tax')" icon="fa-percent">Tax Rates</NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-receipt">Receipt Templates</NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-bell">Notifications</NavSubLink>
 
           <template #mini>
             <NavSubLink :href="route('admin.settings.index')" :active="route().current('admin.settings.index')" icon="fa-building">
               Company Profile
             </NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-credit-card">Payment Methods</NavSubLink>
             <NavSubLink :href="route('admin.settings.tax')" :active="route().current('admin.settings.tax')" icon="fa-percent">Tax Rates</NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-receipt">Receipt Templates</NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-bell">Notifications</NavSubLink>
           </template>
         </NavGroup>
       </nav>

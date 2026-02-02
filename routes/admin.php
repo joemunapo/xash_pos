@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\LoyaltyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PurchaseOrderController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SalesController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SupplierController;
@@ -147,6 +148,15 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('admin.coupons.destroy');
     Route::get('coupons/generate-code', [CouponController::class, 'generateCode'])->name('admin.coupons.generate-code');
 
+    // Reports
+    Route::prefix('reports')->group(function () {
+        Route::get('/sales', [ReportsController::class, 'sales'])->name('admin.reports.sales');
+        Route::get('/branch-comparison', [ReportsController::class, 'branchComparison'])->name('admin.reports.branch-comparison');
+        Route::get('/employee-performance', [ReportsController::class, 'employeePerformance'])->name('admin.reports.employee-performance');
+        Route::get('/inventory', [ReportsController::class, 'inventory'])->name('admin.reports.inventory');
+        Route::get('/financial', [ReportsController::class, 'financial'])->name('admin.reports.financial');
+    });
+
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
     Route::put('/settings/company', [SettingsController::class, 'updateCompany'])->name('admin.settings.company');
@@ -159,6 +169,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::post('/settings/tax', [TaxController::class, 'store'])->name('admin.settings.tax.store');
     Route::put('/settings/tax/{tax}', [TaxController::class, 'update'])->name('admin.settings.tax.update');
     Route::delete('/settings/tax/{tax}', [TaxController::class, 'destroy'])->name('admin.settings.tax.destroy');
+    Route::post('/settings/tax/toggle', [TaxController::class, 'toggleTax'])->name('admin.settings.tax.toggle');
+    Route::post('/settings/tax/branch/{branch}/toggle', [TaxController::class, 'toggleBranchTax'])->name('admin.settings.tax.branch.toggle');
 
     Route::get('/settings/receipt', [SettingsController::class, 'receiptSettings'])->name('admin.settings.receipt');
     Route::put('/settings/receipt', [SettingsController::class, 'updateReceiptSettings'])->name('admin.settings.receipt.update');

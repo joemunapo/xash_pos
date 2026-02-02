@@ -12,7 +12,7 @@ class Sale extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id',
+        'tenant_id',
         'branch_id',
         'user_id',
         'customer_id',
@@ -54,9 +54,9 @@ class Sale extends Model
 
     const STATUS_REFUNDED = 'refunded';
 
-    public function company(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Tenant::class);
     }
 
     public function branch(): BelongsTo

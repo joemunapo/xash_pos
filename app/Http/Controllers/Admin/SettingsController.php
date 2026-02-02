@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Company;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -14,20 +14,33 @@ class SettingsController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $company = Company::find($user->tenant_id);
+        $tenant = Tenant::find($user->tenant_id);
+
+        $availableCurrencies = [
+            ['code' => 'USD', 'name' => 'US Dollar', 'symbol' => '$'],
+            ['code' => 'ZWL', 'name' => 'Zimbabwe Dollar', 'symbol' => 'ZWL'],
+            ['code' => 'ZAR', 'name' => 'South African Rand', 'symbol' => 'R'],
+            ['code' => 'BWP', 'name' => 'Botswana Pula', 'symbol' => 'P'],
+            ['code' => 'GBP', 'name' => 'British Pound', 'symbol' => '£'],
+            ['code' => 'EUR', 'name' => 'Euro', 'symbol' => '€'],
+            ['code' => 'ZMW', 'name' => 'Zambian Kwacha', 'symbol' => 'K'],
+            ['code' => 'MZN', 'name' => 'Mozambican Metical', 'symbol' => 'MT'],
+        ];
 
         return Inertia::render('Admin/Settings/Index', [
-            'company' => $company,
+            'tenant' => $tenant,
+            'availableCurrencies' => $availableCurrencies,
+            'enabledCurrencies' => $tenant->settings['enabled_currencies'] ?? [$tenant->default_currency],
         ]);
     }
 
     public function updateCompany(Request $request)
     {
         $user = $request->user();
-        $company = Company::find($user->tenant_id);
+        $tenant = Tenant::find($user->tenant_id);
 
-        if (! $company) {
-            return back()->with('error', 'Company not found.');
+        if (! $tenant) {
+            return back()->with('error', 'Tenant not found.');
         }
 
         $validated = $request->validate([
@@ -40,10 +53,33 @@ class SettingsController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
             'default_currency' => ['required', 'string', 'size:3'],
+            'enabled_currencies' => ['required', 'array', 'min:1'],
+            'enabled_currencies.*' => ['string', 'size:3'],
             'fiscal_year_start' => ['required', 'integer', 'min:1', 'max:12'],
         ]);
 
-        $company->update($validated);
+        // Ensure default currency is in enabled currencies
+        if (! in_array($validated['default_currency'], $validated['enabled_currencies'])) {
+            $validated['enabled_currencies'][] = $validated['default_currency'];
+        }
+
+        // Store enabled currencies in settings
+        $settings = $tenant->settings ?? [];
+        $settings['enabled_currencies'] = $validated['enabled_currencies'];
+
+        $tenant->update([
+            'name' => $validated['name'],
+            'trading_name' => $validated['trading_name'],
+            'registration_number' => $validated['registration_number'],
+            'vat_number' => $validated['vat_number'],
+            'address' => $validated['address'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'website' => $validated['website'],
+            'default_currency' => $validated['default_currency'],
+            'fiscal_year_start' => $validated['fiscal_year_start'],
+            'settings' => $settings,
+        ]);
 
         return back()->with('success', 'Company settings updated successfully.');
     }
@@ -51,10 +87,10 @@ class SettingsController extends Controller
     public function updateLogo(Request $request)
     {
         $user = $request->user();
-        $company = Company::find($user->tenant_id);
+        $tenant = Tenant::find($user->tenant_id);
 
-        if (! $company) {
-            return back()->with('error', 'Company not found.');
+        if (! $tenant) {
+            return back()->with('error', 'Tenant not found.');
         }
 
         $request->validate([
@@ -62,119 +98,13 @@ class SettingsController extends Controller
         ]);
 
         // Delete old logo
-        if ($company->logo) {
-            Storage::disk('public')->delete($company->logo);
+        if ($tenant->logo) {
+            Storage::disk('public')->delete($tenant->logo);
         }
 
-        $path = $request->file('logo')->store('company-logos', 'public');
-        $company->update(['logo' => $path]);
+        $path = $request->file('logo')->store('tenant-logos', 'public');
+        $tenant->update(['logo' => $path]);
 
         return back()->with('success', 'Company logo updated successfully.');
-    }
-
-    public function paymentMethods(Request $request): Response
-    {
-        $user = $request->user();
-        $company = Company::find($user->tenant_id);
-
-        $paymentSettings = $company->settings['payments'] ?? [
-            'cash' => ['enabled' => true, 'currencies' => ['USD', 'ZWL']],
-            'ecocash' => ['enabled' => false, 'merchant_id' => ''],
-            'mukuru' => ['enabled' => false, 'api_key' => ''],
-            'card' => ['enabled' => false],
-        ];
-
-        return Inertia::render('Admin/Settings/PaymentMethods', [
-            'paymentSettings' => $paymentSettings,
-        ]);
-    }
-
-    public function updatePaymentMethods(Request $request)
-    {
-        $user = $request->user();
-        $company = Company::find($user->tenant_id);
-
-        $validated = $request->validate([
-            'payments' => ['required', 'array'],
-        ]);
-
-        $settings = $company->settings ?? [];
-        $settings['payments'] = $validated['payments'];
-        $company->update(['settings' => $settings]);
-
-        return back()->with('success', 'Payment settings updated successfully.');
-    }
-
-    public function taxSettings(Request $request): Response
-    {
-        $user = $request->user();
-        $company = Company::find($user->tenant_id);
-
-        $taxSettings = $company->settings['tax'] ?? [
-            'default_rate' => 15,
-            'inclusive' => true,
-            'zimra_enabled' => false,
-        ];
-
-        return Inertia::render('Admin/Settings/Tax', [
-            'taxSettings' => $taxSettings,
-        ]);
-    }
-
-    public function updateTaxSettings(Request $request)
-    {
-        $user = $request->user();
-        $company = Company::find($user->tenant_id);
-
-        $validated = $request->validate([
-            'default_rate' => ['required', 'numeric', 'min:0', 'max:100'],
-            'inclusive' => ['boolean'],
-            'zimra_enabled' => ['boolean'],
-        ]);
-
-        $settings = $company->settings ?? [];
-        $settings['tax'] = $validated;
-        $company->update(['settings' => $settings]);
-
-        return back()->with('success', 'Tax settings updated successfully.');
-    }
-
-    public function receiptSettings(Request $request): Response
-    {
-        $user = $request->user();
-        $company = Company::find($user->tenant_id);
-
-        $receiptSettings = $company->settings['receipt'] ?? [
-            'header' => $company->name,
-            'footer' => 'Thank you for shopping with us!',
-            'show_logo' => true,
-            'show_vat' => true,
-            'paper_size' => '80mm',
-        ];
-
-        return Inertia::render('Admin/Settings/Receipt', [
-            'receiptSettings' => $receiptSettings,
-            'company' => $company,
-        ]);
-    }
-
-    public function updateReceiptSettings(Request $request)
-    {
-        $user = $request->user();
-        $company = Company::find($user->tenant_id);
-
-        $validated = $request->validate([
-            'header' => ['nullable', 'string', 'max:255'],
-            'footer' => ['nullable', 'string', 'max:255'],
-            'show_logo' => ['boolean'],
-            'show_vat' => ['boolean'],
-            'paper_size' => ['required', 'in:58mm,80mm'],
-        ]);
-
-        $settings = $company->settings ?? [];
-        $settings['receipt'] = $validated;
-        $company->update(['settings' => $settings]);
-
-        return back()->with('success', 'Receipt settings updated successfully.');
     }
 }
