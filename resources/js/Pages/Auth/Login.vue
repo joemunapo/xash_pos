@@ -3,29 +3,33 @@
     <div class="max-w-md mx-auto">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <Link :href="route('welcome')" class="inline-flex items-center gap-2 group">
-          <div class="w-14 h-14 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-brand-500/30 group-hover:scale-105 transition-transform">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-            </svg>
-          </div>
+        <Link :href="route('welcome')" class="inline-block group">
+          <img 
+            src="/logo.png" 
+            alt="XASH POS Logo" 
+            class="h-16 w-auto object-contain mx-auto dark:hidden group-hover:scale-105 transition-transform"
+          />
+          <img 
+            src="/logo-white.png" 
+            alt="XASH POS Logo" 
+            class="h-16 w-auto object-contain mx-auto hidden dark:block group-hover:scale-105 transition-transform"
+          />
         </Link>
-        <h1 class="text-3xl font-bold text-gray-900 mt-4">XASH<span class="text-brand-500">POS</span></h1>
-        <p class="text-gray-600 mt-2">Sign in to your account</p>
+        <p class="text-gray-600 dark:text-gray-400 mt-4">Sign in to your account</p>
       </div>
 
       <!-- Login Card -->
-      <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-xl">
+      <div class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl p-8 shadow-xl">
         <form @submit.prevent="submitLogin" class="space-y-5">
           <!-- Email field -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
             <div class="relative">
-              <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
               <input
                 v-model="form.email"
                 type="email"
-                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
                 placeholder="you@example.com"
                 required
               />
@@ -35,13 +39,13 @@
 
           <!-- Password field -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
             <div class="relative">
-              <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
               <input
                 v-model="form.password"
                 type="password"
-                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
                 placeholder="••••••••"
                 required
               />
@@ -52,10 +56,10 @@
           <!-- Remember me -->
           <div class="flex items-center justify-between">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="form.remember" type="checkbox" class="w-4 h-4 rounded border-gray-300 bg-white text-brand-500 focus:ring-brand-500 focus:ring-offset-0" />
-              <span class="text-sm text-gray-600">Remember me</span>
+              <input v-model="form.remember" type="checkbox" class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-brand-500 focus:ring-brand-500 focus:ring-offset-0" />
+              <span class="text-sm text-gray-600 dark:text-gray-400">Remember me</span>
             </label>
-            <Link v-if="canResetPassword" :href="route('password.request')" class="text-sm text-brand-600 hover:text-brand-700 transition-colors">
+            <Link v-if="canResetPassword" :href="route('password.request')" class="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
               Forgot password?
             </Link>
           </div>

@@ -6,23 +6,30 @@
         <div class="text-center">
           <!-- Logo -->
           <div class="flex justify-center mb-8">
-            <div class="w-20 h-20 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-brand-500/30">
-              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-              </svg>
+            <div class="relative">
+              <img 
+                src="/logo.png" 
+                alt="XASH POS Logo" 
+                class="h-24 w-auto object-contain dark:hidden"
+              />
+              <img 
+                src="/logo-white.png" 
+                alt="XASH POS Logo" 
+                class="h-24 w-auto object-contain hidden dark:block"
+              />
             </div>
           </div>
 
           <!-- Title -->
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            XASH<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-brand-600">POS</span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            Modern Point of Sale System
           </h1>
 
-          <p class="text-xl sm:text-2xl text-gray-700 mb-4 max-w-3xl mx-auto">
+          <p class="text-xl sm:text-2xl text-gray-700 dark:text-gray-300 mb-4 max-w-3xl mx-auto">
             Modern Point of Sale for Zimbabwe Grocery Stores
           </p>
 
-          <p class="text-gray-600 mb-12 max-w-2xl mx-auto">
+          <p class="text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
             Fast, reliable, and built for offline-first operations. Optimized for Sunmi devices with multi-currency support (USD/ZWL) and mobile money integrations.
           </p>
 

@@ -20,48 +20,48 @@ class DashboardController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
         // Get basic stats
         $stats = [
-            'total_branches' => Branch::where('company_id', $companyId)->count(),
-            'active_branches' => Branch::where('company_id', $companyId)->where('is_active', true)->count(),
-            'total_products' => Product::where('company_id', $companyId)->count(),
-            'active_products' => Product::where('company_id', $companyId)->where('is_active', true)->count(),
-            'total_users' => User::where('company_id', $companyId)->count(),
-            'active_users' => User::where('company_id', $companyId)->where('is_active', true)->count(),
-            'total_customers' => Customer::where('company_id', $companyId)->count(),
+            'total_branches' => Branch::where('tenant_id', $tenantId)->count(),
+            'active_branches' => Branch::where('tenant_id', $tenantId)->where('is_active', true)->count(),
+            'total_products' => Product::where('tenant_id', $tenantId)->count(),
+            'active_products' => Product::where('tenant_id', $tenantId)->where('is_active', true)->count(),
+            'total_users' => User::where('tenant_id', $tenantId)->count(),
+            'active_users' => User::where('tenant_id', $tenantId)->where('is_active', true)->count(),
+            'total_customers' => Customer::where('tenant_id', $tenantId)->count(),
         ];
 
         // Get total stock value
         $totalStockValue = Stock::join('products', 'stock.product_id', '=', 'products.id')
-            ->where('products.company_id', $companyId)
+            ->where('products.tenant_id', $tenantId)
             ->sum(DB::raw('stock.quantity * products.selling_price'));
 
         $stats['total_stock_value'] = $totalStockValue;
 
         // Get low stock count
         $lowStockCount = Stock::join('products', 'stock.product_id', '=', 'products.id')
-            ->where('products.company_id', $companyId)
+            ->where('products.tenant_id', $tenantId)
             ->whereColumn('stock.quantity', '<=', 'products.reorder_level')
             ->count();
 
         $stats['low_stock_count'] = $lowStockCount;
 
         // Get recent branches
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $tenantId)
             ->latest()
             ->take(5)
             ->get();
 
         // Get recent users
-        $recentUsers = User::where('company_id', $companyId)
+        $recentUsers = User::where('tenant_id', $tenantId)
             ->latest()
             ->take(5)
             ->get(['id', 'name', 'email', 'role', 'is_active', 'created_at']);
 
         // Get products growth over last 7 days
-        $productsGrowth = Product::where('company_id', $companyId)
+        $productsGrowth = Product::where('tenant_id', $tenantId)
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->groupBy('date')
@@ -81,7 +81,7 @@ class DashboardController extends Controller
         }
 
         // Get category distribution
-        $categoryDistribution = Category::where('company_id', $companyId)
+        $categoryDistribution = Category::where('tenant_id', $tenantId)
             ->withCount('products')
             ->having('products_count', '>', 0)
             ->orderByDesc('products_count')
@@ -95,7 +95,7 @@ class DashboardController extends Controller
             });
 
         // Get top products by stock value
-        $topProducts = Product::where('products.company_id', $companyId)
+        $topProducts = Product::where('products.tenant_id', $tenantId)
             ->leftJoin('stock', 'products.id', '=', 'stock.product_id')
             ->select('products.name', 'products.selling_price as price', 'products.sku')
             ->selectRaw('SUM(COALESCE(stock.quantity, 0)) as total_quantity')
@@ -108,11 +108,11 @@ class DashboardController extends Controller
         // Get stock levels summary
         $stockLevels = [
             'in_stock' => Stock::join('products', 'stock.product_id', '=', 'products.id')
-                ->where('products.company_id', $companyId)
+                ->where('products.tenant_id', $tenantId)
                 ->where('stock.quantity', '>', DB::raw('products.reorder_level'))
                 ->count(),
             'low_stock' => $lowStockCount,
-            'out_of_stock' => Product::where('company_id', $companyId)
+            'out_of_stock' => Product::where('tenant_id', $tenantId)
                 ->whereDoesntHave('stock')
                 ->orWhereHas('stock', function ($query) {
                     $query->where('quantity', 0);
