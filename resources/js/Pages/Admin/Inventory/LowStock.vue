@@ -17,8 +17,9 @@
               <option v-for="branch in branches" :key="branch.id" :value="branch.id">{{ branch.name }}</option>
             </select>
           </div>
-          <div class="flex items-end">
-            <button @click="clearFilters" class="btn-secondary w-full">
+          <div>
+            <label class="label invisible">Action</label>
+            <button @click="clearFilters" class="btn-secondary w-full h-[42px] flex items-center justify-center">
               <i class="fas fa-times mr-2"></i>Clear Filter
             </button>
           </div>

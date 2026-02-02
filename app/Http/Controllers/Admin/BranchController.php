@@ -15,9 +15,9 @@ class BranchController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $tenantId)
             ->withCount('users')
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -50,7 +50,7 @@ class BranchController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['nullable', 'string', 'max:20', Rule::unique('branches')->where('company_id', $user->company_id)],
+            'code' => ['nullable', 'string', 'max:20', Rule::unique('branches')->where('tenant_id', $user->tenant_id)],
             'address' => ['nullable', 'string'],
             'city' => ['nullable', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:20'],
@@ -59,14 +59,14 @@ class BranchController extends Controller
             'receipt_footer' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $validated['company_id'] = $user->company_id;
+        $validated['tenant_id'] = $user->tenant_id;
         $validated['is_active'] = true;
 
         $branch = Branch::create($validated);
 
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             $branch->id,
             Branch::class,
@@ -108,7 +108,7 @@ class BranchController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['nullable', 'string', 'max:20', Rule::unique('branches')->where('company_id', $user->company_id)->ignore($branch->id)],
+            'code' => ['nullable', 'string', 'max:20', Rule::unique('branches')->where('tenant_id', $user->tenant_id)->ignore($branch->id)],
             'address' => ['nullable', 'string'],
             'city' => ['nullable', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:20'],
@@ -123,7 +123,7 @@ class BranchController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             $branch->id,
             Branch::class,
@@ -143,7 +143,7 @@ class BranchController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             $branch->id,
             Branch::class,
@@ -160,7 +160,7 @@ class BranchController extends Controller
 
     protected function authorizeAccess(Branch $branch): void
     {
-        if ($branch->company_id !== auth()->user()->company_id) {
+        if ($branch->tenant_id !== auth()->user()->tenant_id) {
             abort(403);
         }
     }

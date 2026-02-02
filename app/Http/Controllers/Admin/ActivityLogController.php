@@ -13,9 +13,9 @@ class ActivityLogController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
-        $logs = ActivityLog::where('company_id', $companyId)
+        $logs = ActivityLog::where('tenant_id', $companyId)
             ->with(['user:id,name,email', 'branch:id,name'])
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -44,7 +44,7 @@ class ActivityLogController extends Controller
             ->withQueryString();
 
         // Get unique actions for filter
-        $actions = ActivityLog::where('company_id', $companyId)
+        $actions = ActivityLog::where('tenant_id', $companyId)
             ->select('action')
             ->distinct()
             ->pluck('action')
@@ -52,7 +52,7 @@ class ActivityLogController extends Controller
             ->toArray();
 
         // Get users for filter
-        $users = \App\Models\User::where('company_id', $companyId)
+        $users = \App\Models\User::where('tenant_id', $companyId)
             ->select('id', 'name')
             ->orderBy('name')
             ->get()
@@ -80,7 +80,7 @@ class ActivityLogController extends Controller
 
     protected function authorizeAccess(ActivityLog $activityLog): void
     {
-        if ($activityLog->company_id !== auth()->user()->company_id) {
+        if ($activityLog->tenant_id !== auth()->user()->tenant_id) {
             abort(403);
         }
     }

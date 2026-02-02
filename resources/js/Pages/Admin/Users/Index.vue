@@ -14,26 +14,19 @@
 
       <!-- Filters -->
       <div class="card p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="lg:col-span-2">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
             <label class="label">Search</label>
             <div class="relative">
-              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
               <input
                 v-model="filterForm.search"
                 type="text"
-                class="input-field pl-10"
+                class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 placeholder="Search by name, email, or phone..."
                 @input="debouncedFilter"
               />
             </div>
-          </div>
-          <div>
-            <label class="label">Role</label>
-            <select v-model="filterForm.role" class="input-field" @change="applyFilters">
-              <option value="">All Roles</option>
-              <option v-for="role in roles" :key="role.value" :value="role.value">{{ role.label }}</option>
-            </select>
           </div>
           <div>
             <label class="label">Status</label>
@@ -42,11 +35,6 @@
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
-          </div>
-          <div class="lg:col-span-4 flex justify-end gap-2">
-            <button @click="clearFilters" class="btn-secondary">
-              <i class="fas fa-times mr-2"></i>Clear Filters
-            </button>
           </div>
         </div>
       </div>
@@ -253,7 +241,6 @@ const props = defineProps({
 
 const filterForm = reactive({
   search: props.filters?.search || '',
-  role: props.filters?.role || '',
   status: props.filters?.status || '',
 });
 
@@ -274,7 +261,6 @@ const applyFilters = () => {
 
 const clearFilters = () => {
   filterForm.search = '';
-  filterForm.role = '';
   filterForm.status = '';
   applyFilters();
 };

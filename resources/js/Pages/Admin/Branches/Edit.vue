@@ -1,6 +1,6 @@
 ﻿<template>
   <AdminLayout page-title="Edit Branch">
-    <div class="max-w-2xl">
+    <div class="">
       <!-- Header -->
       <div class="mb-6">
         <Link :href="route('admin.branches.index')" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4">

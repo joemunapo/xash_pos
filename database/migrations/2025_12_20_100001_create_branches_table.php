@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('code', 20)->nullable();
             $table->text('address')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->unique(['company_id', 'code']);
+            $table->unique(['tenant_id', 'code']);
         });
 
         // Pivot table for user-branch assignments

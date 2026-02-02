@@ -30,8 +30,9 @@
               <option value="pending">Pending</option>
             </select>
           </div>
-          <div class="flex items-end">
-            <button @click="clearFilters" class="btn-secondary w-full">
+          <div>
+            <label class="label invisible">Action</label>
+            <button @click="clearFilters" class="btn-secondary w-full h-[42px] flex items-center justify-center">
               <i class="fas fa-times mr-2"></i>Clear Filters
             </button>
           </div>
@@ -149,8 +150,8 @@
             <p class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
           </div>
           <div class="flex gap-3 pt-2">
-            <button type="button" @click="showModal = false" class="btn-secondary flex-1">Cancel</button>
-            <button type="submit" class="btn-primary flex-1">
+            <button type="button" @click="showModal = false" class="btn-secondary flex-1 flex items-center justify-center">Cancel</button>
+            <button type="submit" class="btn-primary flex-1 flex items-center justify-center">
               <i class="fas fa-exchange-alt mr-2"></i>Transfer
             </button>
           </div>

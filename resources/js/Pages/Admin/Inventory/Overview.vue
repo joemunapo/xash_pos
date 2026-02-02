@@ -27,7 +27,7 @@
               <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Low Stock Items</p>
               <p class="text-3xl font-bold text-orange-600 dark:text-orange-400">{{ stats.low_stock_items }}</p>
             </div>
-            <div class="w-12 h12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
               <i class="fas fa-exclamation-triangle text-orange-600 dark:text-orange-400 text-xl"></i>
             </div>
           </div>
@@ -64,11 +64,11 @@
           <div class="md:col-span-2">
             <label class="label">Search Products</label>
             <div class="relative">
-              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
               <input
                 v-model="filterForm.search"
                 type="text"
-                class="input-field pl-10"
+                class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 placeholder="Search by product name or SKU..."
                 @input="debouncedFilter"
               />

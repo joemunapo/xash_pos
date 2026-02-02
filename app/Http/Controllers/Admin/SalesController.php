@@ -18,9 +18,9 @@ class SalesController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        $companyBranchIds = Branch::where('tenant_id', $companyId)->pluck('id');
 
         $sales = Sale::whereIn('branch_id', $companyBranchIds)
             ->with(['branch:id,name', 'user:id,name', 'customer:id,name,phone'])
@@ -52,7 +52,7 @@ class SalesController extends Controller
             ->paginate($request->per_page ?? 20)
             ->withQueryString();
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -102,10 +102,10 @@ class SalesController extends Controller
     public function dailySummary(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
         $date = $request->date ?? today()->toDateString();
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        $companyBranchIds = Branch::where('tenant_id', $companyId)->pluck('id');
 
         // Sales by branch
         $salesByBranch = Sale::whereIn('branch_id', $companyBranchIds)
@@ -164,7 +164,7 @@ class SalesController extends Controller
                 ->sum('discount_amount') ?: 0,
         ];
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -185,9 +185,9 @@ class SalesController extends Controller
     public function refunds(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        $companyBranchIds = Branch::where('tenant_id', $companyId)->pluck('id');
 
         $refunds = Sale::whereIn('branch_id', $companyBranchIds)
             ->where('status', Sale::STATUS_REFUNDED)
@@ -205,7 +205,7 @@ class SalesController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -222,9 +222,9 @@ class SalesController extends Controller
     private function authorizeSale(Sale $sale)
     {
         $user = auth()->user();
-        $companyBranchIds = Branch::where('company_id', $user->company_id)->pluck('id');
+        $companyBranchIds = Branch::where('tenant_id', $user->tenant_id)->pluck('id');
 
-        if (!$companyBranchIds->contains($sale->branch_id)) {
+        if (! $companyBranchIds->contains($sale->branch_id)) {
             abort(403, 'Unauthorized access to sale.');
         }
     }

@@ -18,9 +18,9 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
-        $users = User::where('company_id', $companyId)
+        $users = User::where('tenant_id', $companyId)
             ->with('branches:id,name')
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -39,7 +39,7 @@ class UserController extends Controller
             ->paginate($request->per_page ?? 10)
             ->withQueryString();
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -58,7 +58,7 @@ class UserController extends Controller
     public function create(Request $request): Response
     {
         $user = $request->user();
-        $branches = Branch::where('company_id', $user->company_id)
+        $branches = Branch::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -89,7 +89,7 @@ class UserController extends Controller
         ]);
 
         $newUser = User::create([
-            'company_id' => $currentUser->company_id,
+            'tenant_id' => $currentUser->tenant_id,
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone_number' => $validated['phone_number'] ?? null,
@@ -111,7 +111,7 @@ class UserController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            $currentUser->company_id,
+            $currentUser->tenant_id,
             $currentUser->id,
             null,
             User::class,
@@ -140,7 +140,7 @@ class UserController extends Controller
         $this->authorizeAccess($user);
 
         $currentUser = $request->user();
-        $branches = Branch::where('company_id', $currentUser->company_id)
+        $branches = Branch::where('tenant_id', $currentUser->tenant_id)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -208,7 +208,7 @@ class UserController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            $currentUser->company_id,
+            $currentUser->tenant_id,
             $currentUser->id,
             null,
             User::class,
@@ -233,7 +233,7 @@ class UserController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            $currentUser->company_id,
+            $currentUser->tenant_id,
             $currentUser->id,
             null,
             User::class,
@@ -263,7 +263,7 @@ class UserController extends Controller
 
     protected function authorizeAccess(User $user): void
     {
-        if ($user->company_id !== auth()->user()->company_id) {
+        if ($user->tenant_id !== auth()->user()->tenant_id) {
             abort(403);
         }
     }

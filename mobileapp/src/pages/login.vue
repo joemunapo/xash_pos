@@ -129,9 +129,10 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useAuthStore } from '@/stores'
+import { useAuthStore, useNetworkStore } from '@/stores'
 
 const authStore = useAuthStore()
+const networkStore = useNetworkStore()
 
 const phone_number = ref('')
 const pin = ref('')
@@ -172,9 +173,13 @@ function validateForm() {
 
 async function handleSubmit() {
   if (validateForm()) {
-    await authStore.login(phone_number.value, pin.value)
+    if (networkStore.isOnline) {
+      await authStore.login(phone_number.value, pin.value)
+    } else {
+      await authStore.loginOffline(phone_number.value, pin.value)
+    }
     
-    // Show server-side errors if any
+    // Show server-side/offline errors if any
     if (authStore.phoneError) {
       errors.phone_number = authStore.phoneError
     }

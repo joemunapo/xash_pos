@@ -12,7 +12,7 @@ class UnitOfMeasure extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id',
+        'tenant_id',
         'name',
         'abbreviation',
         'category',
@@ -31,9 +31,9 @@ class UnitOfMeasure extends Model
         ];
     }
 
-    public function company(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Tenant::class);
     }
 
     public function conversionsFrom(): HasMany

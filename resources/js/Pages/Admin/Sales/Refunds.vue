@@ -25,8 +25,9 @@
             <label class="label">To Date</label>
             <input v-model="filterForm.date_to" type="date" class="input-field" @change="applyFilters" />
           </div>
-          <div class="flex items-end">
-            <button @click="clearFilters" class="btn-secondary w-full">
+          <div>
+            <label class="label invisible">Action</label>
+            <button @click="clearFilters" class="btn-secondary w-full h-[42px] flex items-center justify-center">
               <i class="fas fa-times mr-2"></i>Clear
             </button>
           </div>

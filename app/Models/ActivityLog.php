@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActivityLog extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected $fillable = [
         'tenant_id',
@@ -67,7 +67,7 @@ class ActivityLog extends Model
     // Static method to log an activity
     public static function log(
         string $action,
-        ?int $companyId = null,
+        ?int $tenantId = null,
         ?int $userId = null,
         ?int $branchId = null,
         ?string $modelType = null,

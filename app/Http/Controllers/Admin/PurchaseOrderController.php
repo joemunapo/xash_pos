@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Product;
-use App\Models\PurchaseOrder;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,7 +15,7 @@ class PurchaseOrderController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
         // For now, return empty data with structure
         // Once migrations are complete, this will query actual data
@@ -28,11 +27,11 @@ class PurchaseOrderController extends Controller
             'total' => 0,
         ];
 
-        $suppliers = Supplier::where('company_id', $companyId)
+        $suppliers = Supplier::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -47,17 +46,17 @@ class PurchaseOrderController extends Controller
     public function create(): Response
     {
         $user = auth()->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
-        $suppliers = Supplier::where('company_id', $companyId)
+        $suppliers = Supplier::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name', 'payment_terms', 'credit_days']);
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
-        $products = Product::where('company_id', $companyId)
+        $products = Product::where('tenant_id', $companyId)
             ->where('is_active', true)
             ->with('suppliers:id,name')
             ->get(['id', 'name', 'sku', 'cost_price', 'selling_price']);

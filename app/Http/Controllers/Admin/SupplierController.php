@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,9 +17,9 @@ class SupplierController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
-        $suppliers = Supplier::where('company_id', $companyId)
+        $suppliers = Supplier::where('tenant_id', $companyId)
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -73,13 +72,13 @@ class SupplierController extends Controller
 
         $supplier = Supplier::create([
             ...$validated,
-            'company_id' => $user->company_id,
+            'tenant_id' => $user->tenant_id,
         ]);
 
         // Log activity
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Supplier::class,
@@ -149,7 +148,7 @@ class SupplierController extends Controller
         // Log activity
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Supplier::class,
@@ -173,7 +172,7 @@ class SupplierController extends Controller
         // Log activity before deletion
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Supplier::class,
@@ -195,7 +194,7 @@ class SupplierController extends Controller
     {
         $user = auth()->user();
 
-        if ($supplier->company_id !== $user->company_id) {
+        if ($supplier->tenant_id !== $user->tenant_id) {
             abort(403, 'Unauthorized access to supplier.');
         }
     }

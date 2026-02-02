@@ -18,8 +18,8 @@
           <div class="md:col-span-2">
             <label class="label">Search</label>
             <div class="relative">
-              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input v-model="filterForm.search" type="text" class="input-field pl-10" placeholder="Search by name, email, or phone..." @input="debouncedFilter" />
+              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
+              <input v-model="filterForm.search" type="text" class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500" placeholder="Search by name, email, or phone..." @input="debouncedFilter" />
             </div>
           </div>
           <div>

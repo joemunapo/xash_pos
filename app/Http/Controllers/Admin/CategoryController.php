@@ -16,9 +16,9 @@ class CategoryController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        $categories = Category::where('company_id', $companyId)
+        $categories = Category::where('tenant_id', $tenantId)
             ->with('parent:id,name')
             ->withCount('products')
             ->when($request->search, function ($query, $search) {
@@ -32,7 +32,7 @@ class CategoryController extends Controller
             ->paginate($request->per_page ?? 20)
             ->withQueryString();
 
-        $parentCategories = Category::where('company_id', $companyId)
+        $parentCategories = Category::where('tenant_id', $tenantId)
             ->whereNull('parent_id')
             ->where('is_active', true)
             ->get(['id', 'name']);
@@ -47,7 +47,7 @@ class CategoryController extends Controller
     public function create(Request $request): Response
     {
         $user = $request->user();
-        $parentCategories = Category::where('company_id', $user->company_id)
+        $parentCategories = Category::where('tenant_id', $user->tenant_id)
             ->whereNull('parent_id')
             ->where('is_active', true)
             ->get(['id', 'name']);
@@ -68,14 +68,14 @@ class CategoryController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $validated['company_id'] = $user->company_id;
+        $validated['tenant_id'] = $user->tenant_id;
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_active'] = true;
 
-        // Ensure unique slug within company
+        // Ensure unique slug within tenant
         $baseSlug = $validated['slug'];
         $counter = 1;
-        while (Category::where('company_id', $user->company_id)->where('slug', $validated['slug'])->exists()) {
+        while (Category::where('tenant_id', $user->tenant_id)->where('slug', $validated['slug'])->exists()) {
             $validated['slug'] = $baseSlug.'-'.$counter;
             $counter++;
         }
@@ -84,7 +84,7 @@ class CategoryController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Category::class,
@@ -94,7 +94,7 @@ class CategoryController extends Controller
         );
 
         // Get updated categories list for product create/edit pages
-        $categories = Category::where('company_id', $user->company_id)
+        $categories = Category::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->get(['id', 'name', 'parent_id']);
 
@@ -108,7 +108,7 @@ class CategoryController extends Controller
         $this->authorizeAccess($category);
 
         $user = $request->user();
-        $parentCategories = Category::where('company_id', $user->company_id)
+        $parentCategories = Category::where('tenant_id', $user->tenant_id)
             ->whereNull('parent_id')
             ->where('id', '!=', $category->id)
             ->where('is_active', true)
@@ -140,7 +140,7 @@ class CategoryController extends Controller
             $validated['slug'] = Str::slug($validated['name']);
             $baseSlug = $validated['slug'];
             $counter = 1;
-            while (Category::where('company_id', $user->company_id)
+            while (Category::where('tenant_id', $user->tenant_id)
                 ->where('slug', $validated['slug'])
                 ->where('id', '!=', $category->id)
                 ->exists()) {
@@ -153,7 +153,7 @@ class CategoryController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Category::class,
@@ -182,7 +182,7 @@ class CategoryController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Category::class,
@@ -199,7 +199,7 @@ class CategoryController extends Controller
 
     protected function authorizeAccess(Category $category): void
     {
-        if ($category->company_id !== auth()->user()->company_id) {
+        if ($category->tenant_id !== auth()->user()->tenant_id) {
             abort(403);
         }
     }

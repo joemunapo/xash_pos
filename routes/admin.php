@@ -3,10 +3,12 @@
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GoodsReceivedController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\LoyaltyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PurchaseOrderController;
 use App\Http\Controllers\Admin\SalesController;
@@ -133,19 +135,31 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     ]);
     Route::post('customers/{customer}/adjust-points', [CustomerController::class, 'adjustPoints'])->name('admin.customers.adjust-points');
 
+    // Loyalty Program
+    Route::get('loyalty', [LoyaltyController::class, 'index'])->name('admin.loyalty.index');
+    Route::get('loyalty/transactions', [LoyaltyController::class, 'transactions'])->name('admin.loyalty.transactions');
+    Route::post('loyalty/adjust-points', [LoyaltyController::class, 'adjustPoints'])->name('admin.loyalty.adjust-points');
+
+    // Coupons & Vouchers
+    Route::get('coupons', [CouponController::class, 'index'])->name('admin.coupons.index');
+    Route::post('coupons', [CouponController::class, 'store'])->name('admin.coupons.store');
+    Route::put('coupons/{coupon}', [CouponController::class, 'update'])->name('admin.coupons.update');
+    Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('admin.coupons.destroy');
+    Route::get('coupons/generate-code', [CouponController::class, 'generateCode'])->name('admin.coupons.generate-code');
+
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
     Route::put('/settings/company', [SettingsController::class, 'updateCompany'])->name('admin.settings.company');
     Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('admin.settings.logo');
     Route::get('/settings/payment-methods', [SettingsController::class, 'paymentMethods'])->name('admin.settings.payment-methods');
     Route::put('/settings/payment-methods', [SettingsController::class, 'updatePaymentMethods'])->name('admin.settings.payment-methods.update');
-    
+
     // Tax Management
     Route::get('/settings/tax', [TaxController::class, 'index'])->name('admin.settings.tax');
     Route::post('/settings/tax', [TaxController::class, 'store'])->name('admin.settings.tax.store');
     Route::put('/settings/tax/{tax}', [TaxController::class, 'update'])->name('admin.settings.tax.update');
     Route::delete('/settings/tax/{tax}', [TaxController::class, 'destroy'])->name('admin.settings.tax.destroy');
-    
+
     Route::get('/settings/receipt', [SettingsController::class, 'receiptSettings'])->name('admin.settings.receipt');
     Route::put('/settings/receipt', [SettingsController::class, 'updateReceiptSettings'])->name('admin.settings.receipt.update');
 });

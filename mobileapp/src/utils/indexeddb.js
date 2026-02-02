@@ -5,7 +5,7 @@ import { blobToBase64 } from '@/helpers/fetch-wrapper.js';
 export const db = new Dexie('xashpos_offline');
 
 // Define database schema
-db.version(1).stores({
+db.version(2).stores({
     // Products cache
     products: 'id, sku, barcode, category_id, name, cached_at',
 
@@ -22,7 +22,10 @@ db.version(1).stores({
     sync_log: '++id, action, timestamp',
 
     // Cached product images
-    images: 'url, cached_at'
+    images: 'url, cached_at',
+
+    // Cached users for offline login
+    users: 'phone_number, name, role, cached_at'
 });
 
 /**

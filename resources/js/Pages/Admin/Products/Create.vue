@@ -25,7 +25,7 @@
       </div>
     </Transition>
 
-    <div class="max-w-4xl mx-auto">
+    <div class="w-full">
       <!-- Header -->
       <div class="mb-6">
         <Link :href="route('admin.products.index')" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4">
@@ -35,123 +35,167 @@
         <p class="text-gray-600 dark:text-gray-400 mt-1">Add a new product to your inventory</p>
       </div>
 
-      <form @submit.prevent="submit" class="space-y-6">
-        <!-- Basic Information -->
-        <div class="card p-6">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Basic Information</h3>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Left Column -->
-            <div class="space-y-4">
-              <div>
-                <label class="label">Product Name *</label>
-                <input v-model="form.name" type="text" :class="['input-field', form.errors.name && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Enter product name" />
-                <p v-if="form.errors.name" class="text-red-500 text-sm mt-1">{{ form.errors.name }}</p>
-              </div>
-              <div>
-                <label class="label">Category</label>
-                <div class="flex gap-2">
-                  <select v-model="form.category_id" :class="['input-field flex-1', form.errors.category_id && 'border-red-500 focus:border-red-500 focus:ring-red-500']">
-                    <option value="">Select category</option>
-                    <option v-for="cat in allCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                  </select>
-                  <button type="button" @click="openCategoryModal" class="btn-secondary px-3" title="Add new category">
-                    <i class="fas fa-plus"></i>
-                  </button>
-                </div>
-                <p v-if="form.errors.category_id" class="text-red-500 text-sm mt-1">{{ form.errors.category_id }}</p>
-              </div>
-              <div>
-                <label class="label">Unit of Measure</label>
-                <div class="flex gap-2">
-                  <select v-model="form.unit" :class="['input-field flex-1', form.errors.unit && 'border-red-500 focus:border-red-500 focus:ring-red-500']">
-                    <option v-for="unit in allUnits" :key="unit.value" :value="unit.value">{{ unit.label }}</option>
-                  </select>
-                  <button type="button" @click="openUnitModal" class="btn-secondary px-3" title="Add new unit">
-                    <i class="fas fa-plus"></i>
-                  </button>
-                </div>
-                <p v-if="form.errors.unit" class="text-red-500 text-sm mt-1">{{ form.errors.unit }}</p>
-              </div>
-            </div>
-            <!-- Right Column -->
-            <div class="space-y-4">
-              <div>
-                <label class="label">SKU</label>
-                <input v-model="form.sku" type="text" :class="['input-field', form.errors.sku && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Auto-generated if empty" />
-                <p v-if="form.errors.sku" class="text-red-500 text-sm mt-1">{{ form.errors.sku }}</p>
-                <p v-else class="text-xs text-gray-500 dark:text-gray-400 mt-1">Leave empty to auto-generate</p>
-              </div>
-              <div>
-                <label class="label">Barcode</label>
-                <input v-model="form.barcode" type="text" :class="['input-field', form.errors.barcode && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Scan or enter barcode" />
-                <p v-if="form.errors.barcode" class="text-red-500 text-sm mt-1">{{ form.errors.barcode }}</p>
-              </div>
-              <div>
-                <label class="label">PLU Code</label>
-                <input v-model="form.plu_code" type="text" :class="['input-field', form.errors.plu_code && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Price look-up code" maxlength="10" />
-                <p v-if="form.errors.plu_code" class="text-red-500 text-sm mt-1">{{ form.errors.plu_code }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product Image & Pricing Row -->
+      <form @submit.prevent="submit">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Product Image -->
-          <div class="card p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Product Image</h3>
-            <div class="flex items-start gap-4">
-              <div class="w-28 h-28 bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300 dark:border-slate-600 shrink-0">
-                <img v-if="imagePreview" :src="imagePreview" alt="Product preview" class="w-full h-full object-cover" />
-                <i v-else class="fas fa-image text-2xl text-gray-400 dark:text-gray-600"></i>
+          <!-- Left Column -->
+          <div class="space-y-6">
+            <!-- Basic Information -->
+            <div class="card p-6">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Basic Information</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="label">Product Name *</label>
+                  <input v-model="form.name" type="text" :class="['input-field', form.errors.name && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Enter product name" />
+                  <p v-if="form.errors.name" class="text-red-500 text-sm mt-1">{{ form.errors.name }}</p>
+                </div>
+                <div>
+                  <label class="label">Category</label>
+                  <div class="flex gap-2">
+                    <select v-model="form.category_id" :class="['input-field flex-1', form.errors.category_id && 'border-red-500 focus:border-red-500 focus:ring-red-500']">
+                      <option value="">Select category</option>
+                      <option v-for="cat in allCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                    </select>
+                    <button type="button" @click="openCategoryModal" class="btn-secondary px-3" title="Add new category">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
+                  <p v-if="form.errors.category_id" class="text-red-500 text-sm mt-1">{{ form.errors.category_id }}</p>
+                </div>
+                <div>
+                  <label class="label">Unit of Measure</label>
+                  <div class="flex gap-2">
+                    <select v-model="form.unit" :class="['input-field flex-1', form.errors.unit && 'border-red-500 focus:border-red-500 focus:ring-red-500']">
+                      <option v-for="unit in allUnits" :key="unit.value" :value="unit.value">{{ unit.label }}</option>
+                    </select>
+                    <button type="button" @click="openUnitModal" class="btn-secondary px-3" title="Add new unit">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
+                  <p v-if="form.errors.unit" class="text-red-500 text-sm mt-1">{{ form.errors.unit }}</p>
+                </div>
               </div>
-              <div class="flex-1">
-                <label class="btn-secondary cursor-pointer inline-flex items-center text-sm">
-                  <i class="fas fa-upload mr-2"></i>
-                  {{ form.image ? 'Change' : 'Upload' }}
-                  <input type="file" @change="handleImageChange" accept="image/*" class="hidden" />
-                </label>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">PNG, JPG up to 2MB</p>
-                <p v-if="form.errors.image" class="text-red-500 text-sm mt-1">{{ form.errors.image }}</p>
+            </div>
+
+            <!-- Product Image -->
+            <div class="card p-6">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Product Image</h3>
+              <div class="flex items-start gap-4">
+                <div class="w-28 h-28 bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300 dark:border-slate-600 shrink-0">
+                  <img v-if="imagePreview" :src="imagePreview" alt="Product preview" class="w-full h-full object-cover" />
+                  <i v-else class="fas fa-image text-2xl text-gray-400 dark:text-gray-600"></i>
+                </div>
+                <div class="flex-1">
+                  <label class="btn-secondary cursor-pointer inline-flex items-center text-sm">
+                    <i class="fas fa-upload mr-2"></i>
+                    {{ form.image ? 'Change' : 'Upload' }}
+                    <input type="file" @change="handleImageChange" accept="image/*" class="hidden" />
+                  </label>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">PNG, JPG up to 2MB</p>
+                  <p v-if="form.errors.image" class="text-red-500 text-sm mt-1">{{ form.errors.image }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inventory Settings -->
+            <div class="card p-6">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Inventory Settings</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="label mb-3">Tracking Options</label>
+                  <div class="space-y-3">
+                    <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
+                      <input type="checkbox" v-model="form.track_stock" class="w-4 h-4 text-brand-600 rounded" />
+                      <div>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Track Stock</span>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Monitor inventory levels</p>
+                      </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
+                      <input type="checkbox" v-model="form.track_expiry" class="w-4 h-4 text-brand-600 rounded" />
+                      <div>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Track Expiry</span>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Monitor expiration dates</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-gray-600 dark:text-gray-400 mb-1 block">Reorder Level</label>
+                    <input v-model="form.reorder_level" type="number" class="input-field" placeholder="10" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Alert when stock falls below</p>
+                  </div>
+                  <div>
+                    <label class="text-xs text-gray-600 dark:text-gray-400 mb-1 block">Reorder Quantity</label>
+                    <input v-model="form.reorder_quantity" type="number" class="input-field" placeholder="50" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Suggested order amount</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Pricing -->
-          <div class="card p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Pricing</h3>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="label">Cost Price *</label>
-                <div class="relative">
-                  <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                  <input v-model="form.cost_price" type="number" step="0.01" :class="['input-field pl-8', form.errors.cost_price && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="0.00" />
+          <!-- Right Column -->
+          <div class="space-y-6">
+            <!-- Identification -->
+            <div class="card p-6">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Identification</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="label">SKU</label>
+                  <input v-model="form.sku" type="text" :class="['input-field', form.errors.sku && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Auto-generated if empty" />
+                  <p v-if="form.errors.sku" class="text-red-500 text-sm mt-1">{{ form.errors.sku }}</p>
+                  <p v-else class="text-xs text-gray-500 dark:text-gray-400 mt-1">Leave empty to auto-generate</p>
                 </div>
-                <p v-if="form.errors.cost_price" class="text-red-500 text-sm mt-1">{{ form.errors.cost_price }}</p>
-              </div>
-              <div>
-                <label class="label">Selling Price *</label>
-                <div class="relative">
-                  <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                  <input v-model="form.selling_price" type="number" step="0.01" :class="['input-field pl-8', form.errors.selling_price && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="0.00" />
+                <div>
+                  <label class="label">Barcode</label>
+                  <input v-model="form.barcode" type="text" :class="['input-field', form.errors.barcode && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Scan or enter barcode" />
+                  <p v-if="form.errors.barcode" class="text-red-500 text-sm mt-1">{{ form.errors.barcode }}</p>
                 </div>
-                <p v-if="form.errors.selling_price" class="text-red-500 text-sm mt-1">{{ form.errors.selling_price }}</p>
+                <div>
+                  <label class="label">PLU Code</label>
+                  <input v-model="form.plu_code" type="text" :class="['input-field', form.errors.plu_code && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="Price look-up code" maxlength="10" />
+                  <p v-if="form.errors.plu_code" class="text-red-500 text-sm mt-1">{{ form.errors.plu_code }}</p>
+                </div>
               </div>
             </div>
-            <!-- Profit Margin Indicator -->
-            <div v-if="form.cost_price > 0 && form.selling_price > 0" class="mt-4 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
-              <div class="flex items-center justify-between text-sm">
-                <span class="text-gray-600 dark:text-gray-400">Profit Margin</span>
-                <span :class="profitMargin >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-red-600 dark:text-red-400'" class="font-medium">
-                  {{ profitMargin.toFixed(1) }}%
-                </span>
+
+            <!-- Pricing -->
+            <div class="card p-6">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Pricing</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="label">Cost Price *</label>
+                  <div class="relative">
+                    <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                    <input v-model="form.cost_price" type="number" step="0.01" :class="['input-field pl-8', form.errors.cost_price && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="0.00" />
+                  </div>
+                  <p v-if="form.errors.cost_price" class="text-red-500 text-sm mt-1">{{ form.errors.cost_price }}</p>
+                </div>
+                <div>
+                  <label class="label">Selling Price *</label>
+                  <div class="relative">
+                    <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                    <input v-model="form.selling_price" type="number" step="0.01" :class="['input-field pl-8', form.errors.selling_price && 'border-red-500 focus:border-red-500 focus:ring-red-500']" placeholder="0.00" />
+                  </div>
+                  <p v-if="form.errors.selling_price" class="text-red-500 text-sm mt-1">{{ form.errors.selling_price }}</p>
+                </div>
+              </div>
+              <!-- Profit Margin Indicator -->
+              <div v-if="form.cost_price > 0 && form.selling_price > 0" class="mt-4 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-600 dark:text-gray-400">Profit Margin</span>
+                  <span :class="profitMargin >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-red-600 dark:text-red-400'" class="font-medium">
+                    {{ profitMargin.toFixed(1) }}%
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Packaging / Units -->
-        <div class="card p-6">
+        <!-- Packaging / Units - Full Width -->
+        <div class="card p-6 mt-6">
           <div class="flex items-center justify-between mb-4">
             <div>
               <h3 class="text-lg font-medium text-gray-900 dark:text-white">Packaging Units</h3>
@@ -219,51 +263,8 @@
           </div>
         </div>
 
-        <!-- Inventory -->
-        <div class="card p-6">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Inventory Settings</h3>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Tracking Options -->
-            <div>
-              <label class="label mb-3">Tracking Options</label>
-              <div class="space-y-3">
-                <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
-                  <input type="checkbox" v-model="form.track_stock" class="w-4 h-4 text-brand-600 rounded" />
-                  <div>
-                    <span class="text-sm font-medium text-gray-900 dark:text-white">Track Stock</span>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Monitor inventory levels</p>
-                  </div>
-                </label>
-                <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
-                  <input type="checkbox" v-model="form.track_expiry" class="w-4 h-4 text-brand-600 rounded" />
-                  <div>
-                    <span class="text-sm font-medium text-gray-900 dark:text-white">Track Expiry</span>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Monitor expiration dates</p>
-                  </div>
-                </label>
-              </div>
-            </div>
-            <!-- Reorder Settings -->
-            <div>
-              <label class="label mb-3">Reorder Settings</label>
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="text-xs text-gray-600 dark:text-gray-400 mb-1 block">Reorder Level</label>
-                  <input v-model="form.reorder_level" type="number" class="input-field" placeholder="10" />
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Alert when stock falls below</p>
-                </div>
-                <div>
-                  <label class="text-xs text-gray-600 dark:text-gray-400 mb-1 block">Reorder Quantity</label>
-                  <input v-model="form.reorder_quantity" type="number" class="input-field" placeholder="50" />
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Suggested order amount</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Action Buttons -->
-        <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-slate-700">
+        <div class="flex items-center justify-between pt-4 mt-6 border-t border-gray-200 dark:border-slate-700">
           <Link :href="route('admin.products.index')" class="btn-secondary">
             <i class="fas fa-times mr-2"></i> Cancel
           </Link>

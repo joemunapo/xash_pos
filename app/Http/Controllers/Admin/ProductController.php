@@ -20,9 +20,9 @@ class ProductController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        $products = Product::where('company_id', $companyId)
+        $products = Product::where('tenant_id', $tenantId)
             ->with('category:id,name')
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -42,7 +42,7 @@ class ProductController extends Controller
             ->paginate($request->per_page ?? 10)
             ->withQueryString();
 
-        $categories = Category::where('company_id', $companyId)
+        $categories = Category::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -56,11 +56,11 @@ class ProductController extends Controller
     public function create(Request $request): Response
     {
         $user = $request->user();
-        $categories = Category::where('company_id', $user->company_id)
+        $categories = Category::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->get(['id', 'name', 'parent_id']);
 
-        $parentCategories = Category::where('company_id', $user->company_id)
+        $parentCategories = Category::where('tenant_id', $user->tenant_id)
             ->whereNull('parent_id')
             ->where('is_active', true)
             ->get(['id', 'name']);
@@ -79,7 +79,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'category_id' => ['nullable', 'exists:categories,id'],
-            'sku' => ['nullable', 'string', 'max:50', Rule::unique('products')->where('company_id', $user->company_id)],
+            'sku' => ['nullable', 'string', 'max:50', Rule::unique('products')->where('tenant_id', $user->tenant_id)],
             'barcode' => ['nullable', 'string', 'max:50'],
             'plu_code' => ['nullable', 'string', 'max:10'],
             'description' => ['nullable', 'string'],
@@ -108,7 +108,7 @@ class ProductController extends Controller
         $packaging = $validated['packaging'] ?? [];
         unset($validated['packaging']);
 
-        $validated['company_id'] = $user->company_id;
+        $validated['tenant_id'] = $user->tenant_id;
         $validated['is_active'] = true;
 
         // Handle image upload
@@ -141,7 +141,7 @@ class ProductController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Product::class,
@@ -170,11 +170,11 @@ class ProductController extends Controller
         $this->authorizeAccess($product);
 
         $user = $request->user();
-        $categories = Category::where('company_id', $user->company_id)
+        $categories = Category::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->get(['id', 'name', 'parent_id']);
 
-        $parentCategories = Category::where('company_id', $user->company_id)
+        $parentCategories = Category::where('tenant_id', $user->tenant_id)
             ->whereNull('parent_id')
             ->where('is_active', true)
             ->get(['id', 'name']);
@@ -197,7 +197,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'category_id' => ['nullable', 'exists:categories,id'],
-            'sku' => ['nullable', 'string', 'max:50', Rule::unique('products')->where('company_id', $user->company_id)->ignore($product->id)],
+            'sku' => ['nullable', 'string', 'max:50', Rule::unique('products')->where('tenant_id', $user->tenant_id)->ignore($product->id)],
             'barcode' => ['nullable', 'string', 'max:50'],
             'plu_code' => ['nullable', 'string', 'max:10'],
             'description' => ['nullable', 'string'],
@@ -262,7 +262,7 @@ class ProductController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Product::class,
@@ -283,7 +283,7 @@ class ProductController extends Controller
         // Soft delete
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Product::class,
@@ -300,7 +300,7 @@ class ProductController extends Controller
 
     protected function authorizeAccess(Product $product): void
     {
-        if ($product->company_id !== auth()->user()->company_id) {
+        if ($product->tenant_id !== auth()->user()->tenant_id) {
             abort(403);
         }
     }
@@ -309,7 +309,7 @@ class ProductController extends Controller
     {
         $user = auth()->user();
 
-        $units = UnitOfMeasure::where('company_id', $user->company_id)
+        $units = UnitOfMeasure::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')

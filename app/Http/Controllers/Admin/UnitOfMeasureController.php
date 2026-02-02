@@ -16,9 +16,9 @@ class UnitOfMeasureController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        $units = UnitOfMeasure::where('company_id', $companyId)
+        $units = UnitOfMeasure::where('tenant_id', $tenantId)
             ->withCount('conversionsFrom')
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -37,11 +37,11 @@ class UnitOfMeasureController extends Controller
             ->paginate($request->per_page ?? 20)
             ->withQueryString();
 
-        $conversions = UnitConversion::where('company_id', $companyId)
+        $conversions = UnitConversion::where('tenant_id', $tenantId)
             ->with(['fromUnit:id,name,abbreviation', 'toUnit:id,name,abbreviation'])
             ->get();
 
-        $categories = UnitOfMeasure::where('company_id', $companyId)
+        $categories = UnitOfMeasure::where('tenant_id', $tenantId)
             ->whereNotNull('category')
             ->distinct()
             ->pluck('category');
@@ -64,7 +64,7 @@ class UnitOfMeasureController extends Controller
                 'required',
                 'string',
                 'max:10',
-                Rule::unique('unit_of_measures')->where('company_id', $user->company_id),
+                Rule::unique('unit_of_measures')->where('tenant_id', $user->tenant_id),
             ],
             'category' => ['nullable', 'string', 'max:50'],
             'is_base_unit' => ['boolean'],
@@ -72,14 +72,14 @@ class UnitOfMeasureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $validated['company_id'] = $user->company_id;
+        $validated['tenant_id'] = $user->tenant_id;
         $validated['is_active'] = true;
 
         $unit = UnitOfMeasure::create($validated);
 
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             UnitOfMeasure::class,
@@ -89,7 +89,7 @@ class UnitOfMeasureController extends Controller
         );
 
         // Get updated units list for product create/edit pages
-        $units = UnitOfMeasure::where('company_id', $user->company_id)
+        $units = UnitOfMeasure::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -114,7 +114,7 @@ class UnitOfMeasureController extends Controller
                 'required',
                 'string',
                 'max:10',
-                Rule::unique('unit_of_measures')->where('company_id', $user->company_id)->ignore($unit->id),
+                Rule::unique('unit_of_measures')->where('tenant_id', $user->tenant_id)->ignore($unit->id),
             ],
             'category' => ['nullable', 'string', 'max:50'],
             'is_base_unit' => ['boolean'],
@@ -128,7 +128,7 @@ class UnitOfMeasureController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             UnitOfMeasure::class,
@@ -158,7 +158,7 @@ class UnitOfMeasureController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             UnitOfMeasure::class,
@@ -182,17 +182,17 @@ class UnitOfMeasureController extends Controller
             'conversion_factor' => ['required', 'numeric', 'gt:0'],
         ]);
 
-        // Verify both units belong to the company
+        // Verify both units belong to the tenant
         $fromUnit = UnitOfMeasure::where('id', $validated['from_unit_id'])
-            ->where('company_id', $user->company_id)
+            ->where('tenant_id', $user->tenant_id)
             ->firstOrFail();
 
         $toUnit = UnitOfMeasure::where('id', $validated['to_unit_id'])
-            ->where('company_id', $user->company_id)
+            ->where('tenant_id', $user->tenant_id)
             ->firstOrFail();
 
         // Check if conversion already exists
-        $exists = UnitConversion::where('company_id', $user->company_id)
+        $exists = UnitConversion::where('tenant_id', $user->tenant_id)
             ->where('from_unit_id', $validated['from_unit_id'])
             ->where('to_unit_id', $validated['to_unit_id'])
             ->exists();
@@ -201,7 +201,7 @@ class UnitOfMeasureController extends Controller
             return back()->with('error', 'This conversion already exists.');
         }
 
-        $validated['company_id'] = $user->company_id;
+        $validated['tenant_id'] = $user->tenant_id;
         $conversion = UnitConversion::create($validated);
 
         return back()->with('success', 'Conversion added successfully.');
@@ -209,7 +209,7 @@ class UnitOfMeasureController extends Controller
 
     public function destroyConversion(Request $request, UnitConversion $conversion)
     {
-        if ($conversion->company_id !== $request->user()->company_id) {
+        if ($conversion->tenant_id !== $request->user()->tenant_id) {
             abort(403);
         }
 
@@ -220,7 +220,7 @@ class UnitOfMeasureController extends Controller
 
     protected function authorizeAccess(UnitOfMeasure $unit): void
     {
-        if ($unit->company_id !== auth()->user()->company_id) {
+        if ($unit->tenant_id !== auth()->user()->tenant_id) {
             abort(403);
         }
     }

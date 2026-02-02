@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <AdminLayout page-title="Create Purchase Order">
-    <div class="max-w-6xl space-y-6">
+    <div class="space-y-6">
       <!-- Header -->
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Create Purchase Order</h1>
@@ -8,58 +8,78 @@
       </div>
 
       <form @submit.prevent="submit" class="space-y-6">
-        <!-- Basic Information -->
-        <div class="card p-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
-            Order Information
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="label">Supplier *</label>
-              <select v-model="form.supplier_id" class="input-field" required>
-                <option value="">Select Supplier</option>
-                <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
-                  {{ supplier.name }}
-                </option>
-              </select>
-              <p v-if="form.errors.supplier_id" class="text-red-500 text-sm mt-1">{{ form.errors.supplier_id }}</p>
+        <!-- Order Information - Two Column Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Left: Supplier & Branch -->
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
+              <i class="fas fa-truck mr-2 text-brand-500"></i>Supplier & Destination
+            </h2>
+            <div class="space-y-4">
+              <div>
+                <label class="label">Supplier *</label>
+                <select v-model="form.supplier_id" class="input-field" required>
+                  <option value="">Select Supplier</option>
+                  <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
+                    {{ supplier.name }}
+                  </option>
+                </select>
+                <p v-if="form.errors.supplier_id" class="text-red-500 text-sm mt-1">{{ form.errors.supplier_id }}</p>
+              </div>
+              <div>
+                <label class="label">Receiving Branch *</label>
+                <select v-model="form.branch_id" class="input-field" required>
+                  <option value="">Select Branch</option>
+                  <option v-for="branch in branches" :key="branch.id" :value="branch.id">
+                    {{ branch.name }}
+                  </option>
+                </select>
+                <p v-if="form.errors.branch_id" class="text-red-500 text-sm mt-1">{{ form.errors.branch_id }}</p>
+              </div>
             </div>
-            <div>
-              <label class="label">Branch *</label>
-              <select v-model="form.branch_id" class="input-field" required>
-                <option value="">Select Branch</option>
-                <option v-for="branch in branches" :key="branch.id" :value="branch.id">
-                  {{ branch.name }}
-                </option>
-              </select>
-              <p v-if="form.errors.branch_id" class="text-red-500 text-sm mt-1">{{ form.errors.branch_id }}</p>
-            </div>
-            <div>
-              <label class="label">Order Date *</label>
-              <input v-model="form.order_date" type="date" class="input-field" required />
-              <p v-if="form.errors.order_date" class="text-red-500 text-sm mt-1">{{ form.errors.order_date }}</p>
-            </div>
-            <div>
-              <label class="label">Expected Delivery</label>
-              <input v-model="form.expected_delivery" type="date" class="input-field" />
-              <p v-if="form.errors.expected_delivery" class="text-red-500 text-sm mt-1">{{ form.errors.expected_delivery }}</p>
+          </div>
+
+          <!-- Right: Dates & Notes -->
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
+              <i class="fas fa-calendar mr-2 text-brand-500"></i>Order Details
+            </h2>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="label">Order Date *</label>
+                  <input v-model="form.order_date" type="date" class="input-field" required />
+                  <p v-if="form.errors.order_date" class="text-red-500 text-sm mt-1">{{ form.errors.order_date }}</p>
+                </div>
+                <div>
+                  <label class="label">Expected Delivery</label>
+                  <input v-model="form.expected_delivery" type="date" class="input-field" />
+                  <p v-if="form.errors.expected_delivery" class="text-red-500 text-sm mt-1">{{ form.errors.expected_delivery }}</p>
+                </div>
+              </div>
+              <div>
+                <label class="label">Notes</label>
+                <textarea v-model="form.notes" class="input-field" rows="2" placeholder="Any special instructions..."></textarea>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Products -->
+        <!-- Products Section - Full Width -->
         <div class="card p-6">
           <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Products</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <i class="fas fa-boxes mr-2 text-brand-500"></i>Products
+            </h2>
             <button type="button" @click="addItem" class="btn-secondary text-sm">
               <i class="fas fa-plus mr-2"></i>Add Product
             </button>
           </div>
 
-          <div class="space-y-4">
+          <div class="space-y-3">
             <div v-for="(item, index) in form.items" :key="index" class="p-4 bg-gray-50 dark:bg-slate-800 rounded-lg">
-              <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                <div class="md:col-span-4">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                <div class="md:col-span-5">
                   <label class="label text-xs">Product *</label>
                   <select v-model="item.product_id" class="input-field text-sm" required @change="updateItemPrice(index)">
                     <option value="">Select Product</option>
@@ -78,10 +98,10 @@
                 </div>
                 <div class="md:col-span-2">
                   <label class="label text-xs">Total</label>
-                  <input :value="(item.quantity * item.unit_price).toFixed(2)" type="text" class="input-field text-sm bg-gray-100 dark:bg-slate-700" readonly />
+                  <input :value="'$' + (item.quantity * item.unit_price).toFixed(2)" type="text" class="input-field text-sm bg-gray-100 dark:bg-slate-700 font-semibold" readonly />
                 </div>
-                <div class="md:col-span-2 flex items-end">
-                  <button type="button" @click="removeItem(index)" class="btn-secondary text-sm w-full text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                <div class="md:col-span-1">
+                  <button type="button" @click="removeItem(index)" class="w-full h-[42px] flex items-center justify-center rounded-lg text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 transition-colors">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
@@ -97,7 +117,7 @@
           <!-- Totals -->
           <div v-if="form.items.length > 0" class="mt-6 pt-6 border-t border-gray-200 dark:border-slate-700">
             <div class="flex justify-end">
-              <div class="w-full md:w-1/3 space-y-2">
+              <div class="w-full md:w-64 space-y-2">
                 <div class="flex justify-between text-sm">
                   <span class="text-gray-600 dark:text-gray-400">Subtotal:</span>
                   <span class="font-semibold text-gray-900 dark:text-white">${{ calculateSubtotal().toFixed(2) }}</span>
@@ -109,12 +129,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Notes -->
-        <div class="card p-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Additional Notes</h2>
-          <textarea v-model="form.notes" class="input-field" rows="3" placeholder="Any special instructions or notes..."></textarea>
         </div>
 
         <!-- Actions -->

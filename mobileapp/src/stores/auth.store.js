@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import { fetchWrapper } from '../helpers/index.js';
 import { router } from '@/router/index.js';
-import { useAlertStore } from '@/stores/index.js';
+import { db } from '@/utils/indexeddb';
+import { hashPin } from '@/utils/crypto';
+import { useAlertStore, useNetworkStore } from '@/stores/index.js';
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
@@ -51,6 +53,18 @@ export const useAuthStore = defineStore({
                 // Persist to localStorage
                 localStorage.setItem('user', JSON.stringify(response.user));
                 localStorage.setItem('token', response.token);
+
+                // Cache user for offline login
+                const pinHash = await hashPin(pin);
+                await db.users.put({
+                    phone_number,
+                    name: response.user.first_name + ' ' + response.user.last_name,
+                    role: response.user.role,
+                    pin_hash: pinHash,
+                    user_data: response.user,
+                    token: response.token,
+                    cached_at: Date.now()
+                });
 
                 const alertStore = useAlertStore();
                 alertStore.success(response.message || 'Login successful');
@@ -341,6 +355,54 @@ export const useAuthStore = defineStore({
 
         checkAuth() {
             return !!this.token;
+        },
+
+        async loginOffline(phone_number, pin) {
+            this.loading = true;
+            this.phoneError = null;
+            this.pinError = null;
+
+            try {
+                // Find user in local cache
+                const cachedUser = await db.users.get(phone_number);
+
+                if (!cachedUser) {
+                    throw new Error('User not found on this device. Please login online first.');
+                }
+
+                // Verify PIN
+                const pinHash = await hashPin(pin);
+                if (cachedUser.pin_hash !== pinHash) {
+                    throw new Error('Invalid PIN. Please try again.');
+                }
+
+                // Restore session from cache
+                this.user = cachedUser.user_data;
+                this.token = cachedUser.token;
+                this.biometric_enabled = cachedUser.user_data?.biometric_enabled || false;
+
+                // Persist to localStorage
+                localStorage.setItem('user', JSON.stringify(cachedUser.user_data));
+                localStorage.setItem('token', cachedUser.token);
+
+                const alertStore = useAlertStore();
+                alertStore.success('Logged in successfully (Offline Mode)');
+
+                // Navigate to role-specific dashboard
+                const defaultRoute = cachedUser.role === 'manager'
+                    ? '/manager/dashboard'
+                    : '/pos/dashboard';
+                router.push(this.returnUrl || defaultRoute);
+
+                return { success: true };
+            } catch (error) {
+                const alertStore = useAlertStore();
+                this.pinError = error.message;
+                alertStore.error(error.message);
+                return { success: false, error: error.message };
+            } finally {
+                this.loading = false;
+            }
         }
     }
 });

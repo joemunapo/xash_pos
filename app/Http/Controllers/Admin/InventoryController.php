@@ -21,13 +21,13 @@ class InventoryController extends Controller
     public function overview(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        // Get company branches
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        // Get tenant branches
+        $tenantBranchIds = Branch::where('tenant_id', $tenantId)->pluck('id');
 
         // Get stock data with products
-        $stockQuery = Stock::whereIn('branch_id', $companyBranchIds)
+        $stockQuery = Stock::whereIn('branch_id', $tenantBranchIds)
             ->with(['product:id,name,sku,reorder_level,track_stock', 'branch:id,name'])
             ->when($request->branch_id, function ($query, $branchId) {
                 $query->where('branch_id', $branchId);
@@ -43,22 +43,22 @@ class InventoryController extends Controller
 
         // Get statistics
         $stats = [
-            'total_products' => Product::where('company_id', $companyId)
+            'total_products' => Product::where('tenant_id', $tenantId)
                 ->where('is_active', true)
                 ->where('track_stock', true)
                 ->count(),
-            'low_stock_items' => Stock::whereIn('branch_id', $companyBranchIds)
+            'low_stock_items' => Stock::whereIn('branch_id', $tenantBranchIds)
                 ->whereColumn('quantity', '<=', DB::raw('COALESCE((SELECT reorder_level FROM products WHERE products.id = stock.product_id), 0)'))
                 ->count(),
-            'out_of_stock' => Stock::whereIn('branch_id', $companyBranchIds)
+            'out_of_stock' => Stock::whereIn('branch_id', $tenantBranchIds)
                 ->where('quantity', '<=', 0)
                 ->count(),
-            'total_value' => Stock::whereIn('stock.branch_id', $companyBranchIds)
+            'total_value' => Stock::whereIn('stock.branch_id', $tenantBranchIds)
                 ->join('products', 'stock.product_id', '=', 'products.id')
                 ->sum(DB::raw('stock.quantity * products.cost_price')),
         ];
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -76,12 +76,12 @@ class InventoryController extends Controller
     public function lowStock(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        // Get company branches
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        // Get tenant branches
+        $tenantBranchIds = Branch::where('tenant_id', $tenantId)->pluck('id');
 
-        $lowStockItems = Stock::whereIn('stock.branch_id', $companyBranchIds)
+        $lowStockItems = Stock::whereIn('stock.branch_id', $tenantBranchIds)
             ->join('products', 'stock.product_id', '=', 'products.id')
             ->whereColumn('stock.quantity', '<=', 'products.reorder_level')
             ->where('products.track_stock', true)
@@ -94,7 +94,7 @@ class InventoryController extends Controller
             ->orderBy('stock.quantity', 'asc')
             ->paginate(20);
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -111,14 +111,14 @@ class InventoryController extends Controller
     public function expiring(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
         $daysAhead = $request->days ?? 30;
 
-        // Get company branches
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        // Get tenant branches
+        $tenantBranchIds = Branch::where('tenant_id', $tenantId)->pluck('id');
 
-        $expiringBatches = Batch::whereIn('batches.branch_id', $companyBranchIds)
+        $expiringBatches = Batch::whereIn('batches.branch_id', $tenantBranchIds)
             ->whereNotNull('expiry_date')
             ->where('expiry_date', '<=', now()->addDays($daysAhead))
             ->where('quantity_remaining', '>', 0)
@@ -129,7 +129,7 @@ class InventoryController extends Controller
             ->orderBy('expiry_date', 'asc')
             ->paginate(20);
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
@@ -146,12 +146,12 @@ class InventoryController extends Controller
     public function adjustments(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        // Get company branches
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        // Get tenant branches
+        $tenantBranchIds = Branch::where('tenant_id', $tenantId)->pluck('id');
 
-        $adjustments = StockMovement::whereIn('stock_movements.branch_id', $companyBranchIds)
+        $adjustments = StockMovement::whereIn('stock_movements.branch_id', $tenantBranchIds)
             ->where('type', 'adjustment')
             ->with(['product', 'branch', 'user'])
             ->when($request->branch_id, function ($query, $branchId) {
@@ -166,11 +166,11 @@ class InventoryController extends Controller
             ->latest()
             ->paginate(20);
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
-        $products = Product::where('company_id', $companyId)
+        $products = Product::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->where('track_stock', true)
             ->get(['id', 'name', 'sku']);
@@ -236,12 +236,12 @@ class InventoryController extends Controller
     public function transfers(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $tenantId = $user->tenant_id;
 
-        // Get company branches
-        $companyBranchIds = Branch::where('company_id', $companyId)->pluck('id');
+        // Get tenant branches
+        $tenantBranchIds = Branch::where('tenant_id', $tenantId)->pluck('id');
 
-        $transfers = StockMovement::whereIn('stock_movements.branch_id', $companyBranchIds)
+        $transfers = StockMovement::whereIn('stock_movements.branch_id', $tenantBranchIds)
             ->where('type', 'transfer')
             ->with(['product', 'branch', 'toBranch', 'user'])
             ->when($request->branch_id, function ($query, $branchId) {
@@ -256,11 +256,11 @@ class InventoryController extends Controller
             ->latest()
             ->paginate(20);
 
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Branch::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->get(['id', 'name']);
 
-        $products = Product::where('company_id', $companyId)
+        $products = Product::where('tenant_id', $tenantId)
             ->where('is_active', true)
             ->where('track_stock', true)
             ->get(['id', 'name', 'sku']);

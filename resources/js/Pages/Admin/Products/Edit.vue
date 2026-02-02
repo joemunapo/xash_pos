@@ -25,7 +25,7 @@
       </div>
     </Transition>
 
-    <div class="max-w-4xl mx-auto">
+    <div class="mx-auto">
       <!-- Header -->
       <div class="mb-6">
         <Link :href="route('admin.products.index')" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4">

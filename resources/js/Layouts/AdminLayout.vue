@@ -19,13 +19,15 @@
       <!-- Logo -->
       <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 dark:border-slate-800 flex-shrink-0 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-slate-800/50">
         <div :class="['flex items-center flex-1', miniSidebar ? 'justify-center' : 'gap-2']">
-          <Link :href="route('admin.dashboard')" :class="['flex items-center group', miniSidebar ? '' : 'gap-2.5']">
-            <div class="w-10 h-10 bg-gradient-to-br from-brand-500 via-brand-600 to-brand-600 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 flex-shrink-0 group-hover:scale-105 transition-transform">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-              </svg>
-            </div>
-            <span v-if="!miniSidebar" class="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent whitespace-nowrap">XASH<span class="bg-gradient-to-r from-brand-500 to-brand-500 bg-clip-text">POS</span></span>
+          <Link :href="route('admin.dashboard')" :class="['flex items-center group', miniSidebar ? '' : 'gap-2']">
+            <img
+              :src="miniSidebar ? '/logo.png' : '/logo.png'"
+              alt="XASH POS"
+              :class="[
+                'flex-shrink-0 group-hover:scale-105 transition-transform object-contain',
+                miniSidebar ? 'w-10 h-10' : 'h-10 w-auto max-w-[140px]'
+              ]"
+            />
           </Link>
         </div>
         
@@ -159,8 +161,8 @@
           <NavSubLink :href="route('admin.customers.create')" :active="route().current('admin.customers.create')" icon="fa-plus">
             Add Customer
           </NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-gift">Loyalty Program</NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-ticket-alt">Coupons & Vouchers</NavSubLink>
+          <NavSubLink :href="route('admin.loyalty.index')" :active="$page.url.startsWith('/admin/loyalty')" icon="fa-gift">Loyalty Program</NavSubLink>
+          <NavSubLink :href="route('admin.coupons.index')" :active="$page.url.startsWith('/admin/coupons')" icon="fa-ticket-alt">Coupons & Vouchers</NavSubLink>
 
           <template #mini>
             <NavSubLink :href="route('admin.customers.index')" :active="route().current('admin.customers.index')" icon="fa-list">
@@ -169,8 +171,8 @@
             <NavSubLink :href="route('admin.customers.create')" :active="route().current('admin.customers.create')" icon="fa-plus">
               Add Customer
             </NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-gift">Loyalty Program</NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-ticket-alt">Coupons & Vouchers</NavSubLink>
+            <NavSubLink :href="route('admin.loyalty.index')" :active="$page.url.startsWith('/admin/loyalty')" icon="fa-gift">Loyalty Program</NavSubLink>
+            <NavSubLink :href="route('admin.coupons.index')" :active="$page.url.startsWith('/admin/coupons')" icon="fa-ticket-alt">Coupons & Vouchers</NavSubLink>
           </template>
         </NavGroup> 
         <NavGroup
@@ -287,7 +289,7 @@
         <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800">
           <i class="fas fa-bars text-xl"></i>
         </button>
-        <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-brand-500">POS</span></span>
+        <img src="/logo.png" alt="XASH POS" class="h-8 w-auto object-contain" />
         <div class="w-10"></div>
       </header>
 

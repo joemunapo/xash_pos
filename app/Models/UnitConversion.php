@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UnitConversion extends Model
 {
     protected $fillable = [
-        'company_id',
+        'tenant_id',
         'from_unit_id',
         'to_unit_id',
         'conversion_factor',
@@ -21,9 +21,9 @@ class UnitConversion extends Model
         ];
     }
 
-    public function company(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Tenant::class);
     }
 
     public function fromUnit(): BelongsTo

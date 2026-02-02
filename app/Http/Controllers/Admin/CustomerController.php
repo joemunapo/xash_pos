@@ -16,9 +16,9 @@ class CustomerController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $companyId = $user->company_id;
+        $companyId = $user->tenant_id;
 
-        $customers = Customer::where('company_id', $companyId)
+        $customers = Customer::where('tenant_id', $companyId)
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', "%{$search}%")
@@ -69,7 +69,7 @@ class CustomerController extends Controller
             'gender' => ['nullable', Rule::in(['male', 'female', 'other'])],
         ]);
 
-        $validated['company_id'] = $user->company_id;
+        $validated['tenant_id'] = $user->tenant_id;
         $validated['is_active'] = true;
         $validated['member_since'] = now();
         $validated['qr_code'] = 'CUS-'.strtoupper(Str::random(10));
@@ -78,7 +78,7 @@ class CustomerController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_CREATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Customer::class,
@@ -135,7 +135,7 @@ class CustomerController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_UPDATED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Customer::class,
@@ -155,7 +155,7 @@ class CustomerController extends Controller
 
         ActivityLog::log(
             ActivityLog::ACTION_DELETED,
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Customer::class,
@@ -194,7 +194,7 @@ class CustomerController extends Controller
 
         ActivityLog::log(
             'loyalty_adjusted',
-            $user->company_id,
+            $user->tenant_id,
             $user->id,
             null,
             Customer::class,
@@ -208,7 +208,7 @@ class CustomerController extends Controller
 
     protected function authorizeAccess(Customer $customer): void
     {
-        if ($customer->company_id !== auth()->user()->company_id) {
+        if ($customer->tenant_id !== auth()->user()->tenant_id) {
             abort(403);
         }
     }

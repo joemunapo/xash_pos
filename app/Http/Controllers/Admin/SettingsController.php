@@ -14,7 +14,7 @@ class SettingsController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         return Inertia::render('Admin/Settings/Index', [
             'company' => $company,
@@ -24,7 +24,7 @@ class SettingsController extends Controller
     public function updateCompany(Request $request)
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         if (! $company) {
             return back()->with('error', 'Company not found.');
@@ -51,7 +51,7 @@ class SettingsController extends Controller
     public function updateLogo(Request $request)
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         if (! $company) {
             return back()->with('error', 'Company not found.');
@@ -75,7 +75,7 @@ class SettingsController extends Controller
     public function paymentMethods(Request $request): Response
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         $paymentSettings = $company->settings['payments'] ?? [
             'cash' => ['enabled' => true, 'currencies' => ['USD', 'ZWL']],
@@ -92,7 +92,7 @@ class SettingsController extends Controller
     public function updatePaymentMethods(Request $request)
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         $validated = $request->validate([
             'payments' => ['required', 'array'],
@@ -108,7 +108,7 @@ class SettingsController extends Controller
     public function taxSettings(Request $request): Response
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         $taxSettings = $company->settings['tax'] ?? [
             'default_rate' => 15,
@@ -124,7 +124,7 @@ class SettingsController extends Controller
     public function updateTaxSettings(Request $request)
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         $validated = $request->validate([
             'default_rate' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -142,7 +142,7 @@ class SettingsController extends Controller
     public function receiptSettings(Request $request): Response
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         $receiptSettings = $company->settings['receipt'] ?? [
             'header' => $company->name,
@@ -161,7 +161,7 @@ class SettingsController extends Controller
     public function updateReceiptSettings(Request $request)
     {
         $user = $request->user();
-        $company = Company::find($user->company_id);
+        $company = Company::find($user->tenant_id);
 
         $validated = $request->validate([
             'header' => ['nullable', 'string', 'max:255'],
