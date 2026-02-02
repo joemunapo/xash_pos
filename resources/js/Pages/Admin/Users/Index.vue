@@ -17,16 +17,13 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="md:col-span-2">
             <label class="label">Search</label>
-            <div class="relative">
-              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
-              <input
-                v-model="filterForm.search"
-                type="text"
-                class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                placeholder="Search by name, email, or phone..."
-                @input="debouncedFilter"
-              />
-            </div>
+            <input
+              v-model="filterForm.search"
+              type="text"
+              class="w-full px-4 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              placeholder="Search by name, email, or phone..."
+              @input="debouncedFilter"
+            />
           </div>
           <div>
             <label class="label">Status</label>
@@ -236,7 +233,6 @@ const props = defineProps({
   users: Object,
   branches: Array,
   filters: Object,
-  roles: Array,
 });
 
 const filterForm = reactive({
@@ -270,7 +266,6 @@ const getRoleBadgeClass = (role) => {
     admin: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
     manager: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
     cashier: 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400',
-    stockist: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
   };
   return classes[role] || 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
 };
@@ -280,7 +275,6 @@ const getRoleIcon = (role) => {
     admin: 'fas fa-user-shield',
     manager: 'fas fa-user-tie',
     cashier: 'fas fa-cash-register',
-    stockist: 'fas fa-boxes',
   };
   return icons[role] || 'fas fa-user';
 };

@@ -61,6 +61,23 @@
 
           <!-- Right Column -->
           <div class="space-y-6">
+            <!-- Role Selection -->
+            <div class="card p-6">
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
+                <i class="fas fa-user-tag mr-2 text-brand-500"></i>Role
+              </h2>
+              <div>
+                <label class="label">User Role *</label>
+                <select v-model="form.role" class="input-field" required>
+                  <option value="" disabled>Select a role</option>
+                  <option v-for="role in roles" :key="role.value" :value="role.value">
+                    {{ role.label }}
+                  </option>
+                </select>
+                <p v-if="form.errors.role" class="text-red-500 text-sm mt-1">{{ form.errors.role }}</p>
+              </div>
+            </div>
+
             <!-- Branch Assignment -->
             <div class="card p-6">
               <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
@@ -116,6 +133,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const props = defineProps({
   branches: Array,
+  roles: Array,
 });
 
 const form = useForm({
@@ -124,7 +142,7 @@ const form = useForm({
   phone_number: '',
   password: '',
   pin: '',
-  role: 'cashier',
+  role: '',
   branches: [],
   primary_branch_id: null,
 });

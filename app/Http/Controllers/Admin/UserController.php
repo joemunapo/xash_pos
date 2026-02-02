@@ -49,8 +49,8 @@ class UserController extends Controller
             'filters' => $request->only(['search', 'role', 'status', 'sort_by', 'sort_order']),
             'roles' => [
                 ['value' => 'admin', 'label' => 'Admin'],
+                ['value' => 'manager', 'label' => 'Manager'],
                 ['value' => 'cashier', 'label' => 'Cashier'],
-                ['value' => 'stockist', 'label' => 'Stockist'],
             ],
         ]);
     }
@@ -66,8 +66,8 @@ class UserController extends Controller
             'branches' => $branches,
             'roles' => [
                 ['value' => 'admin', 'label' => 'Admin'],
+                ['value' => 'manager', 'label' => 'Manager'],
                 ['value' => 'cashier', 'label' => 'Cashier'],
-                ['value' => 'stockist', 'label' => 'Stockist'],
             ],
         ]);
     }
@@ -79,9 +79,9 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone_number' => ['nullable', 'string', 'max:20'],
+            'phone_number' => ['nullable', 'string', 'max:20', 'unique:users,phone_number'],
             'password' => ['required', Password::defaults()],
-            'role' => ['required', Rule::in(['admin', 'cashier', 'stockist'])],
+            'role' => ['required', Rule::in(['admin', 'manager', 'cashier'])],
             'pin' => ['nullable', 'numeric', 'digits_between:4,6'],
             'branches' => ['array'],
             'branches.*' => ['exists:branches,id'],
@@ -152,8 +152,8 @@ class UserController extends Controller
             'userBranchIds' => $user->branches->pluck('id'),
             'roles' => [
                 ['value' => 'admin', 'label' => 'Admin'],
+                ['value' => 'manager', 'label' => 'Manager'],
                 ['value' => 'cashier', 'label' => 'Cashier'],
-                ['value' => 'stockist', 'label' => 'Stockist'],
             ],
         ]);
     }
@@ -166,9 +166,9 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'phone_number' => ['nullable', 'string', 'max:20'],
+            'phone_number' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone_number')->ignore($user->id)],
             'password' => ['nullable', Password::defaults()],
-            'role' => ['required', Rule::in(['admin', 'cashier', 'stockist'])],
+            'role' => ['required', Rule::in(['admin', 'manager', 'cashier'])],
             'pin' => ['nullable', 'numeric', 'digits_between:4,6'],
             'is_active' => ['boolean'],
             'branches' => ['array'],

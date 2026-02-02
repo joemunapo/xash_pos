@@ -153,7 +153,7 @@
         <NavGroup
           title="Customers"
           icon="fa-user-friends"
-          :active-patterns="['/admin/customers']"
+          :active-patterns="['/admin/customers', '/admin/loyalty', '/admin/coupons']"
         >
           <NavSubLink :href="route('admin.customers.index')" :active="route().current('admin.customers.index')" icon="fa-list">
             All Customers
@@ -186,7 +186,6 @@
           <NavSubLink :href="route('admin.users.create')" :active="route().current('admin.users.create')" icon="fa-plus">
             Add User
           </NavSubLink>
-          <NavSubLink href="#" :active="false" icon="fa-user-shield">Roles & Permissions</NavSubLink>
           <NavSubLink :href="route('admin.activity-logs.index')" :active="route().current('admin.activity-logs.*')" icon="fa-history">Activity Logs</NavSubLink>
 
           <template #mini>
@@ -196,7 +195,6 @@
             <NavSubLink :href="route('admin.users.create')" :active="route().current('admin.users.create')" icon="fa-plus">
               Add User
             </NavSubLink>
-            <NavSubLink href="#" :active="false" icon="fa-user-shield">Roles & Permissions</NavSubLink>
             <NavSubLink :href="route('admin.activity-logs.index')" :active="route().current('admin.activity-logs.*')" icon="fa-history">Activity Logs</NavSubLink>
           </template>
         </NavGroup> 
