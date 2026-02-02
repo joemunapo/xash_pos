@@ -16,7 +16,7 @@ class OTPService
     public function sendWhatsAppOTP(string $phoneNumber, string $type = 'login', ?string $ipAddress = null): array
     {
         // Rate limiting check
-        if (!$this->canSendOTP($phoneNumber)) {
+        if (! $this->canSendOTP($phoneNumber)) {
             return [
                 'success' => false,
                 'message' => 'Too many OTP requests. Please wait before requesting again.',
@@ -68,7 +68,7 @@ class OTPService
     public function sendSmsOTP(string $phoneNumber, string $type = 'login', ?string $ipAddress = null): array
     {
         // Rate limiting check
-        if (!$this->canSendOTP($phoneNumber)) {
+        if (! $this->canSendOTP($phoneNumber)) {
             return [
                 'success' => false,
                 'message' => 'Too many OTP requests. Please wait before requesting again.',
@@ -120,7 +120,7 @@ class OTPService
     public function sendEmailOTP(string $email, string $type = 'registration', ?string $ipAddress = null): array
     {
         // Rate limiting check
-        if (!$this->canSendEmailOTP($email)) {
+        if (! $this->canSendEmailOTP($email)) {
             return [
                 'success' => false,
                 'message' => 'Too many OTP requests. Please wait before requesting again.',
@@ -251,14 +251,14 @@ class OTPService
     private function deliverWhatsAppMessage(string $phoneNumber, string $otpCode): bool
     {
         try {
-            $message = "🔐 *Your ErrandRunner Verification Code*\n\n";
+            $message = "🔐 *Your XASH POS Verification Code*\n\n";
             $message .= "Your OTP is: *{$otpCode}*\n\n";
             $message .= "⏰ This code will expire in 10 minutes.\n";
             $message .= "⚠️ Never share this code with anyone.\n\n";
             $message .= "If you didn't request this code, please ignore this message.";
 
             $response = Http::withToken(env('GRAPH_API_TOKEN'))
-                ->post('https://graph.facebook.com/v22.0/' . env('BUSINESS_PHONE_NUMBER_ID') . '/messages', [
+                ->post('https://graph.facebook.com/v22.0/'.env('BUSINESS_PHONE_NUMBER_ID').'/messages', [
                     'messaging_product' => 'whatsapp',
                     'to' => $phoneNumber,
                     'type' => 'text',
@@ -272,6 +272,7 @@ class OTPService
                     'phone_number' => $phoneNumber,
                     'response' => $response->json(),
                 ]);
+
                 return true;
             }
 
@@ -288,6 +289,7 @@ class OTPService
                 'phone_number' => $phoneNumber,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -299,15 +301,16 @@ class OTPService
     {
         try {
             // Using Twilio (configure in .env)
-            if (!env('TWILIO_SID') || !env('TWILIO_TOKEN')) {
+            if (! env('TWILIO_SID') || ! env('TWILIO_TOKEN')) {
                 Log::warning('Twilio not configured');
+
                 return false;
             }
 
-            $message = "Your ErrandRunner verification code is: {$otpCode}. This code will expire in 10 minutes. Never share this code with anyone.";
+            $message = "Your XASH POS verification code is: {$otpCode}. This code will expire in 10 minutes. Never share this code with anyone.";
 
             $response = Http::withBasicAuth(env('TWILIO_SID'), env('TWILIO_TOKEN'))
-                ->post("https://api.twilio.com/2010-04-01/Accounts/" . env('TWILIO_SID') . "/Messages.json", [
+                ->post('https://api.twilio.com/2010-04-01/Accounts/'.env('TWILIO_SID').'/Messages.json', [
                     'From' => env('TWILIO_FROM_NUMBER'),
                     'To' => $phoneNumber,
                     'Body' => $message,
@@ -317,6 +320,7 @@ class OTPService
                 Log::info('SMS delivered successfully', [
                     'phone_number' => $phoneNumber,
                 ]);
+
                 return true;
             }
 
@@ -332,6 +336,7 @@ class OTPService
                 'phone_number' => $phoneNumber,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -344,7 +349,7 @@ class OTPService
         try {
             Mail::send('emails.otp', ['otp' => $otpCode], function ($message) use ($email) {
                 $message->to($email)
-                    ->subject('Your ErrandRunner Verification Code');
+                    ->subject('Your XASH POS Verification Code');
             });
 
             Log::info('Email delivered successfully', [
@@ -358,6 +363,7 @@ class OTPService
                 'email' => $email,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -368,6 +374,7 @@ class OTPService
     private function canSendOTP(string $phoneNumber): bool
     {
         $attempts = Cache::get($this->getRateLimitKey($phoneNumber), 0);
+
         return $attempts < 5; // Max 5 attempts per 10 minutes
     }
 
@@ -377,6 +384,7 @@ class OTPService
     private function canSendEmailOTP(string $email): bool
     {
         $attempts = Cache::get($this->getEmailRateLimitKey($email), 0);
+
         return $attempts < 3; // Max 3 attempts per 10 minutes
     }
 
@@ -423,6 +431,7 @@ class OTPService
     {
         $key = $this->getRateLimitKey($phoneNumber);
         $attempts = Cache::get($key, 0);
+
         return (6 - $attempts) * 120; // Incremental backoff
     }
 
@@ -433,6 +442,7 @@ class OTPService
     {
         $key = $this->getEmailRateLimitKey($email);
         $attempts = Cache::get($key, 0);
+
         return (4 - $attempts) * 120; // Incremental backoff
     }
 
@@ -441,7 +451,7 @@ class OTPService
      */
     private function getRateLimitKey(string $phoneNumber): string
     {
-        return 'otp_attempts_' . md5($phoneNumber);
+        return 'otp_attempts_'.md5($phoneNumber);
     }
 
     /**
@@ -449,6 +459,6 @@ class OTPService
      */
     private function getEmailRateLimitKey(string $email): string
     {
-        return 'email_otp_attempts_' . md5($email);
+        return 'email_otp_attempts_'.md5($email);
     }
 }

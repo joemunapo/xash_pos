@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Supplier Details">
     <div class="max-w-6xl space-y-6">
       <!-- Header -->
@@ -33,7 +33,7 @@
             <div>
               <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
               <p class="mt-1">
-                <span :class="['inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', supplier.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+                <span :class="['inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', supplier.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
                   <i :class="[supplier.is_active ? 'fas fa-check-circle' : 'fas fa-times-circle', 'mr-1.5']"></i>
                   {{ supplier.is_active ? 'Active' : 'Inactive' }}
                 </span>
@@ -69,7 +69,7 @@
         <!-- Payment Terms -->
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <i class="fas fa-credit-card text-emerald-500"></i>
+            <i class="fas fa-credit-card text-brand-500"></i>
             Payment Terms
           </h2>
           <div class="space-y-4">
@@ -133,7 +133,7 @@
                   ${{ parseFloat(product.selling_price || 0).toFixed(2) }}
                 </td>
                 <td class="px-4 py-3 text-center">
-                  <span v-if="product.pivot.is_primary" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <span v-if="product.pivot.is_primary" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400">
                     <i class="fas fa-star mr-1"></i>Primary
                   </span>
                   <span v-else class="text-gray-400">-</span>

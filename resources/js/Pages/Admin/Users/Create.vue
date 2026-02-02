@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Create User">
     <div class="max-w-2xl">
       <div class="mb-6">
@@ -70,7 +70,7 @@
             <label class="label">Assign to Branches</label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
               <label v-for="branch in branches" :key="branch.id" class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
-                <input type="checkbox" :value="branch.id" v-model="form.branches" class="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500" />
+                <input type="checkbox" :value="branch.id" v-model="form.branches" class="w-4 h-4 text-brand-600 rounded border-gray-300 focus:ring-brand-500" />
                 <span class="text-sm text-gray-700 dark:text-gray-300">{{ branch.name }}</span>
               </label>
             </div>

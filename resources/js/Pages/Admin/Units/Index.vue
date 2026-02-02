@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Units of Measure">
     <div class="space-y-6">
       <!-- Header -->
@@ -17,13 +17,13 @@
         <nav class="flex gap-4">
           <button
             @click="activeTab = 'units'"
-            :class="['px-4 py-2 text-sm font-medium border-b-2 transition-colors', activeTab === 'units' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']"
+            :class="['px-4 py-2 text-sm font-medium border-b-2 transition-colors', activeTab === 'units' ? 'border-brand-500 text-brand-600 dark:text-brand-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']"
           >
             <i class="fas fa-ruler mr-2"></i>Units
           </button>
           <button
             @click="activeTab = 'conversions'"
-            :class="['px-4 py-2 text-sm font-medium border-b-2 transition-colors', activeTab === 'conversions' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']"
+            :class="['px-4 py-2 text-sm font-medium border-b-2 transition-colors', activeTab === 'conversions' ? 'border-brand-500 text-brand-600 dark:text-brand-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300']"
           >
             <i class="fas fa-exchange-alt mr-2"></i>Conversions
           </button>
@@ -72,24 +72,24 @@
                 <tr v-for="unit in units.data" :key="unit.id" class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                   <td class="py-3 px-4">
                     <span class="font-medium text-gray-900 dark:text-white">{{ unit.name }}</span>
-                    <span v-if="unit.is_base_unit" class="ml-2 px-1.5 py-0.5 text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded">Base</span>
+                    <span v-if="unit.is_base_unit" class="ml-2 px-1.5 py-0.5 text-xs bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400 rounded">Base</span>
                   </td>
                   <td class="py-3 px-4">
                     <code class="px-2 py-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded text-sm">{{ unit.abbreviation }}</code>
                   </td>
                   <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ unit.category || '-' }}</td>
                   <td class="py-3 px-4 text-center">
-                    <i :class="unit.allow_decimal ? 'fas fa-check text-emerald-500' : 'fas fa-times text-gray-400'"></i>
+                    <i :class="unit.allow_decimal ? 'fas fa-check text-brand-500' : 'fas fa-times text-gray-400'"></i>
                   </td>
                   <td class="py-3 px-4 text-center text-gray-600 dark:text-gray-400">{{ unit.conversions_from_count || 0 }}</td>
                   <td class="py-3 px-4 text-center">
-                    <span :class="['px-2 py-1 text-xs font-medium rounded-full', unit.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+                    <span :class="['px-2 py-1 text-xs font-medium rounded-full', unit.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
                       {{ unit.is_active ? 'Active' : 'Inactive' }}
                     </span>
                   </td>
                   <td class="py-3 px-4">
                     <div class="flex items-center justify-end gap-2">
-                      <button @click="editUnit(unit)" class="px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                      <button @click="editUnit(unit)" class="px-3 py-1.5 text-xs font-medium bg-success-600 text-white rounded hover:bg-success-700 transition-colors">
                         <i class="fas fa-edit mr-1"></i>Edit
                       </button>
                       <button @click="confirmDelete(unit)" class="px-3 py-1.5 text-xs font-medium bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
@@ -122,7 +122,7 @@
                 v-for="link in units.links"
                 :key="link.label"
                 :href="link.url || '#'"
-                :class="['px-3 py-1 text-sm rounded-lg transition-colors', link.active ? 'bg-emerald-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700', !link.url && 'opacity-50 cursor-not-allowed']"
+                :class="['px-3 py-1 text-sm rounded-lg transition-colors', link.active ? 'bg-brand-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700', !link.url && 'opacity-50 cursor-not-allowed']"
                 v-html="link.label"
               />
             </div>
@@ -179,7 +179,7 @@
                 <div class="flex items-center gap-2 text-sm">
                   <span class="font-medium text-gray-900 dark:text-white">1 {{ conv.from_unit?.abbreviation }}</span>
                   <i class="fas fa-arrow-right text-gray-400"></i>
-                  <span class="font-medium text-emerald-600 dark:text-emerald-400">{{ conv.conversion_factor }} {{ conv.to_unit?.abbreviation }}</span>
+                  <span class="font-medium text-brand-600 dark:text-brand-400">{{ conv.conversion_factor }} {{ conv.to_unit?.abbreviation }}</span>
                 </div>
                 <button @click="deleteConversion(conv)" class="p-1.5 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors">
                   <i class="fas fa-trash text-sm"></i>
@@ -226,14 +226,14 @@
 
           <div class="grid grid-cols-2 gap-4">
             <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer">
-              <input type="checkbox" v-model="unitForm.allow_decimal" class="w-4 h-4 text-emerald-600 rounded" />
+              <input type="checkbox" v-model="unitForm.allow_decimal" class="w-4 h-4 text-brand-600 rounded" />
               <div>
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Allow Decimals</span>
                 <p class="text-xs text-gray-500">e.g., 1.5 kg</p>
               </div>
             </label>
             <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer">
-              <input type="checkbox" v-model="unitForm.is_base_unit" class="w-4 h-4 text-emerald-600 rounded" />
+              <input type="checkbox" v-model="unitForm.is_base_unit" class="w-4 h-4 text-brand-600 rounded" />
               <div>
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Base Unit</span>
                 <p class="text-xs text-gray-500">Primary in category</p>
@@ -243,7 +243,7 @@
 
           <div v-if="editingUnit">
             <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer">
-              <input type="checkbox" v-model="unitForm.is_active" class="w-4 h-4 text-emerald-600 rounded" />
+              <input type="checkbox" v-model="unitForm.is_active" class="w-4 h-4 text-brand-600 rounded" />
               <span class="text-sm font-medium text-gray-900 dark:text-white">Active</span>
             </label>
           </div>

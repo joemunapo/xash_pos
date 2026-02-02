@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950">
     <!-- Sidebar -->
     <div
@@ -17,12 +17,12 @@
       <!-- Logo -->
       <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
         <Link :href="route('welcome')" class="flex items-center gap-2 group">
-          <div class="w-8 h-8 bg-gradient-to-br from-emerald-600 to-green-600 rounded-lg flex items-center justify-center shadow-lg">
+          <div class="w-8 h-8 bg-gradient-to-br from-brand-600 to-brand-600 rounded-lg flex items-center justify-center shadow-lg">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
             </svg>
           </div>
-          <span class="text-lg font-bold text-gray-900 dark:text-white">ErrandRunner</span>
+          <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-brand-500">POS</span></span>
         </Link>
         <button
           @click="sidebarOpen = false"
@@ -59,7 +59,7 @@
             icon="fa-shopping-bags"
             class="text-sm"
           >
-            My Errands
+            My Orders
           </NavLink>
           <NavLink
             href="#"
@@ -131,7 +131,7 @@
           class="w-full flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
         >
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center text-white text-xs font-semibold">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-500 flex items-center justify-center text-white text-xs font-semibold">
               {{ user.name.charAt(0).toUpperCase() }}
             </div>
             <div class="text-left min-w-0">
@@ -183,7 +183,7 @@
         <!-- Top Right Actions -->
         <div class="flex items-center gap-4">
           <!-- User Badge -->
-          <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold rounded-full flex items-center gap-1">
+          <span class="px-3 py-1 bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-semibold rounded-full flex items-center gap-1">
             <i class="fas fa-user"></i>
             User
           </span>

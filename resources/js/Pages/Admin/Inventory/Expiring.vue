@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Expiring Items">
     <div class="space-y-6">
       <!-- Header -->
@@ -52,7 +52,7 @@
             <tbody class="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
               <tr v-if="expiringBatches.data.length === 0">
                 <td colspan="6" class="px-6 py-12 text-center">
-                  <i class="fas fa-calendar-check text-6xl text-emerald-500 mb-4"></i>
+                  <i class="fas fa-calendar-check text-6xl text-brand-500 mb-4"></i>
                   <p class="text-lg font-medium text-gray-900 dark:text-white mb-1">No Expiring Items</p>
                   <p class="text-sm text-gray-500 dark:text-gray-400">No batches are expiring in the selected period</p>
                 </td>
@@ -95,7 +95,7 @@
             </p>
             <div class="flex gap-2">
               <template v-for="link in expiringBatches.links" :key="link.label">
-                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
+                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-brand-600 text-white border-brand-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
                 <span v-else :class="['px-3 py-1 text-sm rounded-lg border opacity-50 cursor-not-allowed bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
               </template>
             </div>

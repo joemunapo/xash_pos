@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Settings">
     <div class="max-w-2xl space-y-6">
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
@@ -63,8 +63,8 @@
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Configuration</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Link :href="route('admin.settings.payment-methods')" class="p-4 bg-gray-50 dark:bg-slate-800 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-3">
-            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <i class="fas fa-credit-card text-emerald-600 dark:text-emerald-400"></i>
+            <div class="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+              <i class="fas fa-credit-card text-brand-600 dark:text-brand-400"></i>
             </div>
             <div>
               <p class="font-medium text-gray-900 dark:text-white">Payment Methods</p>

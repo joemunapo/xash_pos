@@ -1,9 +1,9 @@
 <x-mail::message>
-# Your ErrandRunner Verification Code
+# Your XASH POS Verification Code
 
 Hello,
 
-Thank you for using ErrandRunner. Here is your One-Time Password (OTP) for verification.
+Thank you for using XASH POS. Here is your One-Time Password (OTP) for verification.
 
 <x-mail::panel>
 ## {{ $otp }}
@@ -11,7 +11,7 @@ Thank you for using ErrandRunner. Here is your One-Time Password (OTP) for verif
 
 **This code will expire in 10 minutes.**
 
-**Security Note:** Never share this code with anyone. ErrandRunner staff will never ask for your OTP.
+**Security Note:** Never share this code with anyone. XASH POS staff will never ask for your OTP.
 
 If you didn't request this code, please ignore this message. Your account remains secure.
 

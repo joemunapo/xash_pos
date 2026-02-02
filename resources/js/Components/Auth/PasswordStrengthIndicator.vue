@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div v-if="password" class="mt-3 mb-4">
     <!-- Strength bar -->
     <div class="flex gap-1 mb-2">
@@ -27,19 +27,19 @@
 
     <!-- Requirements checklist -->
     <div class="mt-3 space-y-1.5 text-xs">
-      <div class="flex items-center" :class="hasLength ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'">
+      <div class="flex items-center" :class="hasLength ? 'text-success-600 dark:text-success-400' : 'text-gray-500 dark:text-gray-400'">
         <i :class="`fas ${hasLength ? 'fa-check-circle' : 'fa-circle'} mr-1.5`"></i>
         At least 8 characters
       </div>
-      <div class="flex items-center" :class="hasUpperLower ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'">
+      <div class="flex items-center" :class="hasUpperLower ? 'text-success-600 dark:text-success-400' : 'text-gray-500 dark:text-gray-400'">
         <i :class="`fas ${hasUpperLower ? 'fa-check-circle' : 'fa-circle'} mr-1.5`"></i>
         Uppercase and lowercase letters
       </div>
-      <div class="flex items-center" :class="hasNumber ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'">
+      <div class="flex items-center" :class="hasNumber ? 'text-success-600 dark:text-success-400' : 'text-gray-500 dark:text-gray-400'">
         <i :class="`fas ${hasNumber ? 'fa-check-circle' : 'fa-circle'} mr-1.5`"></i>
         At least one number
       </div>
-      <div class="flex items-center" :class="hasSpecial ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'">
+      <div class="flex items-center" :class="hasSpecial ? 'text-success-600 dark:text-success-400' : 'text-gray-500 dark:text-gray-400'">
         <i :class="`fas ${hasSpecial ? 'fa-check-circle' : 'fa-circle'} mr-1.5`"></i>
         Special character (!@#$%^&*)
       </div>
@@ -84,7 +84,7 @@ const strengthLabelClasses = computed(() => {
   if (strength.value === 1) return 'text-red-600 dark:text-red-400';
   if (strength.value === 2) return 'text-yellow-600 dark:text-yellow-400';
   if (strength.value === 3) return 'text-blue-600 dark:text-blue-400';
-  return 'text-green-600 dark:text-green-400';
+  return 'text-success-600 dark:text-success-400';
 });
 
 const strengthIcon = computed(() => {
@@ -99,7 +99,7 @@ const strengthColors = {
   1: 'bg-red-500',
   2: 'bg-yellow-500',
   3: 'bg-blue-500',
-  4: 'bg-green-500',
+  4: 'bg-success-500',
 };
 </script>
 

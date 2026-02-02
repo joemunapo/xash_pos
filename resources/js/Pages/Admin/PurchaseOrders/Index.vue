@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Purchase Orders">
     <div class="space-y-6">
       <!-- Header -->
@@ -56,19 +56,19 @@
         <p class="text-gray-600 dark:text-gray-400 mb-6">Click the "Create PO" button above to start ordering from suppliers</p>
         <div class="max-w-2xl mx-auto text-left space-y-3 mb-8">
           <div class="flex items-start gap-3">
-            <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+            <i class="fas fa-check-circle text-brand-500 mt-1"></i>
             <span class="text-gray-700 dark:text-gray-300">Select supplier and add multiple products</span>
           </div>
           <div class="flex items-start gap-3">
-            <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+            <i class="fas fa-check-circle text-brand-500 mt-1"></i>
             <span class="text-gray-700 dark:text-gray-300">Automatic PO number generation (PO-YYYYMM-####)</span>
           </div>
           <div class="flex items-start gap-3">
-            <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+            <i class="fas fa-check-circle text-brand-500 mt-1"></i>
             <span class="text-gray-700 dark:text-gray-300">Track status from draft to received</span>
           </div>
           <div class="flex items-start gap-3">
-            <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+            <i class="fas fa-check-circle text-brand-500 mt-1"></i>
             <span class="text-gray-700 dark:text-gray-300">Link to goods received notes for stock updates</span>
           </div>
         </div>

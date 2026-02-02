@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Create Product">
     <!-- Error Toast -->
     <Transition
@@ -142,7 +142,7 @@
             <div v-if="form.cost_price > 0 && form.selling_price > 0" class="mt-4 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
               <div class="flex items-center justify-between text-sm">
                 <span class="text-gray-600 dark:text-gray-400">Profit Margin</span>
-                <span :class="profitMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'" class="font-medium">
+                <span :class="profitMargin >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-red-600 dark:text-red-400'" class="font-medium">
                   {{ profitMargin.toFixed(1) }}%
                 </span>
               </div>
@@ -163,8 +163,8 @@
           </div>
 
           <!-- Base Unit Info -->
-          <div class="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <div class="flex items-center gap-2 text-sm text-green-700 dark:text-green-400">
+          <div class="mb-4 p-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg">
+            <div class="flex items-center gap-2 text-sm text-success-700 dark:text-success-400">
               <i class="fas fa-info-circle"></i>
               <span>Base unit: <strong>{{ getBaseUnitLabel() }}</strong> at ${{ form.selling_price || '0.00' }} each</span>
             </div>
@@ -228,14 +228,14 @@
               <label class="label mb-3">Tracking Options</label>
               <div class="space-y-3">
                 <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
-                  <input type="checkbox" v-model="form.track_stock" class="w-4 h-4 text-emerald-600 rounded" />
+                  <input type="checkbox" v-model="form.track_stock" class="w-4 h-4 text-brand-600 rounded" />
                   <div>
                     <span class="text-sm font-medium text-gray-900 dark:text-white">Track Stock</span>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Monitor inventory levels</p>
                   </div>
                 </label>
                 <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
-                  <input type="checkbox" v-model="form.track_expiry" class="w-4 h-4 text-emerald-600 rounded" />
+                  <input type="checkbox" v-model="form.track_expiry" class="w-4 h-4 text-brand-600 rounded" />
                   <div>
                     <span class="text-sm font-medium text-gray-900 dark:text-white">Track Expiry</span>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Monitor expiration dates</p>
@@ -342,14 +342,14 @@
           </div>
           <div class="grid grid-cols-2 gap-4">
             <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer">
-              <input type="checkbox" v-model="unitForm.allow_decimal" class="w-4 h-4 text-emerald-600 rounded" />
+              <input type="checkbox" v-model="unitForm.allow_decimal" class="w-4 h-4 text-brand-600 rounded" />
               <div>
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Allow Decimals</span>
                 <p class="text-xs text-gray-500">e.g., 1.5 kg</p>
               </div>
             </label>
             <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg cursor-pointer">
-              <input type="checkbox" v-model="unitForm.is_base_unit" class="w-4 h-4 text-emerald-600 rounded" />
+              <input type="checkbox" v-model="unitForm.is_base_unit" class="w-4 h-4 text-brand-600 rounded" />
               <div>
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Base Unit</span>
                 <p class="text-xs text-gray-500">Primary in category</p>

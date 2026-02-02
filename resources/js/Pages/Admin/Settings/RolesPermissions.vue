@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Roles & Permissions">
     <div class="max-w-6xl space-y-6">
       <!-- Header -->
@@ -35,7 +35,7 @@
               </span>
               <button
                 @click="editRole(role)"
-                class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 text-sm font-medium"
+                class="text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 text-sm font-medium"
               >
                 Configure <i class="fas fa-arrow-right ml-1"></i>
               </button>
@@ -48,7 +48,7 @@
       <div class="card overflow-hidden">
         <div class="p-6 border-b border-gray-200 dark:border-slate-700">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <i class="fas fa-shield-alt text-emerald-500"></i>
+            <i class="fas fa-shield-alt text-brand-500"></i>
             Permissions Matrix
           </h2>
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -103,7 +103,7 @@
                         :checked="hasPermission(role.value, moduleKey, permission.key)"
                         @change="togglePermission(role.value, moduleKey, permission.key)"
                         :disabled="role.value === 'admin'"
-                        class="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="w-5 h-5 text-brand-600 rounded border-gray-300 focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                   </td>
@@ -142,7 +142,7 @@
             <p class="text-sm text-gray-600 dark:text-gray-400">{{ role.description }}</p>
             <ul class="mt-3 space-y-1">
               <li v-for="feature in role.features" :key="feature" class="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
-                <i class="fas fa-check text-emerald-500 mt-0.5"></i>
+                <i class="fas fa-check text-brand-500 mt-0.5"></i>
                 <span>{{ feature }}</span>
               </li>
             </ul>
@@ -203,10 +203,10 @@ const roles = ref([
     label: 'Cashier',
     description: 'POS operations and customer transactions',
     icon: 'fas fa-cash-register',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
-    color: 'bg-emerald-500',
-    textColor: 'text-emerald-600 dark:text-emerald-400',
+    iconColor: 'text-brand-600 dark:text-brand-400',
+    iconBg: 'bg-brand-100 dark:bg-brand-900/30',
+    color: 'bg-brand-500',
+    textColor: 'text-brand-600 dark:text-brand-400',
     userCount: props.userCounts?.cashier || 0,
     features: [
       'Process sales transactions',

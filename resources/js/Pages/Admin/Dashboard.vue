@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Dashboard">
     <div class="space-y-6">
       <!-- Welcome Header -->
@@ -17,52 +17,52 @@
       <!-- Stats Grid -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <!-- Branches Card -->
-        <div class="bg-emerald-500 rounded-lg p-3 shadow-sm">
+        <div class="bg-brand-500 rounded-lg p-3 shadow-sm">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-white/20 rounded flex items-center justify-center flex-shrink-0">
               <i class="fas fa-store text-white text-sm"></i>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-xs text-emerald-100">Branches</p>
-              <p class="text-lg font-bold text-white">{{ stats.active_branches }}<span class="text-xs font-normal text-emerald-200">/{{ stats.total_branches }}</span></p>
+              <p class="text-xs text-brand-100">Branches</p>
+              <p class="text-lg font-bold text-white">{{ stats.active_branches }}<span class="text-xs font-normal text-brand-200">/{{ stats.total_branches }}</span></p>
             </div>
           </div>
         </div>
 
         <!-- Products Card -->
-        <div class="bg-emerald-500 rounded-lg p-3 shadow-sm">
+        <div class="bg-brand-500 rounded-lg p-3 shadow-sm">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-white/20 rounded flex items-center justify-center flex-shrink-0">
               <i class="fas fa-box text-white text-sm"></i>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-xs text-emerald-100">Products</p>
-              <p class="text-lg font-bold text-white">{{ stats.active_products }}<span class="text-xs font-normal text-emerald-200">/{{ stats.total_products }}</span></p>
+              <p class="text-xs text-brand-100">Products</p>
+              <p class="text-lg font-bold text-white">{{ stats.active_products }}<span class="text-xs font-normal text-brand-200">/{{ stats.total_products }}</span></p>
             </div>
           </div>
         </div>
 
         <!-- Users Card -->
-        <div class="bg-emerald-500 rounded-lg p-3 shadow-sm">
+        <div class="bg-brand-500 rounded-lg p-3 shadow-sm">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-white/20 rounded flex items-center justify-center flex-shrink-0">
               <i class="fas fa-users text-white text-sm"></i>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-xs text-emerald-100">Users</p>
-              <p class="text-lg font-bold text-white">{{ stats.active_users }}<span class="text-xs font-normal text-emerald-200">/{{ stats.total_users }}</span></p>
+              <p class="text-xs text-brand-100">Users</p>
+              <p class="text-lg font-bold text-white">{{ stats.active_users }}<span class="text-xs font-normal text-brand-200">/{{ stats.total_users }}</span></p>
             </div>
           </div>
         </div>
 
         <!-- Customers Card -->
-        <div class="bg-emerald-500 rounded-lg p-3 shadow-sm">
+        <div class="bg-brand-500 rounded-lg p-3 shadow-sm">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-white/20 rounded flex items-center justify-center flex-shrink-0">
               <i class="fas fa-user-friends text-white text-sm"></i>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-xs text-emerald-100">Customers</p>
+              <p class="text-xs text-brand-100">Customers</p>
               <p class="text-lg font-bold text-white">{{ stats.total_customers }}</p>
             </div>
           </div>
@@ -119,8 +119,8 @@
               <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Stock Levels</h2>
               <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Inventory status overview</p>
             </div>
-            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <i class="fas fa-boxes text-emerald-600 dark:text-emerald-400"></i>
+            <div class="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+              <i class="fas fa-boxes text-brand-600 dark:text-brand-400"></i>
             </div>
           </div>
           <apexchart
@@ -143,7 +143,7 @@
             <div v-if="topProducts.length > 0">
               <div v-for="(product, index) in topProducts" :key="index" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 rounded-lg hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-4 flex-1 min-w-0">
-                  <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-500 rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                     #{{ index + 1 }}
                   </div>
                   <div class="flex-1 min-w-0">
@@ -171,22 +171,22 @@
         <div class="card">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Branches</h2>
-            <Link :href="route('admin.branches.index')" class="text-sm text-emerald-600 dark:text-emerald-400 hover:underline">
+            <Link :href="route('admin.branches.index')" class="text-sm text-brand-600 dark:text-brand-400 hover:underline">
               View all
             </Link>
           </div>
           <div class="space-y-3" v-if="branches.length > 0">
             <div v-for="branch in branches" :key="branch.id" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
               <div class="flex items-center gap-3">
-                <div :class="['w-10 h-10 rounded-lg flex items-center justify-center', branch.is_active ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-gray-200 dark:bg-gray-700']">
-                  <i :class="['fas fa-store', branch.is_active ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500']"></i>
+                <div :class="['w-10 h-10 rounded-lg flex items-center justify-center', branch.is_active ? 'bg-brand-100 dark:bg-brand-900/30' : 'bg-gray-200 dark:bg-gray-700']">
+                  <i :class="['fas fa-store', branch.is_active ? 'text-brand-600 dark:text-brand-400' : 'text-gray-500']"></i>
                 </div>
                 <div>
                   <p class="font-medium text-gray-900 dark:text-white">{{ branch.name }}</p>
                   <p class="text-sm text-gray-500 dark:text-gray-400">{{ branch.city || 'No location' }}</p>
                 </div>
               </div>
-              <span :class="['px-2 py-1 text-xs font-medium rounded-full', branch.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+              <span :class="['px-2 py-1 text-xs font-medium rounded-full', branch.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
                 {{ branch.is_active ? 'Active' : 'Inactive' }}
               </span>
             </div>
@@ -194,7 +194,7 @@
           <div v-else class="text-center py-8 text-gray-500 dark:text-gray-400">
             <i class="fas fa-store text-4xl mb-3 text-gray-300 dark:text-gray-600"></i>
             <p>No branches yet</p>
-            <Link :href="route('admin.branches.create')" class="text-emerald-600 dark:text-emerald-400 hover:underline text-sm mt-2 inline-block">
+            <Link :href="route('admin.branches.create')" class="text-brand-600 dark:text-brand-400 hover:underline text-sm mt-2 inline-block">
               Create your first branch
             </Link>
           </div>
@@ -204,14 +204,14 @@
         <div class="card">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Users</h2>
-            <Link :href="route('admin.users.index')" class="text-sm text-emerald-600 dark:text-emerald-400 hover:underline">
+            <Link :href="route('admin.users.index')" class="text-sm text-brand-600 dark:text-brand-400 hover:underline">
               View all
             </Link>
           </div>
           <div class="space-y-3" v-if="recentUsers.length > 0">
             <div v-for="user in recentUsers" :key="user.id" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-semibold">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-500 flex items-center justify-center text-white font-semibold">
                   {{ user.name.charAt(0).toUpperCase() }}
                 </div>
                 <div>

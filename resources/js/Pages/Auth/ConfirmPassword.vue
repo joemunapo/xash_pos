@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <GuestLayout>
     <AuthCard
       title="Confirm Password"
@@ -38,7 +38,7 @@
 
       <!-- Info -->
       <div class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-        <p><Link :href="route('login')" class="font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">Sign out</Link></p>
+        <p><Link :href="route('login')" class="font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">Sign out</Link></p>
       </div>
     </AuthCard>
   </GuestLayout>

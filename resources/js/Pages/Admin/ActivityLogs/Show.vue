@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Activity Details">
     <div class="max-w-4xl space-y-6">
       <!-- Header -->
@@ -92,10 +92,10 @@
       <!-- New Values -->
       <div v-if="log.new_values && Object.keys(log.new_values).length > 0" class="card p-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <i class="fas fa-star text-emerald-500"></i>
+          <i class="fas fa-star text-brand-500"></i>
           New Values
         </h3>
-        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4">
+        <div class="bg-brand-50 dark:bg-brand-900/20 rounded-lg p-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div v-for="(value, key) in log.new_values" :key="key">
               <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ key }}</label>
@@ -121,7 +121,7 @@
                 {{ formatValue(change.old) }}
               </span>
               <i class="fas fa-arrow-right text-gray-400"></i>
-              <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded text-sm font-medium">
+              <span class="px-3 py-1 bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 rounded text-sm font-medium">
                 {{ formatValue(change.new) }}
               </span>
             </div>

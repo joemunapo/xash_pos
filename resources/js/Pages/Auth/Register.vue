@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <GuestLayout>
     <AuthCard title="Create Account" subtitle="Get started in seconds">
       <form @submit.prevent="submitRegister" class="space-y-4">
@@ -77,7 +77,7 @@
         Already have an account?
         <Link
           :href="route('login')"
-          class="font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+          class="font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors"
         >
           Sign in
         </Link>

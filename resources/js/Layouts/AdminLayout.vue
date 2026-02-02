@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950">
     <!-- Sidebar Overlay -->
     <div
@@ -20,19 +20,19 @@
       <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 dark:border-slate-800 flex-shrink-0 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-slate-800/50">
         <div :class="['flex items-center flex-1', miniSidebar ? 'justify-center' : 'gap-2']">
           <Link :href="route('admin.dashboard')" :class="['flex items-center group', miniSidebar ? '' : 'gap-2.5']">
-            <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/30 flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div class="w-10 h-10 bg-gradient-to-br from-brand-500 via-brand-600 to-brand-600 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 flex-shrink-0 group-hover:scale-105 transition-transform">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
               </svg>
             </div>
-            <span v-if="!miniSidebar" class="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent whitespace-nowrap">XASH<span class="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text">POS</span></span>
+            <span v-if="!miniSidebar" class="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent whitespace-nowrap">XASH<span class="bg-gradient-to-r from-brand-500 to-brand-500 bg-clip-text">POS</span></span>
           </Link>
         </div>
         
         <!-- Toggle Button (Desktop Only) - Always visible -->
         <button
           @click="toggleMiniSidebar"
-          class="hidden lg:flex items-center justify-center ml-2 w-8 h-8 rounded-lg bg-green-50 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all flex-shrink-0"
+          class="hidden lg:flex items-center justify-center ml-2 w-8 h-8 rounded-lg bg-success-50 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 transition-all flex-shrink-0"
           :title="miniSidebar ? 'Expand Sidebar' : 'Collapse Sidebar'"
         >
           <i :class="`fas ${miniSidebar ? 'fa-angle-right' : 'fa-angle-left'} text-sm`"></i>
@@ -249,7 +249,7 @@
           ]"
         >
           <div :class="['flex items-center', miniSidebar ? '' : 'gap-3']">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 flex items-center justify-center text-white text-sm font-bold shadow-lg ring-2 ring-white dark:ring-slate-900">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 via-brand-500 to-brand-500 flex items-center justify-center text-white text-sm font-bold shadow-lg ring-2 ring-white dark:ring-slate-900">
               {{ user.name.charAt(0).toUpperCase() }}
             </div>
             <div v-if="!miniSidebar" class="text-left min-w-0 flex-1">
@@ -257,7 +257,7 @@
               <p class="text-xs text-gray-500 dark:text-gray-400 capitalize truncate">{{ user.role }}</p>
             </div>
           </div>
-          <i v-if="!miniSidebar" :class="`fas fa-chevron-down transition-all duration-300 text-xs text-gray-400 ${userMenuOpen ? 'rotate-180 text-emerald-500' : ''}`"></i>
+          <i v-if="!miniSidebar" :class="`fas fa-chevron-down transition-all duration-300 text-xs text-gray-400 ${userMenuOpen ? 'rotate-180 text-brand-500' : ''}`"></i>
         </button>
 
         <!-- User Dropdown -->
@@ -265,7 +265,7 @@
           'absolute bottom-full mb-3 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 z-10 overflow-hidden',
           miniSidebar ? 'left-full ml-3 bottom-0' : 'left-3 right-3'
         ]">
-          <Link :href="route('user.profile.edit')" @click="userMenuOpen = false" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all whitespace-nowrap">
+          <Link :href="route('user.profile.edit')" @click="userMenuOpen = false" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 transition-all whitespace-nowrap">
             <i class="fas fa-user-circle text-base"></i>
             <span>My Profile</span>
           </Link>
@@ -287,7 +287,7 @@
         <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800">
           <i class="fas fa-bars text-xl"></i>
         </button>
-        <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-emerald-500">POS</span></span>
+        <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-brand-500">POS</span></span>
         <div class="w-10"></div>
       </header>
 
@@ -341,7 +341,7 @@ const scrollToActiveItem = () => {
     if (!sidebarNav.value) return;
 
     // Find active nav link or active nav group
-    const activeLink = sidebarNav.value.querySelector('a.bg-emerald-50, a.bg-emerald-600, button.bg-emerald-50');
+    const activeLink = sidebarNav.value.querySelector('a.bg-brand-50, a.bg-brand-600, button.bg-brand-50');
     
     if (activeLink) {
       // Get the position of the active element

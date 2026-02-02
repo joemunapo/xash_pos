@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Activity Logs">
     <div class="space-y-6">
       <!-- Header -->
@@ -124,7 +124,7 @@
                 <td class="px-6 py-4 text-center">
                   <Link
                     :href="route('admin.activity-logs.show', log.id)"
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:text-emerald-300 dark:hover:bg-emerald-900/20 transition-colors"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-brand-600 hover:text-brand-700 hover:bg-brand-50 dark:text-brand-400 dark:hover:text-brand-300 dark:hover:bg-brand-900/20 transition-colors"
                     title="View Details"
                   >
                     <i class="fas fa-eye"></i>
@@ -150,7 +150,7 @@
                   :class="[
                     'px-3 py-1 text-sm rounded-lg border transition-colors',
                     link.active
-                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      ? 'bg-brand-600 text-white border-brand-600'
                       : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700'
                   ]"
                   v-html="link.label"

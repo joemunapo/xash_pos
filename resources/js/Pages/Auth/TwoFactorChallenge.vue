@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <GuestLayout>
     <AuthCard
       title="Two-Factor Authentication"
@@ -63,7 +63,7 @@
         <button
           type="button"
           @click="recovery = !recovery"
-          class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium transition-colors"
+          class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors"
         >
           <i :class="`fas ${recovery ? 'fa-key' : 'fa-shield-check'} mr-1`"></i>
           {{ recovery ? 'Use code instead' : 'Use recovery code' }}
@@ -74,7 +74,7 @@
       <div class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
         <Link
           :href="route('login')"
-          class="font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+          class="font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors"
         >
           Sign In
         </Link>

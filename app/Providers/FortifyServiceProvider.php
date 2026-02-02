@@ -32,6 +32,10 @@ class FortifyServiceProvider extends ServiceProvider
                 {
                     $user = $request->user();
 
+                    if ($user && $user->isSuperAdmin()) {
+                        return redirect()->intended('/superadmin/dashboard');
+                    }
+
                     if ($user && $user->role) {
                         $userRole = UserRole::tryFrom($user->role);
                         if ($userRole) {

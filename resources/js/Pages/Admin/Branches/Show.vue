@@ -1,17 +1,17 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Branch Details">
     <div class="max-w-4xl mx-auto space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <Link :href="route('admin.branches.index')" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 mb-4">
+          <Link :href="route('admin.branches.index')" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 mb-4">
             <i class="fas fa-arrow-left mr-2"></i> Back to Branches
           </Link>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ branch.name }}</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1">{{ branch.code || 'No code assigned' }}</p>
         </div>
         <div class="flex items-center gap-3">
-          <span :class="['px-3 py-1 text-sm font-medium rounded-lg', branch.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+          <span :class="['px-3 py-1 text-sm font-medium rounded-lg', branch.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
             {{ branch.is_active ? 'Active' : 'Inactive' }}
           </span>
           <Link :href="route('admin.branches.edit', branch.id)" class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -36,7 +36,7 @@
             </div>
             <div class="flex justify-between">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Status</dt>
-              <dd class="text-sm font-medium" :class="branch.is_active ? 'text-emerald-600' : 'text-gray-500'">
+              <dd class="text-sm font-medium" :class="branch.is_active ? 'text-brand-600' : 'text-gray-500'">
                 {{ branch.is_active ? 'Active' : 'Inactive' }}
               </dd>
             </div>
@@ -65,14 +65,14 @@
             <div class="flex justify-between">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Phone</dt>
               <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                <a v-if="branch.phone" :href="'tel:' + branch.phone" class="text-emerald-600 hover:text-emerald-700">{{ branch.phone }}</a>
+                <a v-if="branch.phone" :href="'tel:' + branch.phone" class="text-brand-600 hover:text-brand-700">{{ branch.phone }}</a>
                 <span v-else>-</span>
               </dd>
             </div>
             <div class="flex justify-between">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Email</dt>
               <dd class="text-sm font-medium text-gray-900 dark:text-white">
-                <a v-if="branch.email" :href="'mailto:' + branch.email" class="text-emerald-600 hover:text-emerald-700">{{ branch.email }}</a>
+                <a v-if="branch.email" :href="'mailto:' + branch.email" class="text-brand-600 hover:text-brand-700">{{ branch.email }}</a>
                 <span v-else>-</span>
               </dd>
             </div>
@@ -120,7 +120,7 @@
                   </span>
                 </td>
                 <td class="py-3 px-4">
-                  <span :class="['px-2 py-1 text-xs font-medium rounded', user.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+                  <span :class="['px-2 py-1 text-xs font-medium rounded', user.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
                     {{ user.is_active ? 'Active' : 'Inactive' }}
                   </span>
                 </td>

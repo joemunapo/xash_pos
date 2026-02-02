@@ -19,6 +19,11 @@ class CheckRole
             return redirect()->route('login');
         }
 
+        // Super admins have access to all roles
+        if ($request->user()->isSuperAdmin()) {
+            return $next($request);
+        }
+
         // Allow if user has any of the specified roles
         if (in_array($request->user()->role, $roles)) {
             return $next($request);

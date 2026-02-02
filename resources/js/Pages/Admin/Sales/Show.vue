@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Sale Details">
     <div class="max-w-6xl space-y-6">
       <!-- Header -->
@@ -39,7 +39,7 @@
         </div>
         <div class="card p-6">
           <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Amount</div>
-          <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+          <div class="text-lg font-bold text-brand-600 dark:text-brand-400">
             ${{ parseFloat(sale.total_amount).toFixed(2) }}
           </div>
         </div>
@@ -49,7 +49,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <i class="fas fa-user text-emerald-500"></i>
+            <i class="fas fa-user text-brand-500"></i>
             Customer Information
           </h2>
           <div v-if="sale.customer" class="space-y-3">
@@ -67,7 +67,7 @@
 
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <i class="fas fa-building text-emerald-500"></i>
+            <i class="fas fa-building text-brand-500"></i>
             Branch & Cashier
           </h2>
           <div class="space-y-3">
@@ -87,7 +87,7 @@
       <div class="card overflow-hidden">
         <div class="p-6 border-b border-gray-200 dark:border-slate-700">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <i class="fas fa-shopping-cart text-emerald-500"></i>
+            <i class="fas fa-shopping-cart text-brand-500"></i>
             Sale Items
           </h2>
         </div>
@@ -139,7 +139,7 @@
               </div>
               <div class="flex justify-between text-lg font-bold pt-3 border-t border-gray-300 dark:border-slate-600">
                 <span class="text-gray-900 dark:text-white">Total:</span>
-                <span class="text-emerald-600 dark:text-emerald-400">${{ parseFloat(sale.total_amount).toFixed(2) }}</span>
+                <span class="text-brand-600 dark:text-brand-400">${{ parseFloat(sale.total_amount).toFixed(2) }}</span>
               </div>
               <div class="flex justify-between text-sm pt-2">
                 <span class="text-gray-600 dark:text-gray-400">Amount Paid:</span>
@@ -186,7 +186,7 @@ const formatDateTime = (date) => {
 
 const getStatusClass = (status) => {
   const classes = {
-    completed: 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    completed: 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400',
     pending: 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
     cancelled: 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
     refunded: 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',

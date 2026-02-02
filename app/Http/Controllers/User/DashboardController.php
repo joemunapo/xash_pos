@@ -26,7 +26,7 @@ class DashboardController extends Controller
                 'total_tasks' => 0, // Add real data based on your business logic
                 'completed_tasks' => 0,
                 'pending_tasks' => 0,
-                'total_errands' => 0,
+                'total_orders' => 0,
             ],
             'recent_activity' => [], // Add real data
         ]);

@@ -1,12 +1,12 @@
-<template>
+﻿<template>
   <GuestLayout>
     <AuthCard
       title="Verify Email"
       subtitle="Check your inbox for a verification link"
     >
       <!-- Success message -->
-      <div v-if="status" class="p-4 mb-6 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
-        <p class="text-sm text-emerald-700 dark:text-emerald-300 flex items-start gap-2">
+      <div v-if="status" class="p-4 mb-6 bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 rounded-lg">
+        <p class="text-sm text-brand-700 dark:text-brand-300 flex items-start gap-2">
           <i class="fas fa-check-circle mt-0.5 flex-shrink-0"></i>
           <span>{{ status }}</span>
         </p>

@@ -1,16 +1,16 @@
-<template>
+﻿<template>
   <GuestLayout>
     <div class="max-w-md mx-auto">
       <!-- Logo -->
       <div class="text-center mb-8">
         <Link :href="route('welcome')" class="inline-flex items-center gap-2 group">
-          <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+          <div class="w-14 h-14 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-brand-500/30 group-hover:scale-105 transition-transform">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
             </svg>
           </div>
         </Link>
-        <h1 class="text-3xl font-bold text-gray-900 mt-4">XASH<span class="text-emerald-500">POS</span></h1>
+        <h1 class="text-3xl font-bold text-gray-900 mt-4">XASH<span class="text-brand-500">POS</span></h1>
         <p class="text-gray-600 mt-2">Sign in to your account</p>
       </div>
 
@@ -25,12 +25,12 @@
               <input
                 v-model="form.email"
                 type="email"
-                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
                 placeholder="you@example.com"
                 required
               />
             </div>
-            <p v-if="form.errors.email" class="text-red-500 text-sm mt-1">{{ form.errors.email }}</p>
+            <p v-if="form.errors.email" class="text-danger-500 text-sm mt-1">{{ form.errors.email }}</p>
           </div>
 
           <!-- Password field -->
@@ -41,21 +41,21 @@
               <input
                 v-model="form.password"
                 type="password"
-                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
                 placeholder="••••••••"
                 required
               />
             </div>
-            <p v-if="form.errors.password" class="text-red-500 text-sm mt-1">{{ form.errors.password }}</p>
+            <p v-if="form.errors.password" class="text-danger-500 text-sm mt-1">{{ form.errors.password }}</p>
           </div>
 
           <!-- Remember me -->
           <div class="flex items-center justify-between">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="form.remember" type="checkbox" class="w-4 h-4 rounded border-gray-300 bg-white text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0" />
+              <input v-model="form.remember" type="checkbox" class="w-4 h-4 rounded border-gray-300 bg-white text-brand-500 focus:ring-brand-500 focus:ring-offset-0" />
               <span class="text-sm text-gray-600">Remember me</span>
             </label>
-            <Link v-if="canResetPassword" :href="route('password.request')" class="text-sm text-emerald-600 hover:text-emerald-700 transition-colors">
+            <Link v-if="canResetPassword" :href="route('password.request')" class="text-sm text-brand-600 hover:text-brand-700 transition-colors">
               Forgot password?
             </Link>
           </div>
@@ -64,7 +64,7 @@
           <button
             type="submit"
             :disabled="form.processing"
-            class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            class="w-full py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-brand-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <i v-if="form.processing" class="fas fa-spinner fa-spin"></i>
             <span>{{ form.processing ? 'Signing in...' : 'Sign In' }}</span>

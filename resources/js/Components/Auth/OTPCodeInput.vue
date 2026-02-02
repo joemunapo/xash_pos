@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 
 interface Props {
@@ -110,7 +110,7 @@ defineExpose({
       inputmode="numeric"
       maxlength="1"
       :disabled="disabled"
-      class="w-14 h-14 text-center text-2xl font-bold rounded-lg border-2 border-emerald-200 focus:border-emerald-500 focus:outline-none transition-colors bg-white dark:bg-slate-800 dark:border-slate-600 dark:focus:border-emerald-400"
+      class="w-14 h-14 text-center text-2xl font-bold rounded-lg border-2 border-brand-200 focus:border-brand-500 focus:outline-none transition-colors bg-white dark:bg-slate-800 dark:border-slate-600 dark:focus:border-brand-400"
       @input="handleInput(index, $event)"
       @keydown="handleKeyDown(index, $event)"
       @paste="handlePaste"

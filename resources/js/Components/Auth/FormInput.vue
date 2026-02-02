@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <div class="mb-6">
     <label :for="id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
       <span v-if="icon" class="inline-block mr-2">
-        <i :class="`fas ${icon} text-emerald-600 dark:text-emerald-400`"></i>
+        <i :class="`fas ${icon} text-brand-600 dark:text-brand-400`"></i>
       </span>
       {{ label }}
       <span v-if="required" class="text-red-500">*</span>
@@ -27,7 +27,7 @@
           isPasswordType && 'pr-12',
           error
             ? 'border-red-500 dark:border-red-400 focus:ring-2 focus:ring-red-500 focus:border-transparent'
-            : 'border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:focus:ring-emerald-400',
+            : 'border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:focus:ring-brand-400',
           disabled && 'opacity-50 cursor-not-allowed'
         ]"
       />
@@ -37,7 +37,7 @@
         v-if="isPasswordType"
         type="button"
         @click="showPassword = !showPassword"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors p-1"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors p-1"
         :title="showPassword ? 'Hide password' : 'Show password'"
       >
         <i :class="`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`"></i>

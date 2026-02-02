@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
@@ -193,7 +193,7 @@ const switchMethod = async (newMethod: string) => {
             :disabled="isResending"
             class="flex-1 py-3 px-3 rounded-lg border-2 transition-colors text-center text-sm font-medium"
             :class="{
-              'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400': selectedMethod === methodOption.id,
+              'border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400': selectedMethod === methodOption.id,
               'border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-500': selectedMethod !== methodOption.id,
               'opacity-50 cursor-not-allowed': isResending,
             }"
@@ -248,7 +248,7 @@ const switchMethod = async (newMethod: string) => {
             v-else
             @click="resendOTP"
             :disabled="isResending"
-            class="text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            class="text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="!isResending">Resend Code</span>
             <span v-else><i class="fas fa-spinner fa-spin mr-1"></i>Sending...</span>
@@ -266,7 +266,7 @@ const switchMethod = async (newMethod: string) => {
         <!-- Back to Login -->
         <div class="text-center">
           <p class="text-sm text-slate-600 dark:text-slate-400">
-            <a href="/login" class="font-medium text-emerald-600 dark:text-emerald-400 hover:underline">
+            <a href="/login" class="font-medium text-brand-600 dark:text-brand-400 hover:underline">
               Back to login
             </a>
           </p>

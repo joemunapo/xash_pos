@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Edit Branch">
     <div class="max-w-2xl">
       <!-- Header -->
@@ -91,7 +91,7 @@
           </div>
 
           <div class="flex items-center gap-3">
-            <input type="checkbox" v-model="form.is_active" id="is_active" class="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500" />
+            <input type="checkbox" v-model="form.is_active" id="is_active" class="w-4 h-4 text-brand-600 rounded border-gray-300 focus:ring-brand-500" />
             <label for="is_active" class="text-sm text-gray-700 dark:text-gray-300">Branch is active</label>
           </div>
         </div>

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Add Supplier">
     <div class="max-w-4xl space-y-6">
       <!-- Header -->
@@ -89,7 +89,7 @@
               <p v-if="form.errors.notes" class="text-red-500 text-sm mt-1">{{ form.errors.notes }}</p>
             </div>
             <div class="flex items-center gap-3">
-              <input v-model="form.is_active" type="checkbox" id="is_active" class="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500" />
+              <input v-model="form.is_active" type="checkbox" id="is_active" class="w-5 h-5 text-brand-600 rounded border-gray-300 focus:ring-brand-500" />
               <label for="is_active" class="text-sm font-medium text-gray-900 dark:text-white cursor-pointer">Active Supplier</label>
             </div>
           </div>

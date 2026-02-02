@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <UserLayout>
     <div class="space-y-6">
       <!-- Header -->
@@ -18,7 +18,7 @@
           :class="[
             'px-4 py-3 font-medium border-b-2 transition-colors -mb-px',
             activeTab === tab.id
-              ? 'border-emerald-600 dark:border-emerald-400 text-emerald-600 dark:text-emerald-400'
+              ? 'border-brand-600 dark:border-brand-400 text-brand-600 dark:text-brand-400'
               : 'border-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
           ]"
         >
@@ -39,7 +39,7 @@
               id="name"
               v-model="personalForm.name"
               type="text"
-              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:focus:ring-emerald-400"
+              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:focus:ring-brand-400"
               required
             />
             <p v-if="personalForm.errors.name" class="text-sm text-red-600 dark:text-red-400 mt-2">
@@ -55,7 +55,7 @@
               id="email"
               v-model="personalForm.email"
               type="email"
-              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:focus:ring-emerald-400"
+              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:focus:ring-brand-400"
               required
             />
             <p v-if="personalForm.errors.email" class="text-sm text-red-600 dark:text-red-400 mt-2">
@@ -77,7 +77,7 @@
             <button
               type="submit"
               :disabled="personalForm.processing"
-              class="px-6 py-2.5 bg-emerald-600 dark:bg-emerald-500 text-white font-semibold rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 disabled:opacity-50 transition-all duration-300"
+              class="px-6 py-2.5 bg-brand-600 dark:bg-brand-500 text-white font-semibold rounded-lg hover:bg-brand-700 dark:hover:bg-brand-600 disabled:opacity-50 transition-all duration-300"
             >
               <i v-if="personalForm.processing" class="fas fa-spinner animate-spin mr-2"></i>
               {{ personalForm.processing ? 'Saving...' : 'Save Changes' }}
@@ -98,7 +98,7 @@
               id="current_password"
               v-model="passwordForm.current_password"
               type="password"
-              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:focus:ring-emerald-400"
+              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:focus:ring-brand-400"
               required
             />
             <p v-if="passwordForm.errors.current_password" class="text-sm text-red-600 dark:text-red-400 mt-2">
@@ -114,7 +114,7 @@
               id="password"
               v-model="passwordForm.password"
               type="password"
-              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:focus:ring-emerald-400"
+              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:focus:ring-brand-400"
               required
             />
             <p v-if="passwordForm.errors.password" class="text-sm text-red-600 dark:text-red-400 mt-2">
@@ -130,7 +130,7 @@
               id="password_confirmation"
               v-model="passwordForm.password_confirmation"
               type="password"
-              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:focus:ring-emerald-400"
+              class="w-full px-4 py-2.5 border rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:focus:ring-brand-400"
               required
             />
             <p v-if="passwordForm.errors.password_confirmation" class="text-sm text-red-600 dark:text-red-400 mt-2">
@@ -144,7 +144,7 @@
             <button
               type="submit"
               :disabled="passwordForm.processing"
-              class="px-6 py-2.5 bg-emerald-600 dark:bg-emerald-500 text-white font-semibold rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 disabled:opacity-50 transition-all duration-300"
+              class="px-6 py-2.5 bg-brand-600 dark:bg-brand-500 text-white font-semibold rounded-lg hover:bg-brand-700 dark:hover:bg-brand-600 disabled:opacity-50 transition-all duration-300"
             >
               <i v-if="passwordForm.processing" class="fas fa-spinner animate-spin mr-2"></i>
               {{ passwordForm.processing ? 'Updating...' : 'Update Password' }}
@@ -167,7 +167,7 @@
 
           <button
             @click="enableTwoFactorModal = true"
-            class="px-6 py-3 bg-emerald-600 dark:bg-emerald-500 text-white font-semibold rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-all duration-300 flex items-center gap-2"
+            class="px-6 py-3 bg-brand-600 dark:bg-brand-500 text-white font-semibold rounded-lg hover:bg-brand-700 dark:hover:bg-brand-600 transition-all duration-300 flex items-center gap-2"
           >
             <i class="fas fa-shield-check"></i>
             Enable Two-Factor Authentication
@@ -175,8 +175,8 @@
         </div>
 
         <div v-else class="space-y-6">
-          <div class="p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
-            <p class="text-green-700 dark:text-green-300 flex items-center gap-2">
+          <div class="p-4 bg-success-50 dark:bg-success-900/30 border border-success-200 dark:border-success-800 rounded-lg">
+            <p class="text-success-700 dark:text-success-300 flex items-center gap-2">
               <i class="fas fa-check-circle"></i>
               <span>Two-factor authentication is enabled on your account.</span>
             </p>

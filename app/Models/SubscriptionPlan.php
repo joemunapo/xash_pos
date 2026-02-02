@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SubscriptionPlan extends Model
 {
@@ -44,11 +44,16 @@ class SubscriptionPlan extends Model
      */
     public function hasFeature(string $feature): bool
     {
-        if (!$this->features) {
+        if (! $this->features) {
             return false;
         }
 
         return in_array($feature, $this->features);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 
     /**

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <CashierLayout page-title="My Sales">
     <div class="space-y-6">
       <!-- Header -->
@@ -14,8 +14,8 @@
         <div v-if="sales.data && sales.data.length > 0" class="space-y-3">
           <div v-for="sale in sales.data" :key="sale.id" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" @click="$inertia.visit(route('cashier.sales.show', sale.id))">
             <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-                <i class="fas fa-receipt text-teal-600 dark:text-teal-400 text-lg"></i>
+              <div class="w-12 h-12 rounded-lg bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
+                <i class="fas fa-receipt text-brand-600 dark:text-brand-400 text-lg"></i>
               </div>
               <div>
                 <p class="font-semibold text-gray-900 dark:text-white">{{ sale.receipt_number }}</p>
@@ -31,7 +31,7 @@
         <div v-else class="text-center py-16 text-gray-500 dark:text-gray-400">
           <i class="fas fa-receipt text-5xl mb-4 text-gray-300 dark:text-gray-600"></i>
           <p class="text-lg">No sales found</p>
-          <Link :href="route('cashier.pos')" class="text-teal-600 dark:text-teal-400 hover:underline text-sm mt-2 inline-block">
+          <Link :href="route('cashier.pos')" class="text-brand-600 dark:text-brand-400 hover:underline text-sm mt-2 inline-block">
             Make your first sale
           </Link>
         </div>
@@ -46,7 +46,7 @@
           <Link v-if="sales.prev_page_url" :href="sales.prev_page_url" class="px-3 py-2 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
             Previous
           </Link>
-          <Link v-if="sales.next_page_url" :href="sales.next_page_url" class="px-3 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+          <Link v-if="sales.next_page_url" :href="sales.next_page_url" class="px-3 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">
             Next
           </Link>
         </div>

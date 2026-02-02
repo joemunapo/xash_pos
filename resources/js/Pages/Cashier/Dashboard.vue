@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <CashierLayout page-title="Dashboard">
     <div class="space-y-6">
       <!-- Welcome Header -->
@@ -9,7 +9,7 @@
           <p class="text-red-600 dark:text-red-400 mt-1" v-else>{{ message }}</p>
         </div>
         <div v-if="branch" class="flex gap-2">
-          <Link :href="route('cashier.pos')" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium flex items-center gap-2">
+          <Link :href="route('cashier.pos')" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium flex items-center gap-2">
             <i class="fas fa-cash-register"></i>
             <span>Open POS</span>
           </Link>
@@ -27,15 +27,15 @@
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Today's Sales -->
-          <div class="bg-teal-500 rounded-lg p-4 shadow-sm">
+          <div class="bg-brand-500 rounded-lg p-4 shadow-sm">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-receipt text-white text-lg"></i>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-xs text-teal-100 font-medium">Today's Sales</p>
+                <p class="text-xs text-brand-100 font-medium">Today's Sales</p>
                 <p class="text-2xl font-bold text-white">{{ today.total_sales }}</p>
-                <p class="text-sm text-teal-100">R{{ formatCurrency(today.total_revenue) }}</p>
+                <p class="text-sm text-brand-100">R{{ formatCurrency(today.total_revenue) }}</p>
               </div>
             </div>
           </div>
@@ -89,15 +89,15 @@
               <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Sales</h2>
               <p class="text-sm text-gray-500 dark:text-gray-400">Your latest transactions today</p>
             </div>
-            <Link :href="route('cashier.sales.index')" class="text-sm text-teal-600 dark:text-teal-400 hover:underline">
+            <Link :href="route('cashier.sales.index')" class="text-sm text-brand-600 dark:text-brand-400 hover:underline">
               View all
             </Link>
           </div>
           <div v-if="recentSales.length > 0" class="space-y-3">
             <div v-for="sale in recentSales" :key="sale.id" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" @click="$inertia.visit(route('cashier.sales.show', sale.id))">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-                  <i class="fas fa-receipt text-teal-600 dark:text-teal-400"></i>
+                <div class="w-10 h-10 rounded-lg bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
+                  <i class="fas fa-receipt text-brand-600 dark:text-brand-400"></i>
                 </div>
                 <div>
                   <p class="font-medium text-gray-900 dark:text-white">{{ sale.receipt_number }}</p>
@@ -113,7 +113,7 @@
           <div v-else class="text-center py-12 text-gray-500 dark:text-gray-400">
             <i class="fas fa-receipt text-4xl mb-3 text-gray-300 dark:text-gray-600"></i>
             <p>No sales recorded today</p>
-            <Link :href="route('cashier.pos')" class="text-teal-600 dark:text-teal-400 hover:underline text-sm mt-2 inline-block">
+            <Link :href="route('cashier.pos')" class="text-brand-600 dark:text-brand-400 hover:underline text-sm mt-2 inline-block">
               Make your first sale
             </Link>
           </div>
@@ -123,8 +123,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="card">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-900/10 flex items-center justify-center">
-                <i class="fas fa-money-bill-wave text-teal-600 dark:text-teal-400 text-xl"></i>
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-100 to-brand-50 dark:from-brand-900/30 dark:to-brand-900/10 flex items-center justify-center">
+                <i class="fas fa-money-bill-wave text-brand-600 dark:text-brand-400 text-xl"></i>
               </div>
               <div>
                 <p class="text-sm text-gray-600 dark:text-gray-400">Today's Revenue</p>

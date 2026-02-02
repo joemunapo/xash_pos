@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="mb-6 flex items-center">
     <input
       :id="id"
@@ -7,9 +7,9 @@
       @change="$emit('update:modelValue', $event.target.checked)"
       :class="[
         'w-4 h-4 border-gray-300 dark:border-gray-600 rounded cursor-pointer',
-        'text-emerald-600 dark:text-emerald-500',
-        'focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400',
-        'accent-emerald-600 dark:accent-emerald-500'
+        'text-brand-600 dark:text-brand-500',
+        'focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-400',
+        'accent-brand-600 dark:accent-brand-500'
       ]"
     />
 

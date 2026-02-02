@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Create Purchase Order">
     <div class="max-w-6xl space-y-6">
       <!-- Header -->
@@ -104,7 +104,7 @@
                 </div>
                 <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-200 dark:border-slate-700">
                   <span class="text-gray-900 dark:text-white">Total:</span>
-                  <span class="text-emerald-600 dark:text-emerald-400">${{ calculateTotal().toFixed(2) }}</span>
+                  <span class="text-brand-600 dark:text-brand-400">${{ calculateTotal().toFixed(2) }}</span>
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Daily Summary">
     <div class="space-y-6">
       <!-- Header -->
@@ -20,8 +20,8 @@
               <p class="text-sm text-gray-600 dark:text-gray-400">Total Sales</p>
               <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ summary.total_sales.toLocaleString() }}</p>
             </div>
-            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <i class="fas fa-receipt text-xl text-emerald-600 dark:text-emerald-400"></i>
+            <div class="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+              <i class="fas fa-receipt text-xl text-brand-600 dark:text-brand-400"></i>
             </div>
           </div>
         </div>
@@ -29,10 +29,10 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Revenue</p>
-              <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${{ summary.total_revenue.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-brand-600 dark:text-brand-400 mt-1">${{ summary.total_revenue.toFixed(2) }}</p>
             </div>
-            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <i class="fas fa-dollar-sign text-xl text-emerald-600 dark:text-emerald-400"></i>
+            <div class="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+              <i class="fas fa-dollar-sign text-xl text-brand-600 dark:text-brand-400"></i>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@
         <!-- By Branch -->
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <i class="fas fa-building text-emerald-500"></i>
+            <i class="fas fa-building text-brand-500"></i>
             Sales by Branch
           </h2>
           <div class="space-y-3">
@@ -74,7 +74,7 @@
                 <p class="font-medium text-gray-900 dark:text-white">{{ item.branch?.name }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.count }} sales</p>
               </div>
-              <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">${{ parseFloat(item.revenue).toFixed(2) }}</span>
+              <span class="text-lg font-bold text-brand-600 dark:text-brand-400">${{ parseFloat(item.revenue).toFixed(2) }}</span>
             </div>
             <div v-if="salesByBranch.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
               No sales data
@@ -85,7 +85,7 @@
         <!-- By Payment Method -->
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <i class="fas fa-credit-card text-emerald-500"></i>
+            <i class="fas fa-credit-card text-brand-500"></i>
             Sales by Payment Method
           </h2>
           <div class="space-y-3">
@@ -94,7 +94,7 @@
                 <p class="font-medium text-gray-900 dark:text-white capitalize">{{ item.payment_method }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.count }} transactions</p>
               </div>
-              <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">${{ parseFloat(item.revenue).toFixed(2) }}</span>
+              <span class="text-lg font-bold text-brand-600 dark:text-brand-400">${{ parseFloat(item.revenue).toFixed(2) }}</span>
             </div>
             <div v-if="salesByPayment.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
               No payment data
@@ -106,7 +106,7 @@
       <!-- Top Products -->
       <div class="card p-6">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <i class="fas fa-star text-emerald-500"></i>
+          <i class="fas fa-star text-brand-500"></i>
           Top Selling Products
         </h2>
         <div class="overflow-x-auto">
@@ -124,7 +124,7 @@
                 <td class="px-4 py-3 text-gray-900 dark:text-white">{{ index + 1 }}</td>
                 <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ product.product_name }}</td>
                 <td class="px-4 py-3 text-right text-gray-900 dark:text-white">{{ product.total_quantity }}</td>
-                <td class="px-4 py-3 text-right font-semibold text-emerald-600 dark:text-emerald-400">${{ parseFloat(product.total_revenue).toFixed(2) }}</td>
+                <td class="px-4 py-3 text-right font-semibold text-brand-600 dark:text-brand-400">${{ parseFloat(product.total_revenue).toFixed(2) }}</td>
               </tr>
               <tr v-if="topProducts.length === 0">
                 <td colspan="4" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">No product data</td>

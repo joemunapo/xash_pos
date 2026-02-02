@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950">
     <!-- Sidebar Overlay -->
     <div
@@ -18,12 +18,12 @@
       <!-- Logo -->
       <div class="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
         <Link :href="route('welcome')" class="flex items-center gap-2 group">
-          <div class="w-9 h-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+          <div class="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl flex items-center justify-center shadow-lg">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
             </svg>
           </div>
-          <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-emerald-500">POS</span></span>
+          <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-brand-500">POS</span></span>
         </Link>
         <button
           @click="sidebarOpen = false"
@@ -82,7 +82,7 @@
           class="w-full flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
         >
           <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-sm font-semibold shadow">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-brand-500 flex items-center justify-center text-white text-sm font-semibold shadow">
               {{ user.name.charAt(0).toUpperCase() }}
             </div>
             <div class="text-left min-w-0">
@@ -114,7 +114,7 @@
         <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800">
           <i class="fas fa-bars text-xl"></i>
         </button>
-        <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-emerald-500">POS</span></span>
+        <span class="text-lg font-bold text-gray-900 dark:text-white">XASH<span class="text-brand-500">POS</span></span>
         <div class="w-10"></div>
       </header>
 

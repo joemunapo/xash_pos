@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Edit Customer">
     <div class="max-w-lg">
       <div class="mb-6">
@@ -38,7 +38,7 @@
           <textarea v-model="form.address" rows="2" class="input-field"></textarea>
         </div>
         <div class="flex items-center gap-3">
-          <input type="checkbox" v-model="form.is_active" id="is_active" class="w-4 h-4 text-emerald-600 rounded" />
+          <input type="checkbox" v-model="form.is_active" id="is_active" class="w-4 h-4 text-brand-600 rounded" />
           <label for="is_active" class="text-sm text-gray-700 dark:text-gray-300">Customer is active</label>
         </div>
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">

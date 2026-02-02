@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Categories">
     <div class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -26,8 +26,8 @@
             <tr v-for="category in categories.data" :key="category.id" class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800">
               <td class="py-3 px-4">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-folder text-green-600 dark:text-green-400"></i>
+                  <div class="w-10 h-10 bg-success-100 dark:bg-success-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-folder text-success-600 dark:text-success-400"></i>
                   </div>
                   <span class="font-medium text-gray-900 dark:text-white">{{ category.name }}</span>
                 </div>
@@ -35,7 +35,7 @@
               <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ category.parent?.name || '-' }}</td>
               <td class="py-3 px-4 text-gray-900 dark:text-white">{{ category.products_count }}</td>
               <td class="py-3 px-4">
-                <span :class="['px-2 py-1 text-xs font-medium rounded-full', category.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600']">
+                <span :class="['px-2 py-1 text-xs font-medium rounded-full', category.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600']">
                   {{ category.is_active ? 'Active' : 'Inactive' }}
                 </span>
               </td>
@@ -88,7 +88,7 @@
             <input v-model="categoryForm.sort_order" type="number" min="0" class="input-field" placeholder="0" />
           </div>
           <div v-if="editingCategory" class="flex items-center gap-2">
-            <input type="checkbox" v-model="categoryForm.is_active" id="is_active" class="w-4 h-4 text-emerald-600 rounded" />
+            <input type="checkbox" v-model="categoryForm.is_active" id="is_active" class="w-4 h-4 text-brand-600 rounded" />
             <label for="is_active" class="text-sm text-gray-700 dark:text-gray-300">Active</label>
           </div>
           <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">

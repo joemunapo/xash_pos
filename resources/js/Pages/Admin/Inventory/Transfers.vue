@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Stock Transfers">
     <div class="space-y-6">
       <!-- Header -->
@@ -74,7 +74,7 @@
                   </span>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded">
+                  <span class="px-2.5 py-1 text-xs font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 rounded">
                     <i class="fas fa-arrow-down mr-1"></i>{{ transfer.toBranch?.name || 'N/A' }}
                   </span>
                 </td>
@@ -99,7 +99,7 @@
             </p>
             <div class="flex gap-2">
               <template v-for="link in transfers.links" :key="link.label">
-                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
+                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-brand-600 text-white border-brand-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
                 <span v-else :class="['px-3 py-1 text-sm rounded-lg border opacity-50 cursor-not-allowed bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
               </template>
             </div>

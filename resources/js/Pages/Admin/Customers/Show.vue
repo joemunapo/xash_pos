@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Customer Details">
     <div class="max-w-3xl space-y-6">
       <div class="mb-6">
@@ -49,7 +49,7 @@
               <p class="font-medium text-gray-900 dark:text-white capitalize">{{ tx.type }}</p>
               <p class="text-sm text-gray-500 dark:text-gray-400">{{ tx.description || tx.reference || '-' }}</p>
             </div>
-            <span :class="['font-bold', tx.points > 0 ? 'text-emerald-600' : 'text-red-600']">
+            <span :class="['font-bold', tx.points > 0 ? 'text-brand-600' : 'text-red-600']">
               {{ tx.points > 0 ? '+' : '' }}{{ tx.points }}
             </span>
           </div>

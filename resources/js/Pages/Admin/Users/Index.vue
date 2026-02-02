@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Users">
     <div class="space-y-6">
       <!-- Header -->
@@ -60,7 +60,7 @@
         >
           <div class="flex items-start justify-between mb-4">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 via-brand-500 to-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
                 {{ user.name.charAt(0).toUpperCase() }}
               </div>
               <div>
@@ -71,7 +71,7 @@
                 </p>
               </div>
             </div>
-            <span :class="['px-2 py-1 text-xs font-medium rounded-full', user.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+            <span :class="['px-2 py-1 text-xs font-medium rounded-full', user.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
               {{ user.is_active ? 'Active' : 'Inactive' }}
             </span>
           </div>
@@ -143,7 +143,7 @@
               <tr v-for="user in users.data" :key="user.id" class="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-white dark:ring-slate-900">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 via-brand-500 to-brand-500 flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-white dark:ring-slate-900">
                       {{ user.name.charAt(0).toUpperCase() }}
                     </div>
                     <div>
@@ -166,14 +166,14 @@
                     <span v-for="branch in user.branches?.slice(0, 2)" :key="branch.id" class="px-2 py-1 text-xs bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded font-medium">
                       {{ branch.name }}
                     </span>
-                    <span v-if="user.branches?.length > 2" class="px-2 py-1 text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded font-medium">
+                    <span v-if="user.branches?.length > 2" class="px-2 py-1 text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 rounded font-medium">
                       +{{ user.branches.length - 2 }} more
                     </span>
                     <span v-if="!user.branches?.length" class="text-gray-400 text-sm italic">No branches</span>
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <span :class="['inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', user.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+                  <span :class="['inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', user.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
                     <i :class="[user.is_active ? 'fas fa-check-circle' : 'fas fa-times-circle', 'mr-1.5']"></i>
                     {{ user.is_active ? 'Active' : 'Inactive' }}
                   </span>
@@ -216,7 +216,7 @@
                   :class="[
                     'px-3 py-1 text-sm rounded-lg border transition-colors',
                     link.active
-                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      ? 'bg-brand-600 text-white border-brand-600'
                       : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700'
                   ]"
                   v-html="link.label"
@@ -283,7 +283,7 @@ const getRoleBadgeClass = (role) => {
   const classes = {
     admin: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
     manager: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    cashier: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    cashier: 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400',
     stockist: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
   };
   return classes[role] || 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';

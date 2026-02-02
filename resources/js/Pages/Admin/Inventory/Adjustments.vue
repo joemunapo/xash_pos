@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Stock Adjustments">
     <div class="space-y-6">
       <!-- Header -->
@@ -74,7 +74,7 @@
                   </span>
                 </td>
                 <td class="px-6 py-4 text-right">
-                  <span :class="['text-lg font-semibold', adjustment.quantity >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
+                  <span :class="['text-lg font-semibold', adjustment.quantity >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-red-600 dark:text-red-400']">
                     {{ adjustment.quantity >= 0 ? '+' : '' }}{{ adjustment.quantity }}
                   </span>
                 </td>
@@ -99,7 +99,7 @@
             </p>
             <div class="flex gap-2">
               <template v-for="link in adjustments.links" :key="link.label">
-                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-emerald-600 text-white border-emerald -600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
+                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-brand-600 text-white border-emerald -600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
                 <span v-else :class="['px-3 py-1 text-sm rounded-lg border opacity-50 cursor-not-allowed bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
               </template>
             </div>

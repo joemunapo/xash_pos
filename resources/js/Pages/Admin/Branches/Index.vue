@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Branches">
     <div class="space-y-6">
       <!-- Header -->
@@ -22,7 +22,7 @@
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search branches..."
-                class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 @input="debouncedSearch"
               />
             </div>
@@ -53,8 +53,8 @@
               <tr v-for="branch in branches.data" :key="branch.id" class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                 <td class="py-3 px-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                      <i class="fas fa-store text-emerald-600 dark:text-emerald-400 text-sm"></i>
+                    <div class="w-9 h-9 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+                      <i class="fas fa-store text-brand-600 dark:text-brand-400 text-sm"></i>
                     </div>
                     <div>
                       <p class="font-medium text-gray-900 dark:text-white text-sm">{{ branch.name }}</p>
@@ -74,7 +74,7 @@
                   <span class="text-sm text-gray-900 dark:text-white">{{ branch.users_count }}</span>
                 </td>
                 <td class="py-3 px-4">
-                  <span :class="['px-2 py-1 text-xs font-medium rounded', branch.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+                  <span :class="['px-2 py-1 text-xs font-medium rounded', branch.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
                     {{ branch.is_active ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
@@ -116,7 +116,7 @@
               v-for="link in branches.links"
               :key="link.label"
               :href="link.url || '#'"
-              :class="['px-3 py-1 text-sm rounded-lg transition-colors', link.active ? 'bg-emerald-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700', !link.url && 'opacity-50 cursor-not-allowed']"
+              :class="['px-3 py-1 text-sm rounded-lg transition-colors', link.active ? 'bg-brand-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700', !link.url && 'opacity-50 cursor-not-allowed']"
               v-html="link.label"
             />
           </div>

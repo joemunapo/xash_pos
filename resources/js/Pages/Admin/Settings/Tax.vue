@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Tax Management">
     <div class="space-y-6">
       <!-- Header -->
@@ -61,7 +61,7 @@
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">{{ tax.rate }}%</span>
+                  <span class="text-lg font-semibold text-brand-600 dark:text-brand-400">{{ tax.rate }}%</span>
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                   {{ tax.start_date ? formatDate(tax.start_date) : '-' }}
@@ -70,12 +70,12 @@
                   {{ tax.end_date ? formatDate(tax.end_date) : '-' }}
                 </td>
                 <td class="px-6 py-4 text-center">
-                  <span v-if="tax.is_default" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <span v-if="tax.is_default" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400">
                     <i class="fas fa-star mr-1"></i>Default
                   </span>
                 </td>
                 <td class="px-6 py-4 text-center">
-                  <span :class="tax.is_active ? 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'">
+                  <span :class="tax.is_active ? 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'">
                     {{ tax.is_active ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
@@ -139,12 +139,12 @@
             
             <div class="md:col-span-2 space-y-3">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="form.is_default" type="checkbox" class="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500" />
+                <input v-model="form.is_default" type="checkbox" class="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500" />
                 <span class="text-sm text-gray-700 dark:text-gray-300">Set as default tax rate</span>
               </label>
               
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="form.is_active" type="checkbox" class="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500" />
+                <input v-model="form.is_active" type="checkbox" class="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500" />
                 <span class="text-sm text-gray-700 dark:text-gray-300">Active</span>
               </label>
             </div>

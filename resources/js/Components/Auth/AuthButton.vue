@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <button
     :type="type"
     :disabled="disabled || loading"
@@ -9,7 +9,7 @@
 
       // Variant styles
       variant === 'primary'
-        ? 'bg-gradient-to-r from-emerald-600 to-green-600 dark:from-emerald-500 dark:to-green-500 hover:shadow-lg hover:scale-105 focus:ring-emerald-500 dark:focus:ring-emerald-400'
+        ? 'bg-gradient-to-r from-brand-600 to-brand-600 dark:from-brand-500 dark:to-brand-500 hover:shadow-lg hover:scale-105 focus:ring-brand-500 dark:focus:ring-brand-400'
         : variant === 'secondary'
         ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 focus:ring-gray-400'
         : 'bg-red-600 dark:bg-red-500 hover:shadow-lg hover:scale-105 focus:ring-red-500 dark:focus:ring-red-400',

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Stock Overview">
     <div class="space-y-6">
       <!-- Header -->
@@ -49,10 +49,10 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Value</p>
-              <p class="text-3xl font-bold text-emerald-600 dark:text-emerald-400">${{ formatMoney(stats.total_value) }}</p>
+              <p class="text-3xl font-bold text-brand-600 dark:text-brand-400">${{ formatMoney(stats.total_value) }}</p>
             </div>
-            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
-              <i class="fas fa-dollar-sign text-emerald-600 dark:text-emerald-400 text-xl"></i>
+            <div class="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
+              <i class="fas fa-dollar-sign text-brand-600 dark:text-brand-400 text-xl"></i>
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@
                   :class="[
                     'px-3 py-1 text-sm rounded-lg border transition-colors',
                     link.active
-                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      ? 'bg-brand-600 text-white border-brand-600'
                       : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700'
                   ]"
                   v-html="link.label"
@@ -226,6 +226,6 @@ const getStockStatusClass = (stock) => {
   if (stock.quantity <= (stock.product?.reorder_level || 0)) {
     return `${baseClasses} bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400`;
   }
-  return `${baseClasses} bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400`;
+  return `${baseClasses} bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400`;
 };
 </script>

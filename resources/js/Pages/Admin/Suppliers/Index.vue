@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Suppliers">
     <div class="space-y-6">
       <!-- Header -->
@@ -77,7 +77,7 @@
                   </span>
                 </td>
                 <td class="px-6 py-4">
-                  <span :class="['inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', supplier.is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
+                  <span :class="['inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', supplier.is_active ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400']">
                     <i :class="[supplier.is_active ? 'fas fa-check-circle' : 'fas fa-times-circle', 'mr-1.5']"></i>
                     {{ supplier.is_active ? 'Active' : 'Inactive' }}
                   </span>
@@ -109,7 +109,7 @@
             </p>
             <div class="flex gap-2">
               <template v-for="link in suppliers.links" :key="link.label">
-                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
+                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-brand-600 text-white border-brand-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
                 <span v-else :class="['px-3 py-1 text-sm rounded-lg border opacity-50 cursor-not-allowed bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
               </template>
             </div>

@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <div class="relative" ref="navLinkRef" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
     <Link
       :href="href"
       :class="[
         'relative flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all duration-300 overflow-hidden',
         active
-          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+          ? 'bg-gradient-to-r from-brand-500 to-brand-500 text-white shadow-lg shadow-brand-500/30'
           : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:translate-x-1',
         miniSidebar ? 'justify-center' : ''
       ]"

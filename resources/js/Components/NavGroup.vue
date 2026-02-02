@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <!-- Group Header -->
     <button
@@ -8,14 +8,14 @@
       :class="[
         'w-full flex items-center justify-between px-3 py-3 rounded-lg font-medium text-sm transition-all duration-300 overflow-hidden',
         isAnyChildActive
-          ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
+          ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400'
           : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:translate-x-1'
       ]"
     >
       <div class="flex items-center gap-3">
         <div :class="[
           'flex items-center justify-center',
-          isAnyChildActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'
+          isAnyChildActive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400'
         ]">
           <i :class="`fas ${icon} text-base`"></i>
         </div>
@@ -26,7 +26,7 @@
         :class="[
           'fas fa-chevron-down text-xs transition-transform duration-300',
           isExpanded ? 'rotate-180' : '',
-          isAnyChildActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'
+          isAnyChildActive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-400'
         ]"
       ></i>
     </button>

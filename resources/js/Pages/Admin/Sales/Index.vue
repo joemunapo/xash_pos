@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AdminLayout page-title="Sales History">
     <div class="space-y-6">
       <!-- Header & Stats -->
@@ -15,8 +15,8 @@
               <p class="text-sm text-gray-600 dark:text-gray-400">Total Sales</p>
               <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.total_sales.toLocaleString() }}</p>
             </div>
-            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <i class="fas fa-receipt text-xl text-emerald-600 dark:text-emerald-400"></i>
+            <div class="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+              <i class="fas fa-receipt text-xl text-brand-600 dark:text-brand-400"></i>
             </div>
           </div>
         </div>
@@ -24,10 +24,10 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
-              <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${{ stats.total_revenue.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-brand-600 dark:text-brand-400 mt-1">${{ stats.total_revenue.toFixed(2) }}</p>
             </div>
-            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <i class="fas fa-dollar-sign text-xl text-emerald-600 dark:text-emerald-400"></i>
+            <div class="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+              <i class="fas fa-dollar-sign text-xl text-brand-600 dark:text-brand-400"></i>
             </div>
           </div>
         </div>
@@ -46,10 +46,10 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Today's Revenue</p>
-              <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${{ stats.today_revenue.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-brand-600 dark:text-brand-400 mt-1">${{ stats.today_revenue.toFixed(2) }}</p>
             </div>
-            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <i class="fas fa-chart-line text-xl text-emerald-600 dark:text-emerald-400"></i>
+            <div class="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+              <i class="fas fa-chart-line text-xl text-brand-600 dark:text-brand-400"></i>
             </div>
           </div>
         </div>
@@ -163,7 +163,7 @@
             </p>
             <div class="flex gap-2">
               <template v-for="link in sales.links" :key="link.label">
-                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
+                <Link v-if="link.url" :href="link.url" :class="['px-3 py-1 text-sm rounded-lg border', link.active ? 'bg-brand-600 text-white border-brand-600' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
                 <span v-else :class="['px-3 py-1 text-sm rounded-lg border opacity-50 cursor-not-allowed bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-600']" v-html="link.label" />
               </template>
             </div>
@@ -222,7 +222,7 @@ const formatDateTime = (date) => {
 
 const getStatusClass = (status) => {
   const classes = {
-    completed: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    completed: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400',
     pending: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
     cancelled: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
     refunded: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',

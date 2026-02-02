@@ -1,6 +1,6 @@
 # User Profile Management System
 
-This document outlines the complete profile management system for the ErrandRunner application, including personal information management, password changes, and two-factor authentication (2FA) setup.
+This document outlines the complete profile management system for the XASH POS application, including personal information management, password changes, and two-factor authentication (2FA) setup.
 
 ## Features
 
