@@ -24,43 +24,50 @@ class CustomerController extends Controller
 
         $user = $request->user();
 
-        // Check for existing customer by phone or email within tenant
-        $existing = Customer::where('tenant_id', $user->tenant_id)
-            ->where(function ($query) use ($request) {
-                if ($request->filled('phone')) {
-                    $query->orWhere('phone', $request->phone);
-                }
-                if ($request->filled('email')) {
-                    $query->orWhere('email', $request->email);
-                }
-            })
-            ->first();
+        try {
+            // Check for existing customer by phone or email within tenant
+            $existing = Customer::where('tenant_id', $user->tenant_id)
+                ->where(function ($query) use ($request) {
+                    if ($request->filled('phone')) {
+                        $query->orWhere('phone', $request->phone);
+                    }
+                    if ($request->filled('email')) {
+                        $query->orWhere('email', $request->email);
+                    }
+                })
+                ->first();
 
-        if ($existing) {
-            return response()->json([
-                'message' => 'Customer already exists',
-                'customer' => $existing,
-                'existing' => true,
+            if ($existing) {
+                return response()->json([
+                    'message' => 'Customer already exists',
+                    'customer' => $existing,
+                    'existing' => true,
+                ]);
+            }
+
+            $customer = Customer::create([
+                'tenant_id' => $user->tenant_id,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'loyalty_tier' => 'bronze',
+                'loyalty_points' => 0,
+                'is_active' => true,
+                'member_since' => now(),
+                'qr_code' => Str::uuid(),
             ]);
+
+            return response()->json([
+                'message' => 'Customer created successfully',
+                'customer' => $customer,
+                'existing' => false,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create customer. Please try again.',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
         }
-
-        $customer = Customer::create([
-            'tenant_id' => $user->tenant_id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'loyalty_tier' => 'bronze',
-            'loyalty_points' => 0,
-            'is_active' => true,
-            'member_since' => now(),
-            'qr_code' => Str::uuid(),
-        ]);
-
-        return response()->json([
-            'message' => 'Customer created successfully',
-            'customer' => $customer,
-            'existing' => false,
-        ], 201);
     }
 }

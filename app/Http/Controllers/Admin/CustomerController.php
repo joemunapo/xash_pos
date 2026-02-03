@@ -59,7 +59,7 @@ class CustomerController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
+            'first_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -69,26 +69,30 @@ class CustomerController extends Controller
             'gender' => ['nullable', Rule::in(['male', 'female', 'other'])],
         ]);
 
-        $validated['tenant_id'] = $user->tenant_id;
-        $validated['is_active'] = true;
-        $validated['member_since'] = now();
-        $validated['qr_code'] = 'CUS-'.strtoupper(Str::random(10));
+        try {
+            $validated['tenant_id'] = $user->tenant_id;
+            $validated['is_active'] = true;
+            $validated['member_since'] = now();
+            $validated['qr_code'] = 'CUS-'.strtoupper(Str::random(10));
 
-        $customer = Customer::create($validated);
+            $customer = Customer::create($validated);
 
-        ActivityLog::log(
-            ActivityLog::ACTION_CREATED,
-            $user->tenant_id,
-            $user->id,
-            null,
-            Customer::class,
-            $customer->id,
-            null,
-            $customer->only(['id', 'first_name', 'last_name', 'phone'])
-        );
+            ActivityLog::log(
+                ActivityLog::ACTION_CREATED,
+                $user->tenant_id,
+                $user->id,
+                null,
+                Customer::class,
+                $customer->id,
+                null,
+                $customer->only(['id', 'first_name', 'last_name', 'phone'])
+            );
 
-        return redirect()->route('admin.customers.index')
-            ->with('success', 'Customer created successfully.');
+            return redirect()->route('admin.customers.index')
+                ->with('success', 'Customer created successfully.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Failed to create customer. Please try again.');
+        }
     }
 
     public function show(Customer $customer): Response
@@ -119,7 +123,7 @@ class CustomerController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
+            'first_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -130,22 +134,26 @@ class CustomerController extends Controller
             'is_active' => ['boolean'],
         ]);
 
-        $oldValues = $customer->only(['first_name', 'last_name', 'phone', 'is_active']);
-        $customer->update($validated);
+        try {
+            $oldValues = $customer->only(['first_name', 'last_name', 'phone', 'is_active']);
+            $customer->update($validated);
 
-        ActivityLog::log(
-            ActivityLog::ACTION_UPDATED,
-            $user->tenant_id,
-            $user->id,
-            null,
-            Customer::class,
-            $customer->id,
-            $oldValues,
-            $customer->only(['first_name', 'last_name', 'phone', 'is_active'])
-        );
+            ActivityLog::log(
+                ActivityLog::ACTION_UPDATED,
+                $user->tenant_id,
+                $user->id,
+                null,
+                Customer::class,
+                $customer->id,
+                $oldValues,
+                $customer->only(['first_name', 'last_name', 'phone', 'is_active'])
+            );
 
-        return redirect()->route('admin.customers.index')
-            ->with('success', 'Customer updated successfully.');
+            return redirect()->route('admin.customers.index')
+                ->with('success', 'Customer updated successfully.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Failed to update customer. Please try again.');
+        }
     }
 
     public function destroy(Request $request, Customer $customer)
@@ -153,21 +161,25 @@ class CustomerController extends Controller
         $this->authorizeAccess($customer);
         $user = $request->user();
 
-        ActivityLog::log(
-            ActivityLog::ACTION_DELETED,
-            $user->tenant_id,
-            $user->id,
-            null,
-            Customer::class,
-            $customer->id,
-            $customer->only(['id', 'first_name', 'last_name']),
-            null
-        );
+        try {
+            ActivityLog::log(
+                ActivityLog::ACTION_DELETED,
+                $user->tenant_id,
+                $user->id,
+                null,
+                Customer::class,
+                $customer->id,
+                $customer->only(['id', 'first_name', 'last_name']),
+                null
+            );
 
-        $customer->delete();
+            $customer->delete();
 
-        return redirect()->route('admin.customers.index')
-            ->with('success', 'Customer deleted successfully.');
+            return redirect()->route('admin.customers.index')
+                ->with('success', 'Customer deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to delete customer. Please try again.');
+        }
     }
 
     public function adjustPoints(Request $request, Customer $customer)
@@ -180,30 +192,34 @@ class CustomerController extends Controller
             'reason' => ['required', 'string', 'max:255'],
         ]);
 
-        $oldPoints = $customer->loyalty_points;
-        $customer->loyalty_points += $validated['points'];
-        $customer->save();
+        try {
+            $oldPoints = $customer->loyalty_points;
+            $customer->loyalty_points += $validated['points'];
+            $customer->save();
 
-        $customer->loyaltyTransactions()->create([
-            'branch_id' => null,
-            'type' => 'adjust',
-            'points' => $validated['points'],
-            'balance_after' => $customer->loyalty_points,
-            'description' => $validated['reason'],
-        ]);
+            $customer->loyaltyTransactions()->create([
+                'branch_id' => null,
+                'type' => 'adjust',
+                'points' => $validated['points'],
+                'balance_after' => $customer->loyalty_points,
+                'description' => $validated['reason'],
+            ]);
 
-        ActivityLog::log(
-            'loyalty_adjusted',
-            $user->tenant_id,
-            $user->id,
-            null,
-            Customer::class,
-            $customer->id,
-            ['points' => $oldPoints],
-            ['points' => $customer->loyalty_points, 'reason' => $validated['reason']]
-        );
+            ActivityLog::log(
+                'loyalty_adjusted',
+                $user->tenant_id,
+                $user->id,
+                null,
+                Customer::class,
+                $customer->id,
+                ['points' => $oldPoints],
+                ['points' => $customer->loyalty_points, 'reason' => $validated['reason']]
+            );
 
-        return back()->with('success', 'Loyalty points adjusted successfully.');
+            return back()->with('success', 'Loyalty points adjusted successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to adjust loyalty points. Please try again.');
+        }
     }
 
     protected function authorizeAccess(Customer $customer): void

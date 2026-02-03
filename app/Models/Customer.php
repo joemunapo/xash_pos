@@ -5,12 +5,11 @@ namespace App\Models;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected $fillable = [
         'tenant_id',
@@ -47,9 +46,11 @@ class Customer extends Model
         return $this->hasMany(LoyaltyTransaction::class);
     }
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
-        return trim("{$this->first_name} {$this->last_name}");
+        $name = trim(($this->first_name ?? '').' '.($this->last_name ?? ''));
+
+        return $name ?: 'Unknown Customer';
     }
 
     // Add loyalty points
