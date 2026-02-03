@@ -12,7 +12,7 @@ class GoodsReceived extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id',
+        'tenant_id',
         'branch_id',
         'purchase_order_id',
         'supplier_id',
@@ -28,11 +28,12 @@ class GoodsReceived extends Model
     ];
 
     const STATUS_DRAFT = 'draft';
+
     const STATUS_COMPLETED = 'completed';
 
-    public function company(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Tenant::class);
     }
 
     public function branch(): BelongsTo
@@ -60,13 +61,13 @@ class GoodsReceived extends Model
         return $this->hasMany(GoodsReceivedItem::class);
     }
 
-    public static function generateGRNNumber($companyId)
+    public static function generateGRNNumber($tenantId)
     {
         $year = date('Y');
         $month = date('m');
         $prefix = "GRN-{$year}{$month}-";
-        
-        $lastGRN = self::where('company_id', $companyId)
+
+        $lastGRN = self::where('tenant_id', $tenantId)
             ->where('grn_number', 'like', "{$prefix}%")
             ->orderBy('grn_number', 'desc')
             ->first();
@@ -78,6 +79,6 @@ class GoodsReceived extends Model
             $newNumber = 1;
         }
 
-        return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($newNumber, 4, '0', STR_PAD_LEFT);
     }
 }

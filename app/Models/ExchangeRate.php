@@ -11,7 +11,7 @@ class ExchangeRate extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id',
+        'tenant_id',
         'from_currency',
         'to_currency',
         'rate',
@@ -28,21 +28,21 @@ class ExchangeRate extends Model
         ];
     }
 
-    public function company(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Tenant::class);
     }
 
     /**
      * Get the current exchange rate for a currency pair
      */
-    public static function getCurrentRate(int $companyId, string $fromCurrency, string $toCurrency): ?float
+    public static function getCurrentRate(int $tenantId, string $fromCurrency, string $toCurrency): ?float
     {
         if ($fromCurrency === $toCurrency) {
             return 1.0;
         }
 
-        $rate = self::where('company_id', $companyId)
+        $rate = self::where('tenant_id', $tenantId)
             ->where('from_currency', $fromCurrency)
             ->where('to_currency', $toCurrency)
             ->where('is_active', true)
@@ -56,10 +56,10 @@ class ExchangeRate extends Model
     /**
      * Convert amount from one currency to another
      */
-    public static function convert(int $companyId, float $amount, string $fromCurrency, string $toCurrency): ?float
+    public static function convert(int $tenantId, float $amount, string $fromCurrency, string $toCurrency): ?float
     {
-        $rate = self::getCurrentRate($companyId, $fromCurrency, $toCurrency);
-        
+        $rate = self::getCurrentRate($tenantId, $fromCurrency, $toCurrency);
+
         if ($rate === null) {
             return null;
         }

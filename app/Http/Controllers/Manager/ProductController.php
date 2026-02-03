@@ -29,7 +29,7 @@ class ProductController extends Controller
             ]);
         }
 
-        $products = Product::where('company_id', $user->company_id)
+        $products = Product::where('tenant_id', $user->tenant_id)
             ->with(['stock' => function ($query) use ($branch) {
                 $query->where('branch_id', $branch->id);
             }, 'category:id,name'])
@@ -93,7 +93,7 @@ class ProductController extends Controller
         $branch = $user->primaryBranch();
 
         // Ensure product belongs to the user's company
-        if ($product->company_id !== $user->company_id) {
+        if ($product->tenant_id !== $user->tenant_id) {
             return response()->json([
                 'message' => 'Unauthorized',
             ], 403);
@@ -190,7 +190,7 @@ class ProductController extends Controller
         $branch = $user->primaryBranch();
 
         // Ensure product belongs to the user's company
-        if ($product->company_id !== $user->company_id) {
+        if ($product->tenant_id !== $user->tenant_id) {
             return response()->json([
                 'message' => 'Unauthorized',
             ], 403);
@@ -286,7 +286,7 @@ class ProductController extends Controller
         }
 
         $product = Product::create(array_merge($validated, [
-            'company_id' => $user->company_id,
+            'tenant_id' => $user->tenant_id,
             'is_active' => true,
         ]));
 
@@ -311,7 +311,7 @@ class ProductController extends Controller
         $user = $request->user();
 
         // Ensure product belongs to the user's company
-        if ($product->company_id !== $user->company_id) {
+        if ($product->tenant_id !== $user->tenant_id) {
             return response()->json([
                 'message' => 'Unauthorized',
             ], 403);
@@ -359,7 +359,7 @@ class ProductController extends Controller
         $user = $request->user();
 
         // Ensure product belongs to the user's company
-        if ($product->company_id !== $user->company_id) {
+        if ($product->tenant_id !== $user->tenant_id) {
             return response()->json([
                 'message' => 'Unauthorized',
             ], 403);
@@ -379,7 +379,7 @@ class ProductController extends Controller
     {
         $user = $request->user();
 
-        $categories = Category::where('company_id', $user->company_id)
+        $categories = Category::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name', 'parent_id']);

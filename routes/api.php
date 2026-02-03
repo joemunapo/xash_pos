@@ -7,13 +7,14 @@ use App\Http\Controllers\Manager\ReportController;
 use App\Http\Controllers\Manager\SaleController as ManagerSaleController;
 use App\Http\Controllers\Manager\UserController as ManagerUserController;
 use App\Http\Controllers\POS\AuthController;
+use App\Http\Controllers\POS\CustomerController;
 use App\Http\Controllers\POS\DashboardController;
 use App\Http\Controllers\POS\ProductController;
 use App\Http\Controllers\POS\SaleController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
-use App\Http\Controllers\SuperAdmin\TenantController;
 use App\Http\Controllers\SuperAdmin\SubscriptionController;
 use App\Http\Controllers\SuperAdmin\SubscriptionPlanController;
+use App\Http\Controllers\SuperAdmin\TenantController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,20 +29,20 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('superadmin')->middleware(['auth:sanctum', 'superadmin'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [SuperAdminDashboardController::class, 'index']);
-    
+
     // Tenant Management
     Route::apiResource('tenants', TenantController::class);
     Route::post('tenants/{tenant}/suspend', [TenantController::class, 'suspend']);
     Route::post('tenants/{tenant}/activate', [TenantController::class, 'activate']);
-    
+
     // Subscription Management
     Route::apiResource('subscriptions', SubscriptionController::class);
     Route::post('subscriptions/{subscription}/renew', [SubscriptionController::class, 'renew']);
     Route::post('subscriptions/{subscription}/cancel', [SubscriptionController::class, 'cancel']);
-    
+
     // Subscription Plan Management
     Route::apiResource('subscription-plans', SubscriptionPlanController::class);
-});/*
+}); /*
 |--------------------------------------------------------------------------
 | POS Mobile API Routes
 |--------------------------------------------------------------------------
@@ -86,6 +87,10 @@ Route::prefix('pos')->middleware(['auth:sanctum', 'tenant.scope', 'subscription.
     Route::get('/sales/summary', [SaleController::class, 'summary']);
     Route::get('/sales/{sale}', [SaleController::class, 'show']);
     Route::post('/sales/{sale}/cancel', [SaleController::class, 'cancel']);
+    Route::post('/sales/{sale}/customer', [SaleController::class, 'attachCustomer']);
+
+    // Customers
+    Route::post('/customers', [CustomerController::class, 'store']);
 });
 
 /*

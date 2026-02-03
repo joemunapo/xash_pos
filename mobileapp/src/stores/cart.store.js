@@ -125,10 +125,10 @@ export const useCartStore = defineStore({
             return this.items.map(item => ({
                 product_id: item.product_id,
                 variant_id: item.variant_id,
-                quantity: item.quantity * (item.unit_multiplier || 1), // Convert to base units
-                unit_price: item.unit_price,
+                quantity: parseFloat(item.quantity * (item.unit_multiplier || 1)) || 1, // Convert to base units
+                unit_price: parseFloat(item.unit_price) || 0,
                 unit: item.unit,
-                discount_amount: item.discount_amount,
+                discount_amount: parseFloat(item.discount_amount) || 0,
             }));
         },
 
@@ -139,17 +139,19 @@ export const useCartStore = defineStore({
             const authStore = useAuthStore();
 
             const tempReceipt = generateTempReceipt();
-            const changeAmount = amountReceived - this.totalAmount;
+            const paid = parseFloat(amountReceived) || 0;
+            const total = parseFloat(this.totalAmount) || 0;
+            const changeAmount = paid - total;
 
             const saleData = {
                 temp_receipt_number: tempReceipt,
                 items: this.getItemsForSubmission(),
-                payment_method: paymentMethod,
-                amount_paid: amountReceived,
-                subtotal: this.subtotal,
+                payment_method: paymentMethod || 'cash',
+                amount_paid: paid,
+                subtotal: parseFloat(this.subtotal) || 0,
                 tax_amount: 0,
-                discount_amount: this.discountAmount,
-                total_amount: this.totalAmount,
+                discount_amount: parseFloat(this.discountAmount) || 0,
+                total_amount: total,
                 change_amount: changeAmount,
                 customer_id: this.customer?.id || null,
                 notes: this.notes || null,

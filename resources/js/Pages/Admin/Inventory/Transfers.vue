@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <AdminLayout page-title="Stock Transfers">
     <div class="space-y-6">
       <!-- Header -->
@@ -30,9 +30,8 @@
               <option value="pending">Pending</option>
             </select>
           </div>
-          <div>
-            <label class="label invisible">Action</label>
-            <button @click="clearFilters" class="btn-secondary w-full h-[42px] flex items-center justify-center">
+          <div class="flex items-end">
+            <button @click="clearFilters" class="btn-secondary w-full h-[42px] justify-center">
               <i class="fas fa-times mr-2"></i>Clear Filters
             </button>
           </div>
@@ -76,7 +75,7 @@
                 </td>
                 <td class="px-6 py-4">
                   <span class="px-2.5 py-1 text-xs font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 rounded">
-                    <i class="fas fa-arrow-down mr-1"></i>{{ transfer.toBranch?.name || 'N/A' }}
+                    <i class="fas fa-arrow-down mr-1"></i>{{ transfer.to_branch?.name || 'N/A' }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-right">
@@ -111,8 +110,8 @@
 
     <!-- New Transfer Modal -->
     <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="fixed inset-0 bg-black/50" @click="showModal = false"></div>
-      <div class="relative bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full shadow-2xl">
+      <div class="fixed inset-0 bg-black/50" @click="closeModal"></div>
+      <div class="relative bg-white dark:bg-slate-900 rounded-lg p-6 max-w-md w-full shadow-2xl">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">New Stock Transfer</h3>
         <form @submit.prevent="submitTransfer" class="space-y-4">
           <div>
@@ -121,6 +120,7 @@
               <option value="">Select Product</option>
               <option v-for="product in products" :key="product.id" :value="product.id">{{ product.name }} ({{ product.sku }})</option>
             </select>
+            <p v-if="form.errors.product_id" class="text-red-500 text-sm mt-1">{{ form.errors.product_id }}</p>
           </div>
           <div>
             <label class="label">From Branch *</label>
@@ -128,6 +128,7 @@
               <option value="">Select Source Branch</option>
               <option v-for="branch in branches" :key="branch.id" :value="branch.id">{{ branch.name }}</option>
             </select>
+            <p v-if="form.errors.from_branch_id" class="text-red-500 text-sm mt-1">{{ form.errors.from_branch_id }}</p>
           </div>
           <div>
             <label class="label">To Branch *</label>
@@ -137,22 +138,22 @@
                 {{ branch.name }}
               </option>
             </select>
+            <p v-if="form.errors.to_branch_id" class="text-red-500 text-sm mt-1">{{ form.errors.to_branch_id }}</p>
           </div>
           <div>
             <label class="label">Quantity *</label>
             <input v-model="form.quantity" type="number" step="0.01" min="0.01" class="input-field" placeholder="e.g., 10" required />
+            <p v-if="form.errors.quantity" class="text-red-500 text-sm mt-1">{{ form.errors.quantity }}</p>
           </div>
           <div>
             <label class="label">Notes</label>
             <textarea v-model="form.notes" class="input-field" rows="2" placeholder="Transfer reason or notes..."></textarea>
           </div>
-          <div v-if="error" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-            <p class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
-          </div>
           <div class="flex gap-3 pt-2">
-            <button type="button" @click="showModal = false" class="btn-secondary flex-1 flex items-center justify-center">Cancel</button>
-            <button type="submit" class="btn-primary flex-1 flex items-center justify-center">
-              <i class="fas fa-exchange-alt mr-2"></i>Transfer
+            <button type="button" @click="closeModal" class="btn-secondary flex-1 justify-center">Cancel</button>
+            <button type="submit" class="btn-primary flex-1 justify-center" :disabled="form.processing">
+              <i :class="[form.processing ? 'fas fa-spinner fa-spin' : 'fas fa-exchange-alt', 'mr-2']"></i>
+              {{ form.processing ? 'Transferring...' : 'Transfer' }}
             </button>
           </div>
         </form>
@@ -163,7 +164,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, useForm, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const props = defineProps({
@@ -174,14 +175,13 @@ const props = defineProps({
 });
 
 const showModal = ref(false);
-const error = ref('');
 
 const filterForm = reactive({
   branch_id: props.filters?.branch_id || '',
   status: props.filters?.status || '',
 });
 
-const form = reactive({
+const form = useForm({
   product_id: '',
   from_branch_id: '',
   to_branch_id: '',
@@ -202,23 +202,21 @@ const clearFilters = () => {
   applyFilters();
 };
 
+const closeModal = () => {
+  showModal.value = false;
+  form.reset();
+  form.clearErrors();
+};
+
 const submitTransfer = () => {
-  error.value = '';
-  
   if (form.from_branch_id === form.to_branch_id) {
-    error.value = 'Source and destination branches must be different';
+    form.setError('to_branch_id', 'Source and destination branches must be different.');
     return;
   }
-  
-  router.post(route('admin.inventory.transfers.store'), form, {
-    onSuccess: () => {
-      showModal.value = false;
-      Object.keys(form).forEach(key => form[key] = '');
-      error.value = '';
-    },
-    onError: (errors) => {
-      error.value = errors.message || 'Transfer failed. Please check the form.';
-    },
+
+  form.post(route('admin.inventory.transfers.store'), {
+    preserveScroll: true,
+    onSuccess: () => closeModal(),
   });
 };
 

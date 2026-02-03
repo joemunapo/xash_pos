@@ -4,14 +4,14 @@
     <div class="bg-header text-white px-4 py-6 pt-safe">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h1 class="text-xl font-bold">Welcome back,</h1>
+          <h1 class="text-xl font-bold mt-4">Welcome back,</h1>
           <p class="text-primary-light">{{ user?.name || 'Cashier' }}</p>
         </div>
         <button @click="showLogoutModal = true" class="p-2 rounded-lg bg-overlay-light">
           <i class="fas fa-sign-out-alt"></i>
         </button>
       </div>
-      <div class="rounded-lg p-3 bg-overlay-light">
+      <div class="rounded-lg p-2.5 bg-overlay-light">
         <div class="flex items-center">
           <i class="fas fa-store mr-2 icon-primary-light"></i>
           <span class="text-sm">{{ branch?.name || 'No branch assigned' }}</span>

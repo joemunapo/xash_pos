@@ -19,8 +19,8 @@ class ProductController extends Controller
         $user = $request->user();
 
         // Cache categories for 10 minutes
-        $categories = cache()->remember("pos_categories_{$user->company_id}", 600, function () use ($user) {
-            return Category::where('company_id', $user->company_id)
+        $categories = cache()->remember("pos_categories_{$user->tenant_id}", 600, function () use ($user) {
+            return Category::where('tenant_id', $user->tenant_id)
                 ->where('is_active', true)
                 ->whereNull('parent_id')
                 ->with(['children' => function ($query) {
@@ -50,8 +50,8 @@ class ProductController extends Controller
         $branchId = $branch?->id;
 
         // Cache categories
-        $categories = cache()->remember("pos_categories_{$user->company_id}", 600, function () use ($user) {
-            return Category::where('company_id', $user->company_id)
+        $categories = cache()->remember("pos_categories_{$user->tenant_id}", 600, function () use ($user) {
+            return Category::where('tenant_id', $user->tenant_id)
                 ->where('is_active', true)
                 ->whereNull('parent_id')
                 ->select('id', 'name', 'slug')
@@ -61,9 +61,9 @@ class ProductController extends Controller
         });
 
         // Cache products
-        $cacheKey = "pos_all_data_{$user->company_id}_{$branchId}";
+        $cacheKey = "pos_all_data_{$user->tenant_id}_{$branchId}";
         $products = cache()->remember($cacheKey, 300, function () use ($user, $branchId) {
-            $query = Product::where('company_id', $user->company_id)
+            $query = Product::where('tenant_id', $user->tenant_id)
                 ->where('is_active', true)
                 ->with([
                     'category:id,name',
@@ -132,7 +132,7 @@ class ProductController extends Controller
         // Create cache key based on user, branch, and filters
         $cacheKey = sprintf(
             'pos_products_%d_%d_%s_%s',
-            $user->company_id,
+            $user->tenant_id,
             $branchId ?? 0,
             $request->get('category_id', 'all'),
             $request->get('search', 'none')
@@ -140,7 +140,7 @@ class ProductController extends Controller
 
         // Cache for 5 minutes
         $products = cache()->remember($cacheKey, 300, function () use ($user, $branchId, $request) {
-            $query = Product::where('company_id', $user->company_id)
+            $query = Product::where('tenant_id', $user->tenant_id)
                 ->where('is_active', true)
                 ->with([
                     'category:id,name,slug',
@@ -228,7 +228,7 @@ class ProductController extends Controller
         $branch = $user->primaryBranch();
         $branchId = $branch?->id;
 
-        $product = Product::where('company_id', $user->company_id)
+        $product = Product::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->where(function ($query) use ($identifier) {
                 $query->where('id', $identifier)
@@ -270,7 +270,7 @@ class ProductController extends Controller
         $branch = $user->primaryBranch();
         $branchId = $branch?->id;
 
-        $product = Product::where('company_id', $user->company_id)
+        $product = Product::where('tenant_id', $user->tenant_id)
             ->where('is_active', true)
             ->where(function ($query) use ($request) {
                 $query->where('barcode', $request->barcode)

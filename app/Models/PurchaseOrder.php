@@ -13,7 +13,7 @@ class PurchaseOrder extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'company_id',
+        'tenant_id',
         'branch_id',
         'supplier_id',
         'user_id',
@@ -39,15 +39,20 @@ class PurchaseOrder extends Model
 
     // Status constants
     const STATUS_DRAFT = 'draft';
+
     const STATUS_PENDING = 'pending';
+
     const STATUS_APPROVED = 'approved';
+
     const STATUS_ORDERED = 'ordered';
+
     const STATUS_RECEIVED = 'received';
+
     const STATUS_CANCELLED = 'cancelled';
 
-    public function company(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Tenant::class);
     }
 
     public function branch(): BelongsTo
@@ -76,13 +81,13 @@ class PurchaseOrder extends Model
     }
 
     // Generate PO number
-    public static function generatePONumber($companyId)
+    public static function generatePONumber($tenantId)
     {
         $year = date('Y');
         $month = date('m');
         $prefix = "PO-{$year}{$month}-";
-        
-        $lastPO = self::where('company_id', $companyId)
+
+        $lastPO = self::where('tenant_id', $tenantId)
             ->where('po_number', 'like', "{$prefix}%")
             ->orderBy('po_number', 'desc')
             ->first();
@@ -94,6 +99,6 @@ class PurchaseOrder extends Model
             $newNumber = 1;
         }
 
-        return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($newNumber, 4, '0', STR_PAD_LEFT);
     }
 }

@@ -50,6 +50,7 @@
       style="top: calc(53px + var(--sat));"
     >
       <div class="py-4">
+        <br>
         <nav class="space-y-1 px-3">
           <router-link
             v-for="item in navItems"
@@ -89,6 +90,7 @@
       style="padding-top: calc(53px + var(--sat));"
     >
       <div class="p-4">
+        <br />
         <router-view />
       </div>
     </main>

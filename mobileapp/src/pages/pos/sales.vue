@@ -16,6 +16,15 @@
         class="w-full px-4 py-2 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-primary outline-none"
         @change="fetchSales"
       />
+      <div class="relative mt-2">
+        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"></i>
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search by receipt number..."
+          class="w-full pl-10 pr-4 py-2 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+        />
+      </div>
     </div>
 
     <!-- Summary Card -->
@@ -40,14 +49,14 @@
         <i class="fas fa-spinner fa-spin text-3xl text-primary"></i>
       </div>
 
-      <div v-else-if="sales.length === 0" class="text-center py-20 text-gray-500">
+      <div v-else-if="filteredSales.length === 0" class="text-center py-20 text-gray-500">
         <i class="fas fa-receipt text-5xl mb-3 text-gray-300"></i>
-        <p>No sales found for this date</p>
+        <p>{{ searchQuery ? 'No matching receipts found' : 'No sales found for this date' }}</p>
       </div>
 
       <div v-else class="space-y-3 pb-6">
         <div
-          v-for="sale in sales"
+          v-for="sale in filteredSales"
           :key="sale.id"
           @click="viewSale(sale)"
           class="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-lg transition"
@@ -147,12 +156,48 @@
               </div>
             </div>
 
-            <button
-              @click="selectedSale = null"
-              class="w-full py-3 bg-primary text-white rounded-lg font-medium"
-            >
-              Close
-            </button>
+            <div class="space-y-2">
+              <button
+                @click="selectedSale = null"
+                class="w-full py-3 bg-primary text-white rounded-lg font-medium"
+              >
+                Close
+              </button>
+              <button
+                v-if="selectedSale.status === 'completed' && !selectedSale.is_pending"
+                @click="showVoidConfirm = true"
+                class="w-full py-3 btn-danger rounded-lg font-medium"
+              >
+                <i class="fas fa-ban mr-2"></i>Void Sale
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Void Confirmation Modal -->
+    <Transition name="fade">
+      <div v-if="showVoidConfirm" class="modal-backdrop" style="z-index: 60;">
+        <div class="absolute inset-0 bg-overlay" @click="showVoidConfirm = false"></div>
+        <div class="modal-content">
+          <div class="text-center">
+            <div class="modal-icon modal-icon-danger">
+              <i class="fas fa-ban text-xl"></i>
+            </div>
+            <h3 class="modal-title">Void Sale?</h3>
+            <p class="modal-text">
+              This will cancel receipt <strong>{{ selectedSale?.receipt_number }}</strong> and restore stock. This action cannot be undone.
+            </p>
+            <div v-if="voidError" class="text-sm text-danger mb-3">{{ voidError }}</div>
+            <div class="modal-actions">
+              <button @click="showVoidConfirm = false" class="btn btn-secondary" :disabled="voidingInProgress">
+                Cancel
+              </button>
+              <button @click="voidSale" class="btn btn-danger" :disabled="voidingInProgress">
+                {{ voidingInProgress ? 'Voiding...' : 'Yes, Void' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -161,7 +206,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { fetchWrapper } from '@/helpers';
 import { useSyncStore } from '@/stores/sync.store';
 import { isTempReceipt } from '@/utils/receipt-generator';
@@ -174,6 +219,20 @@ const sales = ref([]);
 const summary = ref({ total_sales: 0, total_revenue: 0 });
 const selectedDate = ref(new Date().toISOString().split('T')[0]);
 const selectedSale = ref(null);
+const searchQuery = ref('');
+const showVoidConfirm = ref(false);
+const voidingInProgress = ref(false);
+const voidError = ref('');
+
+const filteredSales = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return sales.value;
+  }
+  const query = searchQuery.value.toLowerCase().trim();
+  return sales.value.filter(sale =>
+    sale.receipt_number?.toLowerCase().includes(query)
+  );
+});
 
 async function fetchSales() {
   loading.value = true;
@@ -256,6 +315,37 @@ async function viewSale(sale) {
     }
   } catch (error) {
     console.error('Failed to fetch sale details:', error);
+  }
+}
+
+async function voidSale() {
+  if (!selectedSale.value) return;
+  voidingInProgress.value = true;
+  voidError.value = '';
+  try {
+    await fetchWrapper.post(`${baseUrl}/pos/sales/${selectedSale.value.id}/cancel`);
+    // Update the sale in the local list
+    const idx = sales.value.findIndex(s => s.id === selectedSale.value.id);
+    if (idx !== -1) {
+      sales.value[idx].status = 'cancelled';
+    }
+    selectedSale.value.status = 'cancelled';
+    showVoidConfirm.value = false;
+    selectedSale.value = null;
+    // Refresh summary
+    try {
+      const summaryRes = await fetchWrapper.get(`${baseUrl}/pos/sales/summary?date=${selectedDate.value}`);
+      summary.value = {
+        total_sales: summaryRes.stats?.total_sales || 0,
+        total_revenue: summaryRes.stats?.total_revenue || 0
+      };
+    } catch (e) {
+      // Summary refresh failed, not critical
+    }
+  } catch (error) {
+    voidError.value = error?.message || 'Failed to void sale. You may not have permission.';
+  } finally {
+    voidingInProgress.value = false;
   }
 }
 

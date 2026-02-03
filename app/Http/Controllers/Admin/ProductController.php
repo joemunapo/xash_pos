@@ -236,6 +236,9 @@ class ProductController extends Controller
                 Storage::disk('public')->delete($product->image);
             }
             $validated['image'] = $request->file('image')->store('products', 'public');
+        } else {
+            // No new file uploaded — don't overwrite existing image
+            unset($validated['image']);
         }
 
         $product->update($validated);

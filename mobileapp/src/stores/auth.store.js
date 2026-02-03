@@ -66,9 +66,6 @@ export const useAuthStore = defineStore({
                     cached_at: Date.now()
                 });
 
-                const alertStore = useAlertStore();
-                alertStore.success(response.message || 'Login successful');
-
                 // Navigate to role-specific dashboard
                 const defaultRoute = response.user.role === 'manager'
                     ? '/manager/dashboard'
@@ -334,23 +331,24 @@ export const useAuthStore = defineStore({
         },
 
         async logout() {
-            try {
-                if (this.token) {
+            // Revoke token on server only if online
+            if (this.token && navigator.onLine) {
+                try {
                     await fetchWrapper.post(`${baseUrl}/pos/logout`);
+                } catch (error) {
+                    // Ignore logout errors
+                    console.error('Logout error:', error);
                 }
-            } catch (error) {
-                // Ignore logout errors
-                console.error('Logout error:', error);
-            } finally {
-                // Clear state and storage
-                this.user = null;
-                this.token = null;
-                localStorage.removeItem('user');
-                localStorage.removeItem('token');
-                localStorage.removeItem('pos-cart');
-
-                router.push('/');
             }
+
+            // Clear state and storage
+            this.user = null;
+            this.token = null;
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            localStorage.removeItem('pos-cart');
+
+            router.push('/');
         },
 
         checkAuth() {
@@ -384,9 +382,6 @@ export const useAuthStore = defineStore({
                 // Persist to localStorage
                 localStorage.setItem('user', JSON.stringify(cachedUser.user_data));
                 localStorage.setItem('token', cachedUser.token);
-
-                const alertStore = useAlertStore();
-                alertStore.success('Logged in successfully (Offline Mode)');
 
                 // Navigate to role-specific dashboard
                 const defaultRoute = cachedUser.role === 'manager'

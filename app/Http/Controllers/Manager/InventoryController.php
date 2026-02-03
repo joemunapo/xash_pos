@@ -69,7 +69,7 @@ class InventoryController extends Controller
                     'unit' => $product->unit ?? 'pcs',
                     'reorder_level' => $product->reorder_level,
                     'stock_value' => $stock->quantity * $product->cost_price,
-                    'image_url' => $product->image ? asset('storage/' . $product->image) : null,
+                    'image_url' => $product->image ? asset('storage/'.$product->image) : null,
                 ];
             })
             ->filter() // Remove any null values from the map
@@ -77,7 +77,7 @@ class InventoryController extends Controller
 
         // Calculate summary
         $summary = [
-            'total_products' => Product::where('company_id', $user->company_id)->count(),
+            'total_products' => Product::where('tenant_id', $user->tenant_id)->count(),
             'total_value' => Stock::where('branch_id', $branch->id)
                 ->join('products', 'stock.product_id', '=', 'products.id')
                 ->selectRaw('SUM(stock.quantity * products.cost_price) as total')
@@ -106,7 +106,7 @@ class InventoryController extends Controller
         $branch = $user->primaryBranch();
 
         // Ensure product belongs to the user's company
-        if ($product->company_id !== $user->company_id) {
+        if ($product->tenant_id !== $user->tenant_id) {
             return response()->json([
                 'message' => 'Unauthorized',
             ], 403);
@@ -186,7 +186,7 @@ class InventoryController extends Controller
 
         $lowStockItems = Stock::where('branch_id', $branch->id)
             ->join('products', 'stock.product_id', '=', 'products.id')
-            ->where('products.company_id', $user->company_id)
+            ->where('products.tenant_id', $user->tenant_id)
             ->whereRaw('stock.quantity <= products.reorder_level')
             ->select([
                 'products.id',

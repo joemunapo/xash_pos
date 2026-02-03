@@ -251,10 +251,10 @@ class SaleController extends Controller
             ], 400);
         }
 
-        // Check if managers/admins can cancel
-        if (! $user->isManager() && ! $user->isAdmin()) {
+        // Managers/admins can cancel any sale; cashiers can only cancel their own
+        if (! $user->isManager() && ! $user->isAdmin() && $sale->user_id !== $user->id) {
             return response()->json([
-                'message' => 'Only managers can cancel sales',
+                'message' => 'You can only void your own sales',
             ], 403);
         }
 
@@ -313,6 +313,44 @@ class SaleController extends Controller
                 'message' => 'Failed to cancel sale: '.$e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Attach a customer to a completed sale
+     */
+    public function attachCustomer(Request $request, Sale $sale): JsonResponse
+    {
+        $request->validate([
+            'customer_id' => ['required', 'exists:customers,id'],
+        ]);
+
+        $user = $request->user();
+        $branch = $user->primaryBranch();
+
+        // Check access
+        if ($sale->branch_id !== $branch?->id && ! $user->isAdmin()) {
+            return response()->json([
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        if ($sale->customer_id) {
+            return response()->json([
+                'message' => 'Sale already has a customer attached',
+                'sale' => $sale->load('customer:id,first_name,last_name,phone,email'),
+            ]);
+        }
+
+        $sale->update([
+            'customer_id' => $request->customer_id,
+        ]);
+
+        $sale->load('customer:id,first_name,last_name,phone,email');
+
+        return response()->json([
+            'message' => 'Customer attached to sale successfully',
+            'sale' => $sale,
+        ]);
     }
 
     /**

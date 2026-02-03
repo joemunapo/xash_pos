@@ -2,45 +2,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
- :root {
-     --sat: env(safe-area-inset-top);
-     --sar: env(safe-area-inset-right);
-     --sab: env(safe-area-inset-bottom);
-     --sal: env(safe-area-inset-left);
- }
- 
- .pt-safe {
-     padding-top: var(--sat) !important;
- }
- 
- .pb-safe {
-     padding-bottom: var(--sab) !important;
- }
- 
- .pl-safe {
-     padding-left: var(--sal) !important;
- }
- 
- .pr-safe {
-     padding-right: var(--sar) !important;
- }
- 
- .mt-safe {
-     margin-top: var(--sat) !important;
- }
- 
- .mb-safe {
-     margin-bottom: var(--sab) !important;
- }
- 
- .top-safe {
-     top: var(--sat) !important;
- }
- 
- .bottom-safe {
-     bottom: var(--sab) !important;
- }
+
+:root {
+    --sat: env(safe-area-inset-top);
+    --sar: env(safe-area-inset-right);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+}
+
+.pt-safe {
+    padding-top: max(var(--sat), 1rem) !important;
+}
+
+.pb-safe {
+    padding-bottom: var(--sab) !important;
+}
+
+.pl-safe {
+    padding-left: var(--sal) !important;
+}
+
+.pr-safe {
+    padding-right: var(--sar) !important;
+}
+
+.mt-safe {
+    margin-top: var(--sat) !important;
+}
+
+.mb-safe {
+    margin-bottom: var(--sab) !important;
+}
+
+.top-safe {
+    top: var(--sat) !important;
+}
+
+.bottom-safe {
+    bottom: var(--sab) !important;
+}
 
 /* ==========================================================================
    XASH POS COLOR SYSTEM
@@ -75,6 +75,7 @@
 .bg-header {
     background: linear-gradient(to right, #1669C5, #1254A3) !important;
     background-color: #1669C5 !important;
+    height: 170px !important;
 }
 
 .bg-overlay {
@@ -514,7 +515,7 @@
 
 /* ========== Utility Classes ========== */
 .mt-negative {
-    margin-top: -16px;
+    margin-top: -22px;
 }
 
 .bg-glass {

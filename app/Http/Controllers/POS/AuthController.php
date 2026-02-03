@@ -21,7 +21,27 @@ class AuthController extends Controller
             'pin' => ['required', 'string', 'min:4', 'max:6'],
         ]);
 
-        $user = User::where('phone_number', $request->phone_number)->first();
+        $phone = trim($request->phone_number);
+
+        // Try exact match first, then normalize formats
+        $user = User::where('phone_number', $phone)->first();
+
+        if (! $user) {
+            // Normalize: +263... → 0..., or 0... → +263...
+            if (str_starts_with($phone, '+263')) {
+                $normalized = '0'.substr($phone, 4);
+            } elseif (str_starts_with($phone, '263')) {
+                $normalized = '0'.substr($phone, 3);
+            } elseif (str_starts_with($phone, '0')) {
+                $normalized = '+263'.substr($phone, 1);
+            } else {
+                $normalized = null;
+            }
+
+            if ($normalized) {
+                $user = User::where('phone_number', $normalized)->first();
+            }
+        }
 
         if (! $user) {
             throw ValidationException::withMessages([
@@ -71,7 +91,7 @@ class AuthController extends Controller
                 'phone_number' => $user->phone_number,
                 'role' => $user->role,
                 'avatar' => $user->avatar,
-                'company_id' => $user->company_id,
+                'tenant_id' => $user->tenant_id,
                 'branch' => $branch ? [
                     'id' => $branch->id,
                     'name' => $branch->name,
@@ -98,7 +118,7 @@ class AuthController extends Controller
                 'phone_number' => $user->phone_number,
                 'role' => $user->role,
                 'avatar' => $user->avatar,
-                'company_id' => $user->company_id,
+                'tenant_id' => $user->tenant_id,
                 'branch' => $branch ? [
                     'id' => $branch->id,
                     'name' => $branch->name,
@@ -134,7 +154,7 @@ class AuthController extends Controller
                 'phone_number' => $user->phone_number,
                 'role' => $user->role,
                 'avatar' => $user->avatar,
-                'company_id' => $user->company_id,
+                'tenant_id' => $user->tenant_id,
                 'branch' => $branch ? [
                     'id' => $branch->id,
                     'name' => $branch->name,

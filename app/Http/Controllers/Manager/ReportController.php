@@ -112,7 +112,7 @@ class ReportController extends Controller
                 products.name,
                 products.sku,
                 SUM(sale_items.quantity) as total_quantity,
-                SUM(sale_items.subtotal) as total_revenue
+                SUM(sale_items.line_total) as total_revenue
             ')
             ->groupBy('products.id', 'products.name', 'products.sku')
             ->orderByDesc('total_quantity')
@@ -256,7 +256,7 @@ class ReportController extends Controller
 
         // Get available branches for filter
         $branches = \DB::table('branches')
-            ->where('company_id', $branch->company_id)
+            ->where('tenant_id', $branch->tenant_id)
             ->whereIn('id', $branchIds)
             ->select('id', 'name')
             ->get();
@@ -272,7 +272,7 @@ class ReportController extends Controller
 
         // Get available products for filter
         $products = \DB::table('products')
-            ->where('company_id', $user->company_id)
+            ->where('tenant_id', $user->tenant_id)
             ->select('id', 'name', 'sku')
             ->orderBy('name')
             ->get();

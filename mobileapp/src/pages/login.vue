@@ -224,7 +224,7 @@ async function handleSubmit() {
 .logo-container {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 1rem;
-  padding: 0.75rem;
+  padding: 0.5rem;
   box-shadow:
     0 8px 30px -8px rgba(22, 105, 197, 0.12),
     0 0 0 1px rgba(22, 105, 197, 0.05);

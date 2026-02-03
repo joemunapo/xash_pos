@@ -542,7 +542,7 @@
               </button>
               <button
                 @click="completeSale"
-                :disabled="processing || (useSplitPayment ? remainingAmount !== 0 : amountReceived < cartStore.totalAmount)"
+                :disabled="processing || (useSplitPayment ? remainingAmount !== 0 : (!amountReceived || parseFloat(amountReceived) < parseFloat(cartStore.totalAmount || 0)))"
                 class="flex-1 py-4 btn btn-primary ml-2"
               >
                 <span v-if="processing" class="flex items-center justify-center">
@@ -690,12 +690,106 @@
             <p class="text-sm text-gray-500">Change Due</p>
             <p class="text-2xl font-bold text-primary">${{ formatMoney(lastChangeAmount) }}</p>
           </div>
-          <button
-            @click="startNewSale"
-            class="w-full py-3 btn btn-primary"
-          >
-            Start New Sale
-          </button>
+          <div class="flex gap-3">
+            <button
+              v-if="lastSaleId && !customerSaved"
+              @click="showCustomerModal = true"
+              class="flex-1 py-3 btn btn-secondary"
+            >
+              <i class="fas fa-user-plus mr-2"></i>
+              Save Customer
+            </button>
+            <div v-if="customerSaved" class="flex-1 py-3 bg-green-50 text-green-700 rounded-lg text-sm font-medium flex items-center justify-center">
+              <i class="fas fa-check-circle mr-2"></i>
+              Customer Saved
+            </div>
+            <button
+              @click="startNewSale"
+              class="flex-1 py-3 btn btn-primary"
+            >
+              Start New Sale
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Save Customer Modal -->
+    <Transition name="fade">
+      <div v-if="showCustomerModal" class="modal-backdrop" style="z-index: 60;">
+        <div class="absolute inset-0 bg-overlay" @click="showCustomerModal = false"></div>
+        <div class="modal-content">
+          <h2 class="text-lg font-bold text-gray-800 mb-1">Save Customer Details</h2>
+          <p class="text-sm text-gray-500 mb-4">Phone or email is required</p>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input
+                v-model="customerForm.phone"
+                type="tel"
+                placeholder="e.g. 0771234567"
+                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                v-model="customerForm.email"
+                type="email"
+                placeholder="e.g. customer@email.com"
+                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+            </div>
+            <div class="flex gap-3">
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <input
+                  v-model="customerForm.first_name"
+                  type="text"
+                  placeholder="Optional"
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                />
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <input
+                  v-model="customerForm.last_name"
+                  type="text"
+                  placeholder="Optional"
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div v-if="customerError" class="mt-3 bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm">
+            {{ customerError }}
+          </div>
+
+          <div class="flex gap-3 mt-4">
+            <button
+              @click="showCustomerModal = false"
+              class="flex-1 py-3 btn btn-secondary"
+              :disabled="savingCustomer"
+            >
+              Cancel
+            </button>
+            <button
+              @click="saveCustomer"
+              :disabled="savingCustomer || (!customerForm.phone && !customerForm.email)"
+              class="flex-1 py-3 btn btn-primary"
+            >
+              <span v-if="savingCustomer" class="flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                Saving...
+              </span>
+              <span v-else class="flex items-center justify-center">
+                <i class="fas fa-save mr-2"></i>
+                Save
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </Transition>
@@ -817,6 +911,19 @@ const processing = ref(false);
 const checkoutError = ref('');
 const lastReceiptNumber = ref('');
 const lastChangeAmount = ref(0);
+const lastSaleId = ref(null);
+
+// Customer save state
+const showCustomerModal = ref(false);
+const savingCustomer = ref(false);
+const customerSaved = ref(false);
+const customerError = ref('');
+const customerForm = ref({
+  phone: '',
+  email: '',
+  first_name: '',
+  last_name: '',
+});
 
 // Split payment state
 const useSplitPayment = ref(false);
@@ -840,22 +947,35 @@ const remainingAmount = computed(() => {
 });
 
 const availableUnits = computed(() => {
+  const productPrice = parseFloat(selectedProduct.value?.branch_price || selectedProduct.value?.selling_price) || 0;
+  const productCost = parseFloat(selectedProduct.value?.cost_price) || 0;
+
   if (!selectedProduct.value?.product_units || selectedProduct.value.product_units.length === 0) {
     // If no units defined, create a default unit from product data
     return [{
       name: selectedProduct.value?.unit || 'Piece',
       abbreviation: selectedProduct.value?.unit || 'pc',
       quantity: 1,
-      selling_price: selectedProduct.value?.branch_price || selectedProduct.value?.selling_price || 0,
-      cost_price: selectedProduct.value?.cost_price || 0,
+      selling_price: productPrice,
+      cost_price: productCost,
       is_default: true,
     }];
   }
-  return selectedProduct.value.product_units.sort((a, b) => a.sort_order - b.sort_order);
+
+  // Fill in missing prices from the product's base price
+  return selectedProduct.value.product_units
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map(unit => ({
+      ...unit,
+      selling_price: parseFloat(unit.selling_price) || productPrice,
+      cost_price: parseFloat(unit.cost_price) || productCost,
+    }));
 });
 
 const changeAmount = computed(() => {
-  return Math.max(0, amountReceived.value - cartStore.totalAmount);
+  const received = parseFloat(amountReceived.value) || 0;
+  const total = parseFloat(cartStore.totalAmount) || 0;
+  return Math.max(0, received - total);
 });
 
 const filteredProducts = computed(() => {
@@ -1085,15 +1205,18 @@ function confirmAddToCart() {
   // Calculate the actual quantity in base units for stock tracking
   const baseQuantity = modalQuantity.value * (selectedUnit.value.quantity || 1);
 
+  // Use getCurrentUnitPrice which has proper fallback to product price
+  const unitPrice = getCurrentUnitPrice();
+
   // Prepare product data with unit information
   const productWithUnit = {
     ...selectedProduct.value,
     unit: selectedUnit.value.abbreviation,
     unit_name: selectedUnit.value.name,
     unit_multiplier: selectedUnit.value.quantity,
-    selling_price: selectedUnit.value.selling_price,
-    branch_price: selectedUnit.value.selling_price,
-    cost_price: selectedUnit.value.cost_price || selectedProduct.value.cost_price,
+    selling_price: unitPrice,
+    branch_price: unitPrice,
+    cost_price: parseFloat(selectedUnit.value.cost_price) || parseFloat(selectedProduct.value.cost_price) || 0,
   };
 
   cartStore.addItem(productWithUnit, modalQuantity.value);
@@ -1102,36 +1225,37 @@ function confirmAddToCart() {
   const cartBtn = document.getElementById('cart-btn');
   if (cartBtn) {
     const dropItem = document.createElement('div');
-    dropItem.className = 'fixed z-[100] w-6 h-6 bg-primary rounded-full flex items-center justify-center pointer-events-none transition-all duration-500 ease-in-out';
-    dropItem.innerHTML = '<i class="fas fa-plus text-[10px] text-white"></i>';
-    
+    dropItem.className = 'fixed z-[100] w-12 h-12 bg-primary rounded-full flex items-center justify-center pointer-events-none shadow-lg';
+    dropItem.innerHTML = '<i class="fas fa-cart-plus text-lg text-white"></i>';
+    dropItem.style.transition = 'all 1s cubic-bezier(0.25, 0.1, 0.25, 1)';
+
     // Start from center of screen (approx modal position)
     dropItem.style.left = '50%';
     dropItem.style.top = '50%';
-    dropItem.style.transform = 'translate(-50%, -50%) scale(1)';
+    dropItem.style.transform = 'translate(-50%, -50%) scale(1.2)';
     dropItem.style.opacity = '1';
-    
+
     document.body.appendChild(dropItem);
-    
+
     const rect = cartBtn.getBoundingClientRect();
-    
+
     // Force reflow
     dropItem.offsetHeight;
-    
+
     // Animate to cart position
     setTimeout(() => {
       dropItem.style.left = `${rect.left + rect.width / 2}px`;
       dropItem.style.top = `${rect.top + rect.height / 2}px`;
-      dropItem.style.transform = 'translate(-50%, -50%) scale(0.2)';
-      dropItem.style.opacity = '0';
+      dropItem.style.transform = 'translate(-50%, -50%) scale(0.5)';
+      dropItem.style.opacity = '0.2';
     }, 10);
-    
+
     // Remove after animation and trigger cart bounce
     setTimeout(() => {
       dropItem.remove();
       cartBtn.classList.add('animate-bounce-short');
       setTimeout(() => cartBtn.classList.remove('animate-bounce-short'), 500);
-    }, 550);
+    }, 650);
   }
   
   closeQuantityModal();
@@ -1170,19 +1294,24 @@ function validateSplitPayments() {
 
 function proceedToCheckout() {
   showCart.value = false;
-  amountReceived.value = cartStore.totalAmount;
+  const total = parseFloat(cartStore.totalAmount) || 0;
+  amountReceived.value = total;
   checkoutError.value = '';
-  
+
   // Reset split payment to single payment mode
   useSplitPayment.value = false;
   splitPayments.value = [
     { method: 'cash', amount: 0 }
   ];
-  
+
   showCheckout.value = true;
 }
 
 async function completeSale() {
+  // Sanitize amount values
+  const totalAmount = parseFloat(cartStore.totalAmount) || 0;
+  const amountPaid = parseFloat(useSplitPayment.value ? allocatedAmount.value : amountReceived.value) || 0;
+
   // Validate payment
   if (useSplitPayment.value) {
     if (remainingAmount.value !== 0) {
@@ -1194,10 +1323,15 @@ async function completeSale() {
       return;
     }
   } else {
-    if (amountReceived.value < cartStore.totalAmount) {
+    if (!amountPaid || amountPaid < totalAmount) {
       checkoutError.value = 'Amount received is less than total';
       return;
     }
+  }
+
+  if (!paymentMethod.value && !useSplitPayment.value) {
+    checkoutError.value = 'Please select a payment method';
+    return;
   }
 
   processing.value = true;
@@ -1210,21 +1344,21 @@ async function completeSale() {
     const saleData = {
       items: cartStore.getItemsForSubmission(),
       customer_id: cartStore.customer?.id || null,
-      discount_amount: cartStore.discountAmount,
-      notes: cartStore.notes,
+      discount_amount: parseFloat(cartStore.discountAmount) || 0,
+      notes: cartStore.notes || null,
     };
 
     // Add payment info based on mode
     if (useSplitPayment.value) {
       saleData.payment_method = 'split';
-      saleData.amount_paid = allocatedAmount.value;
+      saleData.amount_paid = parseFloat(allocatedAmount.value) || 0;
       saleData.payments = splitPayments.value.map(p => ({
         method: p.method,
-        amount: p.amount
+        amount: parseFloat(p.amount) || 0
       }));
     } else {
       saleData.payment_method = paymentMethod.value;
-      saleData.amount_paid = amountReceived.value;
+      saleData.amount_paid = amountPaid;
     }
 
     // Check network status
@@ -1235,11 +1369,12 @@ async function completeSale() {
 
         lastReceiptNumber.value = response.sale.receipt_number;
         lastChangeAmount.value = response.sale.change_amount;
+        lastSaleId.value = response.sale.id;
 
         // Update local stock immediately for each item sold
         cartStore.items.forEach(item => {
           const quantityChange = -(item.quantity * (item.unit_multiplier || 1));
-          
+
           // Also update the local products array for immediate UI update
           const productIndex = products.value.findIndex(p => p.id === item.product_id);
           if (productIndex !== -1) {
@@ -1254,6 +1389,7 @@ async function completeSale() {
           response = await cartStore.completeSaleOffline(paymentMethod.value, amountReceived.value);
           lastReceiptNumber.value = response.receipt_number;
           lastChangeAmount.value = response.change_amount;
+          lastSaleId.value = null;
 
           // Update the local products array for immediate UI update
           cartStore.items.forEach(item => {
@@ -1274,6 +1410,7 @@ async function completeSale() {
       response = await cartStore.completeSaleOffline(paymentMethod.value, amountReceived.value);
       lastReceiptNumber.value = response.receipt_number;
       lastChangeAmount.value = response.change_amount;
+      lastSaleId.value = null;
 
       // Update the local products array for immediate UI update
       cartStore.items.forEach(item => {
@@ -1333,10 +1470,53 @@ async function completeSale() {
   }
 }
 
+async function saveCustomer() {
+  if (!customerForm.value.phone && !customerForm.value.email) {
+    customerError.value = 'Please provide a phone number or email address';
+    return;
+  }
+
+  savingCustomer.value = true;
+  customerError.value = '';
+
+  try {
+    // Create customer
+    const customerResponse = await fetchWrapper.post(`${baseUrl}/pos/customers`, customerForm.value);
+    const customer = customerResponse.customer;
+
+    // Attach customer to the sale
+    if (lastSaleId.value && customer?.id) {
+      await fetchWrapper.post(`${baseUrl}/pos/sales/${lastSaleId.value}/customer`, {
+        customer_id: customer.id,
+      });
+    }
+
+    customerSaved.value = true;
+    showCustomerModal.value = false;
+
+    if (customerResponse.existing) {
+      alertStore.info('Existing customer linked to sale');
+    } else {
+      alertStore.success('Customer saved and linked to sale');
+    }
+  } catch (error) {
+    customerError.value = error.message || 'Failed to save customer';
+  } finally {
+    savingCustomer.value = false;
+  }
+}
+
 async function startNewSale() {
   showSuccess.value = false;
   amountReceived.value = 0;
   paymentMethod.value = 'cash';
+  lastSaleId.value = null;
+
+  // Reset customer state
+  customerSaved.value = false;
+  showCustomerModal.value = false;
+  customerError.value = '';
+  customerForm.value = { phone: '', email: '', first_name: '', last_name: '' };
 
   // Reset split payment state
   useSplitPayment.value = false;

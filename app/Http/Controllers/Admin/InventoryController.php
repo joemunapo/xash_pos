@@ -242,16 +242,13 @@ class InventoryController extends Controller
         $tenantBranchIds = Branch::where('tenant_id', $tenantId)->pluck('id');
 
         $transfers = StockMovement::whereIn('stock_movements.branch_id', $tenantBranchIds)
-            ->where('type', 'transfer')
+            ->where('type', StockMovement::TYPE_TRANSFER_OUT)
             ->with(['product', 'branch', 'toBranch', 'user'])
             ->when($request->branch_id, function ($query, $branchId) {
                 $query->where(function ($q) use ($branchId) {
                     $q->where('stock_movements.branch_id', $branchId)
                         ->orWhere('stock_movements.to_branch_id', $branchId);
                 });
-            })
-            ->when($request->status, function ($query, $status) {
-                $query->where('stock_movements.status', $status);
             })
             ->latest()
             ->paginate(20);
@@ -288,16 +285,20 @@ class InventoryController extends Controller
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        DB::transaction(function () use ($validated, $user) {
-            // Check source branch has enough stock
-            $sourceStock = Stock::where('product_id', $validated['product_id'])
-                ->where('branch_id', $validated['from_branch_id'])
-                ->first();
+        // Check source branch has enough stock before starting transaction
+        $sourceStock = Stock::where('product_id', $validated['product_id'])
+            ->where('branch_id', $validated['from_branch_id'])
+            ->first();
 
-            if (! $sourceStock || $sourceStock->quantity < $validated['quantity']) {
-                throw new \Exception('Insufficient stock in source branch.');
-            }
+        $available = $sourceStock ? $sourceStock->quantity : 0;
 
+        if (! $sourceStock || $sourceStock->quantity < $validated['quantity']) {
+            return back()->withErrors([
+                'quantity' => "Insufficient stock in source branch. Available: {$available}, Requested: {$validated['quantity']}.",
+            ]);
+        }
+
+        DB::transaction(function () use ($validated, $user, $sourceStock) {
             // Deduct from source
             $sourceStock->decrement('quantity', $validated['quantity']);
 
@@ -313,10 +314,11 @@ class InventoryController extends Controller
             );
             $destStock->increment('quantity', $validated['quantity']);
 
-            // Record the movement
+            // Record the outgoing movement
             StockMovement::create([
                 'product_id' => $validated['product_id'],
                 'branch_id' => $validated['from_branch_id'],
+                'to_branch_id' => $validated['to_branch_id'],
                 'user_id' => $user->id,
                 'type' => StockMovement::TYPE_TRANSFER_OUT,
                 'quantity' => -$validated['quantity'],
@@ -324,15 +326,15 @@ class InventoryController extends Controller
                 'notes' => $validated['notes'] ?? null,
             ]);
 
-            // Record destination movement
+            // Record the incoming movement
             StockMovement::create([
                 'product_id' => $validated['product_id'],
                 'branch_id' => $validated['to_branch_id'],
+                'to_branch_id' => $validated['from_branch_id'],
                 'user_id' => $user->id,
                 'type' => StockMovement::TYPE_TRANSFER_IN,
                 'quantity' => $validated['quantity'],
                 'balance_after' => $destStock->quantity,
-                'reference' => 'Transfer from Branch ID: '.$validated['from_branch_id'],
                 'notes' => $validated['notes'] ?? null,
             ]);
         });

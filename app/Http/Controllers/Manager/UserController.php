@@ -95,7 +95,7 @@ class UserController extends Controller
 
         // Create the user
         $user = User::create([
-            'company_id' => $manager->company_id,
+            'tenant_id' => $manager->tenant_id,
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone_number' => $validated['phone_number'],
