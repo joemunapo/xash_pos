@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Branch;
-use App\Models\Company;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -18,17 +18,17 @@ class SalesSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get existing company
-        $company = Company::where('email', 'demo@xashpos.com')->first();
+        // Get existing tenant
+        $tenant = Tenant::where('email', 'demo@xashpos.com')->first();
 
-        if (! $company) {
-            $this->command->error('Please run UserSeeder first to create the company!');
+        if (! $tenant) {
+            $this->command->error('Please run UserSeeder first to create the tenant!');
 
             return;
         }
 
         // Get existing main branch from UserSeeder
-        $mainBranch = Branch::where('company_id', $company->id)
+        $mainBranch = Branch::where('tenant_id', $tenant->id)
             ->where('code', 'MAIN')
             ->first();
 
@@ -40,7 +40,7 @@ class SalesSeeder extends Seeder
 
         // Create additional branches for variety
         $branch2 = Branch::firstOrCreate(
-            ['company_id' => $company->id, 'code' => 'NORTH'],
+            ['tenant_id' => $tenant->id, 'code' => 'NORTH'],
             [
                 'name' => 'North Branch',
                 'address' => '456 North Avenue',
@@ -52,7 +52,7 @@ class SalesSeeder extends Seeder
         );
 
         $branch3 = Branch::firstOrCreate(
-            ['company_id' => $company->id, 'code' => 'SOUTH'],
+            ['tenant_id' => $tenant->id, 'code' => 'SOUTH'],
             [
                 'name' => 'South Branch',
                 'address' => '789 South Street',
@@ -73,7 +73,7 @@ class SalesSeeder extends Seeder
         $cashier2 = User::firstOrCreate(
             ['email' => 'cashier2@xashpos.com'],
             [
-                'company_id' => $company->id,
+                'tenant_id' => $tenant->id,
                 'name' => 'John Moyo',
                 'password' => Hash::make('password'),
                 'role' => 'cashier',
@@ -87,7 +87,7 @@ class SalesSeeder extends Seeder
         $cashier3 = User::firstOrCreate(
             ['email' => 'cashier3@xashpos.com'],
             [
-                'company_id' => $company->id,
+                'tenant_id' => $tenant->id,
                 'name' => 'Mary Ncube',
                 'password' => Hash::make('password'),
                 'role' => 'cashier',
@@ -101,7 +101,7 @@ class SalesSeeder extends Seeder
         $cashier4 = User::firstOrCreate(
             ['email' => 'cashier4@xashpos.com'],
             [
-                'company_id' => $company->id,
+                'tenant_id' => $tenant->id,
                 'name' => 'Peter Ndlovu',
                 'password' => Hash::make('password'),
                 'role' => 'cashier',
@@ -145,7 +145,7 @@ class SalesSeeder extends Seeder
         }
 
         // Get products from ProductSeeder
-        $products = Product::where('company_id', $company->id)
+        $products = Product::where('tenant_id', $tenant->id)
             ->where('is_active', true)
             ->get();
 
@@ -270,7 +270,7 @@ class SalesSeeder extends Seeder
                 }
 
                 $sale = Sale::create([
-                    'company_id' => $company->id,
+                    'tenant_id' => $tenant->id,
                     'branch_id' => $branch->id,
                     'user_id' => $cashier->id,
                     'receipt_number' => $receiptNumber,
@@ -314,17 +314,17 @@ class SalesSeeder extends Seeder
         $this->command->info("✓ Date range: {$startDate->format('Y-m-d')} to {$endDate->format('Y-m-d')}");
 
         // Display summary
-        $totalRevenue = Sale::where('company_id', $company->id)
+        $totalRevenue = Sale::where('tenant_id', $tenant->id)
             ->where('status', 'completed')
             ->sum('total_amount');
 
-        $avgSale = Sale::where('company_id', $company->id)
+        $avgSale = Sale::where('tenant_id', $tenant->id)
             ->where('status', 'completed')
             ->avg('total_amount');
 
         $this->command->info('');
         $this->command->info('Sales Summary:');
-        $this->command->info("  Total Revenue: \$".number_format($totalRevenue, 2));
-        $this->command->info("  Average Sale: \$".number_format($avgSale, 2));
+        $this->command->info('  Total Revenue: $'.number_format($totalRevenue, 2));
+        $this->command->info('  Average Sale: $'.number_format($avgSale, 2));
     }
 }
