@@ -141,10 +141,10 @@ function truncateText(ctx, text, maxWidth) {
 function lineTextToBase64(text, options = {}) {
     const {
         align = 'left',
-        fontSize = 26,
+        fontSize = 22,
         fontWeight = 700,
         paddingX = RECEIPT_SIDE_PADDING,
-        paddingY = 6,
+        paddingY = 2,
     } = options
 
     const probe = createReceiptCanvas(64)
@@ -153,7 +153,7 @@ function lineTextToBase64(text, options = {}) {
     probe.ctx.font = `${fontWeight} ${fontSize}px sans-serif`
     const maxTextWidth = RECEIPT_PRINT_WIDTH - (paddingX * 2)
     const lines = wrapText(probe.ctx, text, maxTextWidth)
-    const lineHeight = Math.ceil(fontSize * 1.35)
+    const lineHeight = Math.ceil(fontSize * 1.2)
     const height = (lines.length * lineHeight) + (paddingY * 2)
 
     const surface = createReceiptCanvas(height)
@@ -181,14 +181,14 @@ function lineTextToBase64(text, options = {}) {
 
 function rowTextToBase64(left, right, options = {}) {
     const {
-        fontSize = 24,
+        fontSize = 21,
         fontWeight = 700,
         paddingX = RECEIPT_SIDE_PADDING,
-        paddingY = 6,
+        paddingY = 2,
         gap = 10,
     } = options
 
-    const surface = createReceiptCanvas(Math.ceil(fontSize * 1.5) + (paddingY * 2))
+    const surface = createReceiptCanvas(Math.ceil(fontSize * 1.2) + (paddingY * 2))
     if (!surface) return null
     const { canvas, ctx } = surface
 
@@ -434,25 +434,23 @@ async function printReceiptNative(receipt) {
         await awaitSunmi('enterPrinterBuffer', () => SunmiPrinter.enterPrinterBuffer({ clean: true }), 2000)
         queue('printerInit', () => SunmiPrinter.printerInit())
         queue('setBold', () => SunmiPrinter.setBold({ enable: true }))
-        queue('setFontSize', () => SunmiPrinter.setFontSize({ size: 28 }))
+        queue('setFontSize', () => SunmiPrinter.setFontSize({ size: 24 }))
         queue('setAlignment left', () => SunmiPrinter.setAlignment({ alignment: AlignmentModeEnum.LEFT }))
 
         // Header branding (logo image first, then fallback text if needed)
         const logoPrinted = await printReceiptLogo(queue)
         if (!logoPrinted) {
-            printLineBitmap('XASH POS', { align: 'center', fontSize: 34, fontWeight: 800 }, queue)
+            printLineBitmap('XASH Pos', { align: 'center', fontSize: 28, fontWeight: 800 }, queue)
         }
 
         if (receipt.branch_name) {
-            printLineBitmap(receipt.branch_name, { align: 'center', fontSize: 24, fontWeight: 700 }, queue)
+            printLineBitmap(receipt.branch_name, { align: 'center', fontSize: 18, fontWeight: 700 }, queue)
         }
 
-        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
-        printRowBitmap('Receipt #', receipt.receipt_number, { fontSize: 22, fontWeight: 700 }, queue)
-        printRowBitmap('Date', dateTime, { fontSize: 22, fontWeight: 700 }, queue)
-        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
-        printLineBitmap('ITEMS', { fontSize: 24, fontWeight: 800 }, queue)
-        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
+        printRowBitmap('Receipt #', receipt.receipt_number, { fontSize: 18, fontWeight: 700 }, queue)
+        printRowBitmap('Date', dateTime, { fontSize: 18, fontWeight: 700 }, queue)
+        printLineBitmap('------------------------------', { fontSize: 18, fontWeight: 700 }, queue)
+        printLineBitmap('ITEMS', { fontSize: 20, fontWeight: 800 }, queue)
 
         if (receipt.items && receipt.items.length > 0) {
             for (const item of receipt.items) {
@@ -461,52 +459,50 @@ async function printReceiptNative(receipt) {
                 const price = money(item.unit_price || item.price || 0)
                 const lineTotal = money(item.total || ((item.quantity || 0) * (item.unit_price || item.price || 0)))
 
-                printLineBitmap(name, { fontSize: 22, fontWeight: 700 }, queue)
-                printRowBitmap(`${qty} x $${price}`, `$${lineTotal}`, { fontSize: 21, fontWeight: 700 }, queue)
+                printRowBitmap(`${name} ${qty} x $${price}`, `$${lineTotal}`, { fontSize: 18, fontWeight: 700 }, queue)
             }
         }
 
-        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
-        printRowBitmap('Subtotal', `$${subtotal}`, { fontSize: 22, fontWeight: 700 }, queue)
+        printLineBitmap('------------------------------', { fontSize: 18, fontWeight: 700 }, queue)
+        printRowBitmap('Subtotal', `$${subtotal}`, { fontSize: 18, fontWeight: 700 }, queue)
 
         if (receipt.discount_amount && parseFloat(receipt.discount_amount) > 0) {
             const discount = money(receipt.discount_amount)
-            printRowBitmap('Discount', `-$${discount}`, { fontSize: 22, fontWeight: 700 }, queue)
+            printRowBitmap('Discount', `-$${discount}`, { fontSize: 18, fontWeight: 700 }, queue)
         }
 
-        printRowBitmap('TOTAL', `$${total}`, { fontSize: 28, fontWeight: 800 }, queue)
-        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
-        printLineBitmap('PAYMENT', { fontSize: 24, fontWeight: 800 }, queue)
-        printRowBitmap('Method', paymentMethodLabel, { fontSize: 22, fontWeight: 700 }, queue)
+        printRowBitmap('TOTAL', `$${total}`, { fontSize: 24, fontWeight: 800 }, queue)
+        printLineBitmap('------------------------------', { fontSize: 18, fontWeight: 700 }, queue)
+        printRowBitmap('Method', paymentMethodLabel, { fontSize: 18, fontWeight: 700 }, queue)
 
         if (receipt.payments && receipt.payments.length > 0) {
             for (const payment of receipt.payments) {
                 const method = payment.method === 'cash' ? 'Cash' :
                     payment.method === 'ecocash' ? 'Ecocash' :
                         payment.method === 'swipe' ? 'Card' : payment.method
-                printRowBitmap(method, `$${money(payment.amount || 0)}`, { fontSize: 22, fontWeight: 700 }, queue)
+                printRowBitmap(method, `$${money(payment.amount || 0)}`, { fontSize: 18, fontWeight: 700 }, queue)
             }
         } else {
-            printRowBitmap('Paid', `$${amountPaid}`, { fontSize: 22, fontWeight: 700 }, queue)
+            printRowBitmap('Paid', `$${amountPaid}`, { fontSize: 18, fontWeight: 700 }, queue)
         }
 
         if (receipt.change_amount && parseFloat(receipt.change_amount) > 0) {
-            printRowBitmap('Change', `$${money(receipt.change_amount)}`, { fontSize: 22, fontWeight: 700 }, queue)
+            printRowBitmap('Change', `$${money(receipt.change_amount)}`, { fontSize: 18, fontWeight: 700 }, queue)
         }
 
-        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
+        printLineBitmap('------------------------------', { fontSize: 18, fontWeight: 700 }, queue)
 
         if (receipt.customer_name) {
-            printRowBitmap('Customer', receipt.customer_name, { fontSize: 22, fontWeight: 700 }, queue)
+            printRowBitmap('Customer', receipt.customer_name, { fontSize: 17, fontWeight: 700 }, queue)
         }
         if (receipt.cashier_name || receipt.user_name) {
-            printRowBitmap('Cashier', receipt.cashier_name || receipt.user_name, { fontSize: 22, fontWeight: 700 }, queue)
+            printRowBitmap('Cashier', receipt.cashier_name || receipt.user_name, { fontSize: 17, fontWeight: 700 }, queue)
         }
 
         queue('lineWrap thanks', () => SunmiPrinter.lineWrap({ lines: 1 }))
-        printLineBitmap('Thank you for your purchase!', { align: 'center', fontSize: 24, fontWeight: 800 }, queue)
-        printLineBitmap('Visit us again', { align: 'center', fontSize: 22, fontWeight: 700 }, queue)
-        queue('lineWrap end', () => SunmiPrinter.lineWrap({ lines: 4 }))
+        printLineBitmap('Thank you for your purchase!', { align: 'center', fontSize: 20, fontWeight: 800 }, queue)
+        printLineBitmap('Visit us again', { align: 'center', fontSize: 17, fontWeight: 700 }, queue)
+        queue('lineWrap end', () => SunmiPrinter.lineWrap({ lines: 2 }))
 
         const queueDelay = Math.min(2000, Math.max(300, queued.count * 10))
         await new Promise((resolve) => setTimeout(resolve, queueDelay))
