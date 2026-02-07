@@ -798,7 +798,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useCartStore, useAlertStore } from '@/stores';
+import { useCartStore, useAlertStore, useAuthStore } from '@/stores';
 import { useNetworkStore } from '@/stores/network.store';
 import { useSyncStore } from '@/stores/sync.store';
 import { useOfflineStore } from '@/stores/offline.store';
@@ -807,7 +807,7 @@ import NetworkIndicator from '@/components/NetworkIndicator.vue';
 import SyncStatusBadge from '@/components/SyncStatusBadge.vue';
 import { useProductImage } from '@/composables/useProductImage';
 import { useBarcodeScanner } from '@/composables/useBarcodeScanner';
-import { printReceipt } from '@/services/print';
+import { buildReceiptPayload, printReceipt } from '@/services/print';
 
 // Beep sound for successful scan
 let audioContext = null;
@@ -839,6 +839,7 @@ async function playBeep(frequency = 1000, duration = 150, volume = 0.5) {
 
 const cartStore = useCartStore();
 const alertStore = useAlertStore();
+const authStore = useAuthStore();
 const networkStore = useNetworkStore();
 const syncStore = useSyncStore();
 const offlineStore = useOfflineStore();
@@ -1427,18 +1428,21 @@ async function completeSale() {
     // Print receipt automatically
     try {
       console.log('[POS] Attempting to print receipt...');
-      
-      // Prepare receipt data for printing
-      const receiptData = {
+
+      const saleForPrint = {
+        ...(response?.sale || {}),
         receipt_number: lastReceiptNumber.value,
-        created_at: new Date().toISOString(),
-        branch_name: response?.sale?.branch_name || '',
+        created_at: response?.sale?.created_at || new Date().toISOString(),
         items: cartStore.items.map(item => ({
           product_name: item.name,
           quantity: item.quantity,
           unit_price: item.unit_price,
           total: item.quantity * item.unit_price,
         })),
+      };
+
+      const receiptData = buildReceiptPayload(saleForPrint, {
+        user: authStore.user,
         subtotal: cartStore.subtotal,
         discount_amount: cartStore.discountAmount,
         total_amount: cartStore.totalAmount,
@@ -1447,8 +1451,7 @@ async function completeSale() {
         amount_paid: useSplitPayment.value ? allocatedAmount.value : amountReceived.value,
         change_amount: lastChangeAmount.value,
         customer_name: cartStore.customer?.name || null,
-        cashier_name: response?.sale?.user_name || null,
-      };
+      });
 
       await printReceipt(receiptData);
       console.log('[POS] Receipt printed successfully');

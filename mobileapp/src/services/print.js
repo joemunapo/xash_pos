@@ -24,6 +24,95 @@ function money(value) {
     return Number.isFinite(parsed) ? parsed.toFixed(2) : '0.00'
 }
 
+function getUserDisplayName(user) {
+    if (!user) return null
+    if (user.name && String(user.name).trim()) return String(user.name).trim()
+    const first = user.first_name ? String(user.first_name).trim() : ''
+    const last = user.last_name ? String(user.last_name).trim() : ''
+    const fullName = `${first} ${last}`.trim()
+    return fullName || null
+}
+
+function resolveBusinessName(source = {}, context = {}) {
+    const user = context.user || null
+    return source.business_name
+        || source.businessName
+        || source.shop_name
+        || source.company_name
+        || source.business?.name
+        || source.branch?.business_name
+        || source.branch?.business?.name
+        || context.business_name
+        || context.businessName
+        || user?.business_name
+        || user?.business?.name
+        || user?.branch?.business_name
+        || user?.branch?.business?.name
+        || null
+}
+
+function resolveBranchName(source = {}, context = {}) {
+    const user = context.user || null
+    return source.branch_name
+        || source.branchName
+        || source.branch?.name
+        || context.branch_name
+        || context.branchName
+        || user?.branch?.name
+        || null
+}
+
+function resolveCashierName(source = {}, context = {}) {
+    const user = context.user || null
+    return source.cashier_name
+        || source.cashierName
+        || source.user_name
+        || source.user?.name
+        || source.cashier?.name
+        || context.cashier_name
+        || context.cashierName
+        || getUserDisplayName(user)
+        || null
+}
+
+function normalizeItems(items) {
+    if (!Array.isArray(items)) return []
+    return items.map((item) => {
+        const quantity = Number(item?.quantity ?? 0) || 0
+        const unitPrice = Number(item?.unit_price ?? item?.price ?? 0) || 0
+        const total = Number(item?.total ?? item?.line_total ?? (quantity * unitPrice)) || 0
+
+        return {
+            product_name: item?.product_name || item?.name || item?.product?.name || 'Item',
+            quantity,
+            unit_price: unitPrice,
+            total,
+        }
+    })
+}
+
+export function buildReceiptPayload(sale = {}, context = {}) {
+    const fallbackTotal = Number(sale.total_amount ?? context.total_amount ?? 0) || 0
+    return {
+        receipt_number: sale.receipt_number || context.receipt_number || '',
+        created_at: sale.created_at || context.created_at || new Date().toISOString(),
+        business_name: resolveBusinessName(sale, context),
+        branch_name: resolveBranchName(sale, context),
+        items: normalizeItems(sale.items || context.items),
+        subtotal: sale.subtotal ?? context.subtotal ?? fallbackTotal,
+        discount_amount: sale.discount_amount ?? context.discount_amount ?? 0,
+        total_amount: fallbackTotal,
+        payment_method: sale.payment_method || context.payment_method || 'cash',
+        payments: Array.isArray(sale.payments)
+            ? sale.payments
+            : (Array.isArray(context.payments) ? context.payments : null),
+        amount_paid: sale.amount_paid ?? context.amount_paid ?? fallbackTotal,
+        change_amount: sale.change_amount ?? context.change_amount ?? 0,
+        customer_name: sale.customer_name || sale.customer?.name || context.customer_name || null,
+        cashier_name: resolveCashierName(sale, context),
+    }
+}
+
 function arrayBufferToBase64(buffer) {
     const bytes = new Uint8Array(buffer)
     const chunkSize = 0x8000
@@ -251,7 +340,7 @@ async function printReceiptLogo(queue) {
         bitmap: logoBase64,
         type: BitmapPrintTypeEnum.BLACK_AND_WHITE,
     }))
-    queue('lineWrap logo', () => SunmiPrinter.lineWrap({ lines: 1 }))
+    queue('lineWrap logo', () => SunmiPrinter.lineWrap({ lines: 2 }))
     queue('setAlignment left', () => SunmiPrinter.setAlignment({ alignment: AlignmentModeEnum.LEFT }))
     return true
 }
@@ -421,6 +510,7 @@ async function printReceiptNative(receipt) {
         const subtotal = money(receipt.subtotal || receipt.total_amount || 0)
         const total = money(receipt.total_amount || 0)
         const amountPaid = money(receipt.amount_paid || receipt.total_amount || 0)
+        const businessName = receipt.business_name || ''
 
         console.log('[Print] Printing receipt in bitmap-enhanced mode...')
 
@@ -443,8 +533,16 @@ async function printReceiptNative(receipt) {
             printLineBitmap('XASH Pos', { align: 'center', fontSize: 28, fontWeight: 800 }, queue)
         }
 
+        if (businessName) {
+            printLineBitmap(businessName, { align: 'center', fontSize: 19, fontWeight: 800 }, queue)
+        }
+
         if (receipt.branch_name) {
             printLineBitmap(receipt.branch_name, { align: 'center', fontSize: 18, fontWeight: 700 }, queue)
+        }
+
+        if (logoPrinted) {
+            queue('lineWrap post-logo', () => SunmiPrinter.lineWrap({ lines: 1 }))
         }
 
         printRowBitmap('Receipt #', receipt.receipt_number, { fontSize: 18, fontWeight: 700 }, queue)
@@ -502,7 +600,7 @@ async function printReceiptNative(receipt) {
         queue('lineWrap thanks', () => SunmiPrinter.lineWrap({ lines: 1 }))
         printLineBitmap('Thank you for your purchase!', { align: 'center', fontSize: 20, fontWeight: 800 }, queue)
         printLineBitmap('Visit us again', { align: 'center', fontSize: 17, fontWeight: 700 }, queue)
-        queue('lineWrap end', () => SunmiPrinter.lineWrap({ lines: 2 }))
+        queue('lineWrap end', () => SunmiPrinter.lineWrap({ lines: 5 }))
 
         const queueDelay = Math.min(2000, Math.max(300, queued.count * 10))
         await new Promise((resolve) => setTimeout(resolve, queueDelay))
@@ -522,6 +620,9 @@ async function printReceiptNative(receipt) {
 function printReceiptWeb(receipt) {
     console.log('[Print] Web receipt print (development mode)')
     console.log('========== RECEIPT ==========')
+    if (receipt.business_name) {
+        console.log(`Business: ${receipt.business_name}`)
+    }
     console.log(`Receipt #: ${receipt.receipt_number}`)
     console.log(`Date: ${receipt.created_at || new Date().toISOString()}`)
     console.log('-----------------------------')
@@ -541,6 +642,9 @@ function printReceiptWeb(receipt) {
     console.log('-----------------------------')
     console.log(`Payment: ${receipt.payment_method}`)
     console.log(`Paid: $${receipt.amount_paid}`)
+    if (receipt.cashier_name || receipt.user_name) {
+        console.log(`Cashier: ${receipt.cashier_name || receipt.user_name}`)
+    }
     if (receipt.change_amount) {
         console.log(`Change: $${receipt.change_amount}`)
     }
@@ -549,6 +653,7 @@ function printReceiptWeb(receipt) {
 }
 
 export default {
+    buildReceiptPayload,
     printReceipt,
     logPrintDiagnostics,
 }

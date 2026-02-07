@@ -155,9 +155,23 @@
               <p class="text-xs text-gray-500">{{ formatDateTime(selectedSale.created_at) }}</p>
             </div>
 
+            <div
+              v-if="getSaleBusinessName(selectedSale) || getSaleCashierName(selectedSale)"
+              class="bg-gray-50 rounded-lg p-3 mb-4"
+            >
+              <div v-if="getSaleBusinessName(selectedSale)" class="flex justify-between text-sm">
+                <span class="text-gray-500">Business</span>
+                <span class="font-medium text-right ml-3">{{ getSaleBusinessName(selectedSale) }}</span>
+              </div>
+              <div v-if="getSaleCashierName(selectedSale)" class="flex justify-between text-sm mt-1">
+                <span class="text-gray-500">Cashier</span>
+                <span class="font-medium">{{ getSaleCashierName(selectedSale) }}</span>
+              </div>
+            </div>
+
             <div class="border-t border-b py-3 mb-4">
               <div
-                v-for="item in selectedSale.items"
+                v-for="item in (selectedSale.items || [])"
                 :key="item.id"
                 class="flex justify-between py-2"
               >
@@ -204,6 +218,18 @@
             </div>
 
             <div class="space-y-2">
+              <button
+                @click="reprintSelectedSale"
+                :disabled="reprinting || saleLoading || !canReprintSale(selectedSale)"
+                class="w-full py-3 border border-primary text-primary rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span v-if="reprinting">
+                  <i class="fas fa-spinner fa-spin mr-2"></i>Reprinting...
+                </span>
+                <span v-else>
+                  <i class="fas fa-print mr-2"></i>Reprint Receipt
+                </span>
+              </button>
               <button
                 @click="selectedSale = null"
                 class="w-full py-3 bg-primary text-white rounded-lg font-medium"
@@ -261,12 +287,14 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useAuthStore } from '@/stores';
+import { useAlertStore, useAuthStore } from '@/stores';
 import { useSyncStore } from '@/stores/sync.store';
 import { useNetworkStore } from '@/stores/network.store';
 import { fetchWrapper } from '@/helpers';
+import { buildReceiptPayload, printReceipt } from '@/services/print';
 
 const authStore = useAuthStore();
+const alertStore = useAlertStore();
 const syncStore = useSyncStore();
 const networkStore = useNetworkStore();
 const loading = ref(true);
@@ -277,6 +305,7 @@ const saleLoading = ref(false);
 const showVoidConfirm = ref(false);
 const voidingInProgress = ref(false);
 const voidError = ref('');
+const reprinting = ref(false);
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -295,7 +324,16 @@ async function fetchDashboard() {
     total_amount: sale.total_amount,
     payment_method: sale.payment_method,
     status: 'pending_sync',
-    is_pending: true
+    items: sale.items || [],
+    subtotal: sale.subtotal,
+    tax_amount: sale.tax_amount,
+    discount_amount: sale.discount_amount,
+    amount_paid: sale.amount_paid,
+    change_amount: sale.change_amount,
+    business_name: sale.business_name || authStore.user?.business_name || authStore.user?.business?.name || null,
+    branch_name: sale.branch_name || authStore.user?.branch?.name || null,
+    cashier_name: sale.cashier_name || authStore.user?.name || null,
+    is_pending: true,
   }));
   const pendingRevenue = pendingSales.reduce((sum, s) => sum + parseFloat(s.total_amount || 0), 0);
 
@@ -415,6 +453,56 @@ async function voidSale() {
     voidError.value = error?.message || 'Failed to void sale. You may not have permission.';
   } finally {
     voidingInProgress.value = false;
+  }
+}
+
+function getSaleBusinessName(sale) {
+  if (!sale) return null;
+  return sale.business_name
+    || sale.business?.name
+    || sale.branch?.business_name
+    || sale.branch?.business?.name
+    || authStore.user?.business_name
+    || authStore.user?.business?.name
+    || null;
+}
+
+function getSaleCashierName(sale) {
+  if (!sale) return null;
+  const fallbackCashier = authStore.user?.name
+    || `${authStore.user?.first_name || ''} ${authStore.user?.last_name || ''}`.trim()
+    || null;
+  return sale.cashier_name
+    || sale.user_name
+    || sale.cashier?.name
+    || fallbackCashier;
+}
+
+function canReprintSale(sale) {
+  return !!sale?.receipt_number && Array.isArray(sale?.items) && sale.items.length > 0;
+}
+
+async function reprintSelectedSale() {
+  if (!selectedSale.value) return;
+  if (!canReprintSale(selectedSale.value)) {
+    alertStore.warning('Receipt has no printable items');
+    return;
+  }
+
+  reprinting.value = true;
+  try {
+    const payload = buildReceiptPayload(selectedSale.value, {
+      user: authStore.user,
+      business_name: getSaleBusinessName(selectedSale.value),
+      cashier_name: getSaleCashierName(selectedSale.value),
+    });
+    await printReceipt(payload);
+    alertStore.success('Receipt sent to printer');
+  } catch (error) {
+    console.error('Failed to reprint sale:', error);
+    alertStore.error('Failed to reprint receipt');
+  } finally {
+    reprinting.value = false;
   }
 }
 
