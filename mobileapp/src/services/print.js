@@ -1,11 +1,260 @@
 import { Capacitor } from '@capacitor/core'
-import { SunmiPrinter } from 'capacitor-sunmi-printer-v7'
+import {
+    AlignmentModeEnum,
+    BitmapPrintTypeEnum,
+    SunmiPrinter,
+} from 'capacitor-sunmi-printer-v7'
 
 const isNative = Capacitor.isNativePlatform()
 const isAndroid = Capacitor.getPlatform() === 'android'
 
 // Sunmi Printer state
 let sunmiPrinterBound = false
+const RECEIPT_PRINT_WIDTH = 384
+const RECEIPT_SIDE_PADDING = 10
+const RECEIPT_LOGO_PATHS = [
+    '/xash_logo_blag.jpg',
+    '/xash_logo_blag.png',
+    '/xash_logo_black.jpg',
+    '/xash_logo_black.png',
+]
+
+function money(value) {
+    const parsed = parseFloat(value ?? 0)
+    return Number.isFinite(parsed) ? parsed.toFixed(2) : '0.00'
+}
+
+function arrayBufferToBase64(buffer) {
+    const bytes = new Uint8Array(buffer)
+    const chunkSize = 0x8000
+    let binary = ''
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+        const slice = bytes.subarray(i, i + chunkSize)
+        binary += String.fromCharCode(...slice)
+    }
+    return btoa(binary)
+}
+
+async function getAssetBase64(path) {
+    try {
+        const response = await fetch(path)
+        if (!response.ok) {
+            return null
+        }
+        const buffer = await response.arrayBuffer()
+        return arrayBufferToBase64(buffer)
+    } catch {
+        return null
+    }
+}
+
+function queueSunmi(label, run) {
+    try {
+        const promise = run()
+        if (promise && typeof promise.catch === 'function') {
+            promise.catch((error) => {
+                console.log(`[Print] ${label} failed:`, error?.message || error)
+            })
+        }
+    } catch (error) {
+        console.log(`[Print] ${label} failed:`, error?.message || error)
+    }
+}
+
+async function awaitSunmi(label, run, timeoutMs = 1800) {
+    try {
+        return await Promise.race([
+            run(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timeout`)), timeoutMs)),
+        ])
+    } catch (error) {
+        console.log(`[Print] ${label} failed:`, error?.message || error)
+        return null
+    }
+}
+
+function createReceiptCanvas(height) {
+    if (typeof document === 'undefined') {
+        return null
+    }
+
+    const canvas = document.createElement('canvas')
+    canvas.width = RECEIPT_PRINT_WIDTH
+    canvas.height = Math.max(1, Math.ceil(height))
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+        return null
+    }
+
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = '#000000'
+    ctx.textBaseline = 'top'
+    ctx.imageSmoothingEnabled = false
+    return { canvas, ctx }
+}
+
+function wrapText(ctx, text, maxWidth) {
+    const lines = []
+    const input = String(text ?? '')
+    const paragraphs = input.split('\n')
+
+    for (const paragraph of paragraphs) {
+        const words = paragraph.trim().split(/\s+/).filter(Boolean)
+        if (!words.length) {
+            lines.push('')
+            continue
+        }
+
+        let currentLine = words[0]
+        for (let i = 1; i < words.length; i += 1) {
+            const candidate = `${currentLine} ${words[i]}`
+            if (ctx.measureText(candidate).width <= maxWidth) {
+                currentLine = candidate
+            } else {
+                lines.push(currentLine)
+                currentLine = words[i]
+            }
+        }
+        lines.push(currentLine)
+    }
+
+    return lines.length ? lines : ['']
+}
+
+function truncateText(ctx, text, maxWidth) {
+    let output = String(text ?? '')
+    if (ctx.measureText(output).width <= maxWidth) {
+        return output
+    }
+
+    const ellipsis = '...'
+    while (output.length > 0) {
+        output = output.slice(0, -1)
+        if (ctx.measureText(output + ellipsis).width <= maxWidth) {
+            return output + ellipsis
+        }
+    }
+    return ellipsis
+}
+
+function lineTextToBase64(text, options = {}) {
+    const {
+        align = 'left',
+        fontSize = 26,
+        fontWeight = 700,
+        paddingX = RECEIPT_SIDE_PADDING,
+        paddingY = 6,
+    } = options
+
+    const probe = createReceiptCanvas(64)
+    if (!probe) return null
+
+    probe.ctx.font = `${fontWeight} ${fontSize}px sans-serif`
+    const maxTextWidth = RECEIPT_PRINT_WIDTH - (paddingX * 2)
+    const lines = wrapText(probe.ctx, text, maxTextWidth)
+    const lineHeight = Math.ceil(fontSize * 1.35)
+    const height = (lines.length * lineHeight) + (paddingY * 2)
+
+    const surface = createReceiptCanvas(height)
+    if (!surface) return null
+    const { canvas, ctx } = surface
+
+    ctx.font = `${fontWeight} ${fontSize}px sans-serif`
+    for (let i = 0; i < lines.length; i += 1) {
+        const line = lines[i]
+        const y = paddingY + (i * lineHeight)
+        if (align === 'center') {
+            ctx.textAlign = 'center'
+            ctx.fillText(line, RECEIPT_PRINT_WIDTH / 2, y)
+        } else if (align === 'right') {
+            ctx.textAlign = 'right'
+            ctx.fillText(line, RECEIPT_PRINT_WIDTH - paddingX, y)
+        } else {
+            ctx.textAlign = 'left'
+            ctx.fillText(line, paddingX, y)
+        }
+    }
+
+    return canvas.toDataURL('image/png').split(',')[1]
+}
+
+function rowTextToBase64(left, right, options = {}) {
+    const {
+        fontSize = 24,
+        fontWeight = 700,
+        paddingX = RECEIPT_SIDE_PADDING,
+        paddingY = 6,
+        gap = 10,
+    } = options
+
+    const surface = createReceiptCanvas(Math.ceil(fontSize * 1.5) + (paddingY * 2))
+    if (!surface) return null
+    const { canvas, ctx } = surface
+
+    ctx.font = `${fontWeight} ${fontSize}px sans-serif`
+
+    const rightText = String(right ?? '')
+    const rightWidth = ctx.measureText(rightText).width
+    const maxLeftWidth = Math.max(40, RECEIPT_PRINT_WIDTH - (paddingX * 2) - rightWidth - gap)
+    const leftText = truncateText(ctx, String(left ?? ''), maxLeftWidth)
+    const y = paddingY
+
+    ctx.textAlign = 'left'
+    ctx.fillText(leftText, paddingX, y)
+
+    ctx.textAlign = 'right'
+    ctx.fillText(rightText, RECEIPT_PRINT_WIDTH - paddingX, y)
+
+    return canvas.toDataURL('image/png').split(',')[1]
+}
+
+function printLineBitmap(text, options = {}, queue) {
+    const base64 = lineTextToBase64(text, options)
+    if (!base64) {
+        queue('printText line fallback', () => SunmiPrinter.printText({ text: `${text}\n` }))
+        return
+    }
+    queue('printBitmapCustom line', () => SunmiPrinter.printBitmapCustom({
+        bitmap: base64,
+        type: BitmapPrintTypeEnum.BLACK_AND_WHITE,
+    }))
+}
+
+function printRowBitmap(left, right, options = {}, queue) {
+    const base64 = rowTextToBase64(left, right, options)
+    if (!base64) {
+        queue('printText row fallback', () => SunmiPrinter.printText({ text: `${left} ${right}\n` }))
+        return
+    }
+    queue('printBitmapCustom row', () => SunmiPrinter.printBitmapCustom({
+        bitmap: base64,
+        type: BitmapPrintTypeEnum.BLACK_AND_WHITE,
+    }))
+}
+
+async function printReceiptLogo(queue) {
+    let logoBase64 = null
+    for (const path of RECEIPT_LOGO_PATHS) {
+        logoBase64 = await getAssetBase64(path)
+        if (logoBase64) {
+            break
+        }
+    }
+
+    if (!logoBase64) {
+        return false
+    }
+
+    queue('setAlignment center', () => SunmiPrinter.setAlignment({ alignment: AlignmentModeEnum.CENTER }))
+    queue('printBitmapCustom logo', () => SunmiPrinter.printBitmapCustom({
+        bitmap: logoBase64,
+        type: BitmapPrintTypeEnum.BLACK_AND_WHITE,
+    }))
+    queue('lineWrap logo', () => SunmiPrinter.lineWrap({ lines: 1 }))
+    queue('setAlignment left', () => SunmiPrinter.setAlignment({ alignment: AlignmentModeEnum.LEFT }))
+    return true
+}
 
 /**
  * Check if Sunmi printer is available
@@ -32,20 +281,20 @@ async function initSunmiPrinter() {
 
     try {
         console.log('[Print] Binding Sunmi printer service...')
-        await SunmiPrinter.bindService()
+        await awaitSunmi('bindService', () => SunmiPrinter.bindService(), 2000)
         sunmiPrinterBound = true
         console.log('[Print] Sunmi printer service bound successfully')
 
         // Get printer info
         try {
-            const deviceName = await SunmiPrinter.getDeviceName()
+            const deviceName = await awaitSunmi('getDeviceName', () => SunmiPrinter.getDeviceName(), 1200)
             console.log('[Print] Sunmi Device:', deviceName?.name || 'Unknown')
         } catch (e) {
             console.log('[Print] Could not get device name:', e.message)
         }
 
         try {
-            const status = await SunmiPrinter.updatePrinterState()
+            const status = await awaitSunmi('updatePrinterState(init)', () => SunmiPrinter.updatePrinterState(), 1200)
             console.log('[Print] Sunmi Printer Status:', status?.status, 'code:', status?.code)
         } catch (e) {
             console.log('[Print] Could not get printer status:', e.message)
@@ -83,7 +332,7 @@ export async function logPrintDiagnostics() {
             if (bound) {
                 console.log('[Print Diagnostics] Printer service bound!')
                 try {
-                    const status = await SunmiPrinter.updatePrinterState()
+                    const status = await awaitSunmi('updatePrinterState(diagnostics)', () => SunmiPrinter.updatePrinterState(), 1500)
                     console.log('[Print Diagnostics] Printer status:', status?.status, '(code:', status?.code, ')')
                 } catch (e) {
                     console.log('[Print Diagnostics] Could not get status:', e.message)
@@ -169,115 +418,100 @@ async function printReceiptNative(receipt) {
                     receipt.payment_method === 'split' ? 'Split Payment' :
                         receipt.payment_method || 'Cash'
 
-        // Build items text
-        let itemsText = ''
+        const subtotal = money(receipt.subtotal || receipt.total_amount || 0)
+        const total = money(receipt.total_amount || 0)
+        const amountPaid = money(receipt.amount_paid || receipt.total_amount || 0)
+
+        console.log('[Print] Printing receipt in bitmap-enhanced mode...')
+
+        // Use buffered mode for stable Sunmi output ordering
+        const queued = { count: 0 }
+        const queue = (label, run) => {
+            queued.count += 1
+            queueSunmi(label, run)
+        }
+
+        await awaitSunmi('enterPrinterBuffer', () => SunmiPrinter.enterPrinterBuffer({ clean: true }), 2000)
+        queue('printerInit', () => SunmiPrinter.printerInit())
+        queue('setBold', () => SunmiPrinter.setBold({ enable: true }))
+        queue('setFontSize', () => SunmiPrinter.setFontSize({ size: 28 }))
+        queue('setAlignment left', () => SunmiPrinter.setAlignment({ alignment: AlignmentModeEnum.LEFT }))
+
+        // Header branding (logo image first, then fallback text if needed)
+        const logoPrinted = await printReceiptLogo(queue)
+        if (!logoPrinted) {
+            printLineBitmap('XASH POS', { align: 'center', fontSize: 34, fontWeight: 800 }, queue)
+        }
+
+        if (receipt.branch_name) {
+            printLineBitmap(receipt.branch_name, { align: 'center', fontSize: 24, fontWeight: 700 }, queue)
+        }
+
+        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
+        printRowBitmap('Receipt #', receipt.receipt_number, { fontSize: 22, fontWeight: 700 }, queue)
+        printRowBitmap('Date', dateTime, { fontSize: 22, fontWeight: 700 }, queue)
+        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
+        printLineBitmap('ITEMS', { fontSize: 24, fontWeight: 800 }, queue)
+        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
+
         if (receipt.items && receipt.items.length > 0) {
             for (const item of receipt.items) {
-                const name = item.product_name || item.name
+                const name = item.product_name || item.name || 'Item'
                 const qty = parseFloat(item.quantity || 0).toFixed(0)
-                const price = parseFloat(item.unit_price || item.price || 0).toFixed(2)
-                const total = parseFloat(item.total || (item.quantity * item.unit_price)).toFixed(2)
-                itemsText += `${name}\n  ${qty} x $${price} = $${total}\n`
+                const price = money(item.unit_price || item.price || 0)
+                const lineTotal = money(item.total || ((item.quantity || 0) * (item.unit_price || item.price || 0)))
+
+                printLineBitmap(name, { fontSize: 22, fontWeight: 700 }, queue)
+                printRowBitmap(`${qty} x $${price}`, `$${lineTotal}`, { fontSize: 21, fontWeight: 700 }, queue)
             }
         }
 
-        const subtotal = parseFloat(receipt.subtotal || receipt.total_amount || 0).toFixed(2)
-        const total = parseFloat(receipt.total_amount || 0).toFixed(2)
-        const amountPaid = parseFloat(receipt.amount_paid || receipt.total_amount || 0).toFixed(2)
-
-        // Build single receipt string
-        let receiptText = ''
-        receiptText += '================================\n'
-        receiptText += '          XASH POS\n'
-        if (receipt.branch_name) {
-            receiptText += `      ${receipt.branch_name}\n`
-        }
-        receiptText += '================================\n'
-        receiptText += `Receipt #: ${receipt.receipt_number}\n`
-        receiptText += `Date: ${dateTime}\n`
-        receiptText += '--------------------------------\n'
-        receiptText += 'ITEMS\n'
-        receiptText += '--------------------------------\n'
-        receiptText += itemsText
-        receiptText += '--------------------------------\n'
-        receiptText += `Subtotal: $${subtotal}\n`
+        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
+        printRowBitmap('Subtotal', `$${subtotal}`, { fontSize: 22, fontWeight: 700 }, queue)
 
         if (receipt.discount_amount && parseFloat(receipt.discount_amount) > 0) {
-            const discount = parseFloat(receipt.discount_amount).toFixed(2)
-            receiptText += `Discount: -$${discount}\n`
+            const discount = money(receipt.discount_amount)
+            printRowBitmap('Discount', `-$${discount}`, { fontSize: 22, fontWeight: 700 }, queue)
         }
 
-        receiptText += `TOTAL: $${total}\n`
-        receiptText += '--------------------------------\n'
-        receiptText += 'PAYMENT\n'
-        receiptText += `Method: ${paymentMethodLabel}\n`
+        printRowBitmap('TOTAL', `$${total}`, { fontSize: 28, fontWeight: 800 }, queue)
+        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
+        printLineBitmap('PAYMENT', { fontSize: 24, fontWeight: 800 }, queue)
+        printRowBitmap('Method', paymentMethodLabel, { fontSize: 22, fontWeight: 700 }, queue)
 
         if (receipt.payments && receipt.payments.length > 0) {
             for (const payment of receipt.payments) {
                 const method = payment.method === 'cash' ? 'Cash' :
                     payment.method === 'ecocash' ? 'Ecocash' :
                         payment.method === 'swipe' ? 'Card' : payment.method
-                const amount = parseFloat(payment.amount || 0).toFixed(2)
-                receiptText += `  ${method}: $${amount}\n`
+                printRowBitmap(method, `$${money(payment.amount || 0)}`, { fontSize: 22, fontWeight: 700 }, queue)
             }
         } else {
-            receiptText += `Paid: $${amountPaid}\n`
+            printRowBitmap('Paid', `$${amountPaid}`, { fontSize: 22, fontWeight: 700 }, queue)
         }
 
         if (receipt.change_amount && parseFloat(receipt.change_amount) > 0) {
-            const change = parseFloat(receipt.change_amount).toFixed(2)
-            receiptText += `Change: $${change}\n`
+            printRowBitmap('Change', `$${money(receipt.change_amount)}`, { fontSize: 22, fontWeight: 700 }, queue)
         }
 
-        receiptText += '================================\n'
+        printLineBitmap('--------------------------------', { fontSize: 22, fontWeight: 700 }, queue)
 
         if (receipt.customer_name) {
-            receiptText += `Customer: ${receipt.customer_name}\n`
+            printRowBitmap('Customer', receipt.customer_name, { fontSize: 22, fontWeight: 700 }, queue)
         }
         if (receipt.cashier_name || receipt.user_name) {
-            receiptText += `Cashier: ${receipt.cashier_name || receipt.user_name}\n`
+            printRowBitmap('Cashier', receipt.cashier_name || receipt.user_name, { fontSize: 22, fontWeight: 700 }, queue)
         }
 
-        receiptText += '\nThank you for your purchase!\n'
-        receiptText += 'Visit us again\n'
-        receiptText += '\n\n\n'
+        queue('lineWrap thanks', () => SunmiPrinter.lineWrap({ lines: 1 }))
+        printLineBitmap('Thank you for your purchase!', { align: 'center', fontSize: 24, fontWeight: 800 }, queue)
+        printLineBitmap('Visit us again', { align: 'center', fontSize: 22, fontWeight: 700 }, queue)
+        queue('lineWrap end', () => SunmiPrinter.lineWrap({ lines: 4 }))
 
-        console.log('[Print] Printing receipt text...')
-        console.log('[Print] Receipt content:', receiptText.substring(0, 100) + '...')
-
-        // Use buffer mode with commitPrinterBuffer which resolves immediately
-        // This bypasses the callback issues with printText methods
-        try {
-            console.log('[Print] Entering buffer mode...')
-            await SunmiPrinter.enterPrinterBuffer({ clean: true })
-            console.log('[Print] Buffer mode entered')
-
-            // Queue print commands without awaiting (they hang)
-            console.log('[Print] Queueing print commands...')
-            SunmiPrinter.printText({ text: receiptText }).catch(() => { })
-
-            // Small delay to let commands queue
-            await new Promise(resolve => setTimeout(resolve, 200))
-
-            // Commit buffer - this resolves immediately!
-            console.log('[Print] Committing buffer...')
-            await SunmiPrinter.commitPrinterBuffer()
-            console.log('[Print] Buffer committed - print should start!')
-
-        } catch (e) {
-            console.log('[Print] Buffer approach failed:', e.message)
-
-            // Fallback: try sendRAWData with ESC/POS commands
-            try {
-                console.log('[Print] Trying raw ESC/POS data...')
-                const initCmd = '\x1B\x40' // ESC @ - Initialize printer
-                const rawData = initCmd + receiptText + '\n\n\n\n'
-                SunmiPrinter.sendRAWData({ data: rawData }).catch(() => { })
-                console.log('[Print] Raw data queued')
-            } catch (e2) {
-                console.log('[Print] Raw data approach also failed:', e2.message)
-            }
-        }
+        const queueDelay = Math.min(2000, Math.max(300, queued.count * 10))
+        await new Promise((resolve) => setTimeout(resolve, queueDelay))
+        await awaitSunmi('commitPrinterBuffer', () => SunmiPrinter.commitPrinterBuffer(), 2500)
+        console.log('[Print] Buffer committed - print should start!')
 
         console.log('[Print] Native receipt print completed!')
     } catch (error) {

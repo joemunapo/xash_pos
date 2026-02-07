@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen bg-page pb-20">
+  <div class="min-h-screen bg-page pb-20 dashboard-screen">
     <!-- Header -->
-    <div class="bg-header text-white px-4 py-6 pt-safe">
+    <div class="bg-header text-white px-4 py-6 pt-safe dashboard-header">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h1 class="text-xl font-bold mt-4">Welcome back,</h1>
+          <h1 class="text-xl font-bold mt-2">Welcome back,</h1>
           <p class="text-primary-light">{{ user?.name || 'Cashier' }}</p>
         </div>
         <button @click="showLogoutModal = true" class="p-2 rounded-lg bg-overlay-light">
           <i class="fas fa-sign-out-alt"></i>
         </button>
       </div>
-      <div class="rounded-lg p-2.5 bg-overlay-light">
+      <div class="rounded-lg p-2.5 bg-overlay-light dashboard-branch-strip">
         <div class="flex items-center">
           <i class="fas fa-store mr-2 icon-primary-light"></i>
           <span class="text-sm">{{ branch?.name || 'No branch assigned' }}</span>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="px-4 mt-negative">
+    <div class="px-4 dashboard-container dashboard-stats-offset">
       <div class="card shadow-lg p-4">
         <h2 class="section-subtitle">Today's Summary</h2>
         <div class="flex">
@@ -37,32 +37,32 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="px-4 mt-6">
+    <div class="px-4 mt-6 dashboard-container">
       <h2 class="section-title">Quick Actions</h2>
       <div class="flex flex-wrap">
         <div class="w-1/2 p-1">
-          <router-link to="/pos/sell" class="card-action-primary">
+          <router-link to="/pos/sell" class="card-action-primary dashboard-action-card">
             <i class="fas fa-cash-register text-3xl mb-2"></i>
             <span class="font-medium">New Sale</span>
           </router-link>
         </div>
 
         <div class="w-1/2 p-1">
-          <router-link to="/pos/sales" class="card-action">
+          <router-link to="/pos/sales" class="card-action dashboard-action-card">
             <i class="fas fa-history text-3xl mb-2 icon-primary"></i>
             <span class="font-medium">Sales History</span>
           </router-link>
         </div>
 
         <div class="w-1/2 p-1">
-          <router-link to="/pos/products" class="card-action">
+          <router-link to="/pos/products" class="card-action dashboard-action-card">
             <i class="fas fa-boxes text-3xl mb-2 icon-primary"></i>
             <span class="font-medium">Products</span>
           </router-link>
         </div>
 
         <div class="w-1/2 p-1">
-          <router-link to="/pos/profile" class="card-action">
+          <router-link to="/pos/profile" class="card-action dashboard-action-card">
             <i class="fas fa-user text-3xl mb-2 icon-primary"></i>
             <span class="font-medium">Profile</span>
           </router-link>
@@ -71,7 +71,7 @@
     </div>
 
     <!-- Recent Sales -->
-    <div class="px-4 mt-6">
+    <div class="px-4 mt-6 dashboard-container">
       <h2 class="section-title">Recent Sales</h2>
       <div v-if="stats.recent_sales?.length">
         <div
@@ -434,5 +434,55 @@ onMounted(() => {
 }
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
+}
+
+.dashboard-container {
+  width: 100%;
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-header {
+  height: auto !important;
+  min-height: 170px;
+  padding-bottom: 1.5rem;
+}
+
+.dashboard-branch-strip {
+  margin-top: 0.125rem;
+}
+
+.dashboard-stats-offset {
+  margin-top: -10px;
+}
+
+.dashboard-action-card {
+  min-height: 168px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-header {
+    min-height: 190px;
+    padding-bottom: 1.75rem;
+  }
+
+  .dashboard-stats-offset {
+    margin-top: -14px;
+  }
+
+  .dashboard-action-card {
+    min-height: 184px;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard-header {
+    padding-bottom: 1.375rem;
+  }
+
+  .dashboard-stats-offset {
+    margin-top: -6px;
+  }
 }
 </style>
