@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "android": "npm run build && npx cap sync && npx cap open android",
-    "ios": "npm install && npm run build && npx cap copy && npx cap sync && npx cap open ios"
+    "ios": "npm install && npm run build && npx cap copy && npx cap sync && npx cap open ios",
+    "sunmi:build": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease",
+    "sunmi:apk": "echo 'APK at:' && ls -la android/app/build/outputs/apk/release/app-release.apk"
   },
   "dependencies": {
     "@capacitor-community/http": "^1.4.1",

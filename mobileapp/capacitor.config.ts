@@ -1,12 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-    appId: 'com.xashpos.co.zw',
-    appName: 'xashpos',
+    appId: 'co.zw.xash.pos',
+    appName: 'XASH Pos',
     webDir: 'dist',
 
     server: {
-        androidScheme: 'https', 
+        androidScheme: 'https',
     },
 
     plugins: {

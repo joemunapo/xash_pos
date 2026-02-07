@@ -3,8 +3,8 @@ import { useNetworkStore } from '@/stores/network.store';
 import { getCachedImage, cacheImage, db } from '@/utils/indexeddb';
 import { fetchWrapper, blobToBase64 } from '@/helpers/fetch-wrapper';
 
-const backendUrl = import.meta.env.VITE_API_URL.replace('/api', '');
-const baseUrl = import.meta.env.VITE_API_URL;
+const backendUrl = (import.meta.env.VITE_API_URL || '').replace('/api', '');
+const baseUrl = import.meta.env.VITE_API_URL || '';
 
 // Check if IndexedDB is available (Android 7 has issues)
 let indexedDBAvailable = null;

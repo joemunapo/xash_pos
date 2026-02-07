@@ -5,8 +5,8 @@ import { useNetworkStore } from './network.store';
 import { useAuthStore } from './auth.store';
 import { fetchWrapper } from '@/helpers/fetch-wrapper';
 
-const baseUrl = import.meta.env.VITE_API_URL;
-const backendUrl = import.meta.env.VITE_API_URL.replace('/api', '');
+const baseUrl = import.meta.env.VITE_API_URL || '';
+const backendUrl = (import.meta.env.VITE_API_URL || '').replace('/api', '');
 
 // Check if IndexedDB is available and working (Android 7 has issues)
 let indexedDBAvailable = null;
