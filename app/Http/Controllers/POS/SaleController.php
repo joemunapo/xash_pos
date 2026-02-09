@@ -30,7 +30,7 @@ class SaleController extends Controller
         }
 
         $query = Sale::where('branch_id', $branch->id)
-            ->with(['items', 'customer:id,name,phone'])
+            ->with(['items', 'customer:id,name,phone', 'branch.tenant:id,name', 'user:id,name'])
             ->orderByDesc('created_at');
 
         // Filter by date
@@ -192,7 +192,7 @@ class SaleController extends Controller
             cache()->forget("pos_products_{$user->tenant_id}_{$branch->id}_all_none");
 
             // Load relationships for response
-            $sale->load(['items.product:id,name,sku', 'customer:id,name,phone']);
+            $sale->load(['items.product:id,name,sku', 'customer:id,name,phone', 'branch.tenant']);
 
             return response()->json([
                 'message' => 'Sale completed successfully',
@@ -223,7 +223,7 @@ class SaleController extends Controller
             ], 403);
         }
 
-        $sale->load(['items.product:id,name,sku,image', 'customer:id,name,phone', 'user:id,name']);
+        $sale->load(['items.product:id,name,sku,image', 'customer:id,name,phone', 'user:id,name', 'branch.tenant:id,name']);
 
         return response()->json([
             'sale' => $sale,

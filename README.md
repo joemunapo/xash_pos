@@ -478,6 +478,102 @@ DB::table('migrations')->insert([
 
 **Solution**: The `stock_movements` table requires `balance_after` field. This is automatically handled by the `SaleController`.
 
+## Stock Tracking
+
+### Overview
+
+XASHPOS includes comprehensive stock tracking capabilities. When products are marked with `track_stock = true`, the system automatically tracks inventory levels.
+
+### How Stock Tracking Works
+
+#### Automatic Stock Updates
+
+Stock levels are **automatically updated** when:
+
+1. **Sales are completed** (`SaleController.php`)
+   - Stock is decremented when a sale is processed
+   - A stock movement record is created with type `sale`
+   - Each sale item reduces the branch's stock quantity
+
+2. **Sales are voided/cancelled**
+   - Stock is restored to previous levels
+   - A stock movement record is created with type `sale_cancelled`
+
+#### Manual Stock Management
+
+You can manually adjust stock through the **Admin Portal**:
+
+##### Stock Adjustments
+
+Access: **Admin Portal → Inventory → Stock Adjustments**
+
+To create a manual stock adjustment:
+1. Navigate to Inventory > Stock Adjustments
+2. Click "Create Adjustment"
+3. Fill in the form:
+   - **Product**: Select the product
+   - **Branch**: Select the branch
+   - **Quantity**: Enter the adjustment (+10 to add, -10 to remove)
+   - **Reason**: Document why the adjustment is needed (e.g., "Damaged goods", "Stock count correction")
+   - **Notes**: Optional additional details
+
+The system will:
+- Update the stock quantity
+- Create a stock movement record with type `adjustment`
+- Log who made the adjustment and when
+
+##### Stock Transfers
+
+Access: **Admin Portal → Inventory → Transfers**
+
+To transfer stock between branches:
+1. Navigate to Inventory > Transfers
+2. Click "Create Transfer"
+3. Fill in the form:
+   - **Product**: Select the product
+   - **From Branch**: Source branch
+   - **To Branch**: Destination branch
+   - **Quantity**: Amount to transfer
+   - **Notes**: Optional transfer details
+
+The system will:
+- Deduct stock from the source branch
+- Add stock to the destination branch
+- Create two stock movement records (transfer_out and transfer_in)
+- Validate that source branch has sufficient stock
+
+### Stock Movement Types
+
+The system tracks the following movement types:
+- `purchase` - Stock received from suppliers
+- `sale` - Stock sold to customers (automatic)
+- `sale_cancelled` - Stock restored from voided sales (automatic)
+- `adjustment` - Manual stock corrections
+- `transfer_in` - Stock received from another branch
+- `transfer_out` - Stock sent to another branch
+- `damage` - Damaged or expired goods
+- `return` - Customer returns
+
+### Viewing Stock Levels
+
+#### Admin Portal
+- **Inventory Overview**: View all stock levels across branches
+- **Low Stock Alerts**: See products below reorder levels
+- **Stock Movements**: View complete audit trail of all stock changes
+
+#### Mobile POS
+- Stock levels are shown on each product card
+- Out-of-stock products are clearly marked
+- The system prevents selling more than available stock
+
+### Best Practices
+
+1. **Regular Stock Counts**: Perform physical stock counts and use adjustments to correct discrepancies
+2. **Document Adjustments**: Always provide clear reasons for manual adjustments
+3. **Set Reorder Levels**: Configure appropriate reorder levels for each product
+4. **Monitor Low Stock**: Check low stock alerts regularly
+5. **Review Movement History**: Use stock movements to investigate discrepancies
+
 ## License
 
 This project is proprietary software. All rights reserved.

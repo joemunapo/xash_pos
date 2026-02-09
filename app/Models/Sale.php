@@ -32,6 +32,12 @@ class Sale extends Model
         'exchange_rate',
     ];
 
+    protected $appends = [
+        'business_name',
+        'branch_name',
+        'cashier_name',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -109,5 +115,31 @@ class Sale extends Model
         $this->subtotal = $this->items->sum('line_total');
         $this->tax_amount = $this->items->sum('tax_amount');
         $this->total_amount = $this->subtotal + $this->tax_amount - $this->discount_amount;
+    }
+
+    /**
+     * Get the business/company name for this sale
+     */
+    public function getBusinessNameAttribute(): ?string
+    {
+        return $this->branch?->tenant?->name
+            ?? $this->tenant?->name
+            ?? null;
+    }
+
+    /**
+     * Get the branch name for this sale
+     */
+    public function getBranchNameAttribute(): ?string
+    {
+        return $this->branch?->name ?? null;
+    }
+
+    /**
+     * Get the cashier name for this sale
+     */
+    public function getCashierNameAttribute(): ?string
+    {
+        return $this->user?->name ?? null;
     }
 }
